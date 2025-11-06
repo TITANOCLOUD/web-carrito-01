@@ -40,7 +40,8 @@ export default function Home() {
       highlight: "60 Segundos",
       subtitle: "La velocidad más rápida del mercado para lanzar tu proyecto",
       cta: "COMENZAR AHORA",
-      image: "/rapid-deployment-servers-launching-in-60-seconds.jpg",
+      video:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250217_1848_Futuristic%20Truck%20Journey_simple_compose_01jmb4z8tcfm2vf0jhvev9m7fj-WpdItknruB6KhR3HufrlXbjaXLTkwh.mp4",
     },
     {
       title: "Soporte Técnico",
@@ -193,13 +194,17 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
               }`}
             >
               <div className="absolute inset-0">
-                <Image
-                  src={slide.image || "/placeholder.svg"}
-                  alt={`${slide.title} - SATURNO`}
-                  fill
-                  className="object-cover"
-                  priority={index === 0}
-                />
+                {slide.video ? (
+                  <video src={slide.video} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+                ) : (
+                  <Image
+                    src={slide.image || "/placeholder.svg"}
+                    alt={`${slide.title} - SATURNO`}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                  />
+                )}
               </div>
               <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/90" />
               <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center">
@@ -378,25 +383,29 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/modern-data-center-server-racks-with-blue-lighting.jpg"
-              alt="Centro de datos moderno"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250302_0144_Sustainable%20Nordic%20Data%20Center_simple_compose_01jnasjptjebbv6vjrnzjqjzhz-2FgFcG5ALsu91wMvFbQc0BdPMIF5Jp.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
-              <h3 className="text-xl font-bold text-white mb-2">Centros de Datos Tier III</h3>
-              <p className="text-slate-300 text-sm">Infraestructura redundante con 99.99% uptime</p>
+              <h3 className="text-xl font-bold text-white mb-2">Centros de Datos TIER IV</h3>
+              <p className="text-slate-300 text-sm">Somos conformes pero ecológicos</p>
             </div>
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/network-operations-center-with-multiple-monitors-s.jpg"
-              alt="Centro de operaciones de red"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/84163ebe-30d6-4cc7-b74d-dee266072e18_ab45ad1e-125c-4711-9935-0306fe40e59d-TRhSsRHE7syUEk25ng9YgWoLUfiwdu.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
