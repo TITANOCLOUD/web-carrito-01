@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Server, Check, Cpu, HardDrive, Shield, Zap, ChevronDown, Globe, X, Wifi, Activity } from "lucide-react"
-import { useState } from "react"
+import { Server, Check, Cpu, HardDrive, Shield, Zap, ChevronDown, Globe, X, Wifi, Activity, MapPin } from "lucide-react"
+import { useState, useEffect } from "react"
 
 export default function VPSPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -15,6 +15,8 @@ export default function VPSPage() {
   const [isTestingSpeed, setIsTestingSpeed] = useState(false)
   const [speedResults, setSpeedResults] = useState<any>(null)
   const [hoveredDatacenter, setHoveredDatacenter] = useState<string | null>(null)
+  const [userLocation, setUserLocation] = useState<string | null>(null)
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false)
 
   const vpsPlans = [
     {
@@ -132,6 +134,14 @@ export default function VPSPage() {
     { id: "tokyo", name: "Tokio", country: "Japón", region: "Asia", lat: 35.6762, lng: 139.6503 },
     { id: "sydney", name: "Sídney", country: "Australia", region: "Oceanía", lat: -33.8688, lng: 151.2093 },
     { id: "saopaulo", name: "São Paulo", country: "Brasil", region: "América del Sur", lat: -23.5505, lng: -46.6333 },
+    {
+      id: "buenosaires",
+      name: "Buenos Aires",
+      country: "Argentina",
+      region: "América del Sur",
+      lat: -34.6037,
+      lng: -58.3816,
+    },
     { id: "frankfurt", name: "Frankfurt", country: "Alemania", region: "Europa", lat: 50.1109, lng: 8.6821 },
     { id: "singapore", name: "Singapur", country: "Singapur", region: "Asia", lat: 1.3521, lng: 103.8198 },
     { id: "toronto", name: "Toronto", country: "Canadá", region: "América del Norte", lat: 43.6532, lng: -79.3832 },
@@ -179,7 +189,28 @@ export default function VPSPage() {
     return plan || vpsPlans[2] // Default to Cronos
   }
 
+  const detectUserLocation = async () => {
+    setIsDetectingLocation(true)
+    // Simulate geolocation detection
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // In a real implementation, this would use an IP geolocation API
+    // For now, we'll randomly select a location to simulate detection
+    const randomLocation = serverLocations[Math.floor(Math.random() * serverLocations.length)]
+    setUserLocation(randomLocation.id)
+    setIsDetectingLocation(false)
+  }
+
+  useEffect(() => {
+    detectUserLocation()
+  }, [])
+
   const runSpeedTest = async (locationId: string) => {
+    if (!userLocation) {
+      alert("Por favor, detecta tu ubicación primero")
+      return
+    }
+
     setIsTestingSpeed(true)
     setSelectedLocation(locationId)
     setSpeedResults(null)
@@ -188,13 +219,20 @@ export default function VPSPage() {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Generate realistic speed test results
-    const location = serverLocations.find((l) => l.id === locationId)
-    const baseLatency = Math.random() * 50 + 10
-    const downloadSpeed = Math.random() * 500 + 500
+    const targetLocation = serverLocations.find((l) => l.id === locationId)
+    const originLocation = serverLocations.find((l) => l.id === userLocation)
+
+    // Calculate distance-based latency (simplified)
+    const distance = Math.sqrt(
+      Math.pow(targetLocation!.lat - originLocation!.lat, 2) + Math.pow(targetLocation!.lng - originLocation!.lng, 2),
+    )
+    const baseLatency = Math.min(distance * 10 + Math.random() * 20, 300)
+    const downloadSpeed = Math.max(100, 1000 - distance * 5 + Math.random() * 200)
     const uploadSpeed = downloadSpeed * 0.8
 
     setSpeedResults({
-      location: location?.name,
+      origin: originLocation?.name,
+      destination: targetLocation?.name,
       latency: baseLatency.toFixed(1),
       download: downloadSpeed.toFixed(2),
       upload: uploadSpeed.toFixed(2),
@@ -231,10 +269,9 @@ export default function VPSPage() {
           </p>
         </div>
         <div className="max-w-6xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 overflow-hidden">
-          {/* Stylized World Map */}
           <div className="relative w-full aspect-[2/1] mb-8 bg-gradient-to-br from-slate-950 to-slate-900 rounded-xl border border-slate-800 overflow-hidden">
             {/* Grid Background */}
-            <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0 opacity-10">
               <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -245,57 +282,17 @@ export default function VPSPage() {
               </svg>
             </div>
 
-            {/* Simplified Continent Shapes */}
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-              {/* North America */}
-              <path
-                d="M 15 25 Q 18 20 22 22 L 28 18 Q 32 20 30 28 L 28 35 Q 25 40 20 38 L 18 42 Q 15 40 16 35 Z"
-                fill="rgb(30 41 59)"
-                stroke="rgb(51 65 85)"
-                strokeWidth="0.3"
-                opacity="0.6"
+            {/* Detailed Cyan World Map */}
+            <div className="absolute inset-0 flex items-center justify-center p-8">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4295-uvgis37mbyF8ri7S11CFYfkvShAlFe.png"
+                alt="Mapa mundial de centros de datos"
+                className="w-full h-full object-contain opacity-80"
               />
-              {/* South America */}
-              <path
-                d="M 28 50 Q 30 48 32 52 L 35 65 Q 33 72 30 70 L 28 68 Q 26 65 27 58 Z"
-                fill="rgb(30 41 59)"
-                stroke="rgb(51 65 85)"
-                strokeWidth="0.3"
-                opacity="0.6"
-              />
-              {/* Europe */}
-              <path
-                d="M 48 22 Q 52 20 55 24 L 56 30 Q 54 32 50 30 L 48 28 Z"
-                fill="rgb(30 41 59)"
-                stroke="rgb(51 65 85)"
-                strokeWidth="0.3"
-                opacity="0.6"
-              />
-              {/* Africa */}
-              <path
-                d="M 48 35 Q 52 33 56 38 L 58 50 Q 56 58 52 56 L 48 52 Q 46 45 48 40 Z"
-                fill="rgb(30 41 59)"
-                stroke="rgb(51 65 85)"
-                strokeWidth="0.3"
-                opacity="0.6"
-              />
-              {/* Asia */}
-              <path
-                d="M 60 20 Q 68 18 75 22 L 82 28 Q 85 35 80 38 L 75 40 Q 70 42 65 38 L 60 32 Z"
-                fill="rgb(30 41 59)"
-                stroke="rgb(51 65 85)"
-                strokeWidth="0.3"
-                opacity="0.6"
-              />
-              {/* Australia */}
-              <path
-                d="M 82 68 Q 88 66 92 70 L 90 76 Q 86 78 82 75 Z"
-                fill="rgb(30 41 59)"
-                stroke="rgb(51 65 85)"
-                strokeWidth="0.3"
-                opacity="0.6"
-              />
+            </div>
 
+            {/* Datacenter Markers Overlay */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
               {/* Connection Lines between datacenters */}
               <g opacity="0.3">
                 <line x1="25" y1="35" x2="50" y2="30" stroke="rgb(6 182 212)" strokeWidth="0.2" strokeDasharray="2,2">
@@ -690,9 +687,48 @@ export default function VPSPage() {
             </div>
             <h2 className="text-4xl font-bold mb-4 text-white">Prueba la Velocidad de Nuestros Servidores</h2>
             <p className="text-slate-400 max-w-3xl mx-auto">
-              Selecciona una ubicación y realiza un test de velocidad para ver el rendimiento de nuestra red global
+              Mide la velocidad de conexión desde tu ubicación hacia nuestros centros de datos globales
             </p>
           </div>
+
+          <Card className="bg-slate-900 border-slate-800 mb-8">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-6 h-6 text-cyan-400" />
+                  <div>
+                    <p className="text-slate-400 text-sm">Tu ubicación actual</p>
+                    {userLocation ? (
+                      <p className="text-white font-semibold text-lg">
+                        {serverLocations.find((l) => l.id === userLocation)?.name},{" "}
+                        {serverLocations.find((l) => l.id === userLocation)?.country}
+                      </p>
+                    ) : (
+                      <p className="text-slate-500">Detectando...</p>
+                    )}
+                  </div>
+                </div>
+                <Button
+                  onClick={detectUserLocation}
+                  disabled={isDetectingLocation}
+                  variant="outline"
+                  className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 bg-transparent"
+                >
+                  {isDetectingLocation ? (
+                    <>
+                      <Activity className="w-4 h-4 mr-2 animate-spin" />
+                      Detectando...
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Detectar Ubicación
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Server Locations */}
@@ -700,8 +736,11 @@ export default function VPSPage() {
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Globe className="w-5 h-5 text-cyan-400" />
-                  Selecciona una Ubicación
+                  Selecciona Servidor Destino
                 </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Selecciona el servidor al que deseas medir la velocidad de conexión
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
@@ -709,12 +748,12 @@ export default function VPSPage() {
                     <button
                       key={location.id}
                       onClick={() => runSpeedTest(location.id)}
-                      disabled={isTestingSpeed}
+                      disabled={isTestingSpeed || !userLocation}
                       className={`w-full text-left p-4 rounded-lg border transition-all duration-300 ${
                         selectedLocation === location.id
                           ? "bg-cyan-500/20 border-cyan-500"
                           : "bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800"
-                      } ${isTestingSpeed ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                      } ${isTestingSpeed || !userLocation ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                     >
                       <div className="flex items-center justify-between">
                         <div>
@@ -745,7 +784,10 @@ export default function VPSPage() {
                 {!speedResults && !isTestingSpeed && (
                   <div className="flex flex-col items-center justify-center h-[400px] text-center">
                     <Wifi className="w-16 h-16 text-slate-700 mb-4" />
-                    <p className="text-slate-400">Selecciona una ubicación para comenzar el test de velocidad</p>
+                    <p className="text-slate-400">Selecciona un servidor destino para comenzar el test de velocidad</p>
+                    {!userLocation && (
+                      <p className="text-slate-500 text-sm mt-2">Esperando detección de ubicación...</p>
+                    )}
                   </div>
                 )}
 
@@ -753,15 +795,36 @@ export default function VPSPage() {
                   <div className="flex flex-col items-center justify-center h-[400px] text-center">
                     <Activity className="w-16 h-16 text-cyan-400 animate-pulse mb-4" />
                     <p className="text-white font-semibold mb-2">Realizando test de velocidad...</p>
-                    <p className="text-slate-400 text-sm">Esto puede tomar unos segundos</p>
+                    <p className="text-slate-400 text-sm">
+                      Desde{" "}
+                      <span className="text-cyan-400">{serverLocations.find((l) => l.id === userLocation)?.name}</span>{" "}
+                      hacia{" "}
+                      <span className="text-cyan-400">
+                        {serverLocations.find((l) => l.id === selectedLocation)?.name}
+                      </span>
+                    </p>
                   </div>
                 )}
 
                 {speedResults && !isTestingSpeed && (
                   <div className="space-y-6">
                     <div className="text-center pb-6 border-b border-slate-800">
-                      <p className="text-slate-400 text-sm mb-2">Servidor testeado</p>
-                      <p className="text-white text-xl font-bold">{speedResults.location}</p>
+                      <p className="text-slate-400 text-sm mb-3">Ruta de prueba</p>
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="text-center">
+                          <p className="text-cyan-400 font-semibold text-sm mb-1">Origen</p>
+                          <p className="text-white text-lg font-bold">{speedResults.origin}</p>
+                        </div>
+                        <div className="flex items-center gap-2 px-4">
+                          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                          <div className="w-8 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500" />
+                          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-blue-400 font-semibold text-sm mb-1">Destino</p>
+                          <p className="text-white text-lg font-bold">{speedResults.destination}</p>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

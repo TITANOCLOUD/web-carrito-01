@@ -352,7 +352,12 @@ Podemos escalar a **Bare Metal** cuando tu proyecto lo requiera, sin interrupcio
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="relative hidden md:block">
               <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-2xl">
-                <Image src="/friendly-technical-support-person-with-headset-in-.jpg" alt="Arquitecto Cloud" fill className="object-cover" />
+                <Image
+                  src="/friendly-technical-support-person-with-headset-in-.jpg"
+                  alt="Arquitecto Cloud"
+                  fill
+                  className="object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
@@ -494,13 +499,11 @@ Podemos escalar a **Bare Metal** cuando tu proyecto lo requiera, sin interrupcio
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <video
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250210_0934_Futuristic%20Spartan%20Patrol_simple_compose_01jkr4g0rcezjbc3hqvw5jftvc-0dY1WN4r87nCSqF1vcHkpxJjkQcWuG.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            <Image
+              src="/fiber-optic-cables-high-speed-network.jpg"
+              alt="Red de Alta Velocidad"
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -510,13 +513,11 @@ Podemos escalar a **Bare Metal** cuando tu proyecto lo requiera, sin interrupcio
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <video
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a_4978c8a8-1754-42ab-a1b1-7f3c30df1fa9-xZw6fiRSD5O92S1AU5LQ4FZsxcQHjr.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            <Image
+              src="/cybersecurity-shield-protection-multi-layer.jpg"
+              alt="Seguridad Multicapa"
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
