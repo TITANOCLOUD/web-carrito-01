@@ -48,7 +48,8 @@ export default function Home() {
     {
       title: "Soporte Técnico",
       highlight: "Experto 24/7",
-      subtitle: "Ingenieros certificados disponibles en tiempo real",
+      subtitle:
+        "Estamos contigo en cada paso: integración, mantenimiento, escalado. Nuestro equipo actúa como parte de tu proyecto, para que tú solo te enfoques en crecer. Soporte real, no promesas.",
       cta: "CONTACTAR SOPORTE",
       video:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250210_0934_Futuristic%20Spartan%20Patrol_simple_compose_01jkr4g0rcezjbc3hqvw5jftvc-0dY1WN4r87nCSqF1vcHkpxJjkQcWuG.mp4",
@@ -57,7 +58,7 @@ export default function Home() {
       title: "AI + Innovation + Development",
       highlight: "Building the Next Era of Cloud Technology",
       subtitle:
-        "Idealizamos e integramos la Inteligencia Artificial en cada aspecto de nuestra operación para ofrecerte soluciones cloud más inteligentes, eficientes y escalables",
+        "Integrar IA en tus procesos no es futuro: es ahora. Creamos soluciones inteligentes que aprenden, optimizan y transforman tu negocio. Con nosotros, no sólo estás en la nube — estás en la nube inteligente.",
       cta: "DESCUBRE NUESTRA IA",
       video:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a_4978c8a8-1754-42ab-a1b1-7f3c30df1fa9-xZw6fiRSD5O92S1AU5LQ4FZsxcQHjr.mp4",
