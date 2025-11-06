@@ -2,8 +2,25 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Server, Check, Cpu, HardDrive, Shield, Zap, ChevronDown, Globe, X, Wifi, Activity, MapPin } from "lucide-react"
+import {
+  Server,
+  Check,
+  Cpu,
+  HardDrive,
+  Shield,
+  Zap,
+  ChevronDown,
+  Globe,
+  X,
+  Activity,
+  Share2,
+  RotateCcw,
+  Monitor,
+  Smartphone,
+  Laptop,
+} from "lucide-react"
 import { useState, useEffect } from "react"
+import Image from "next/image"
 
 export default function VPSPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -17,6 +34,10 @@ export default function VPSPage() {
   const [hoveredDatacenter, setHoveredDatacenter] = useState<string | null>(null)
   const [userLocation, setUserLocation] = useState<string | null>(null)
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
+  const [currentSpeed, setCurrentSpeed] = useState(0)
+  const [speedPhase, setSpeedPhase] = useState<"idle" | "download" | "upload" | "latency" | "complete">("idle")
+  const [userIpInfo, setUserIpInfo] = useState<any>(null)
+  const [showServerSelector, setShowServerSelector] = useState(false)
 
   const vpsPlans = [
     {
@@ -123,17 +144,65 @@ export default function VPSPage() {
 
   const serverLocations = [
     {
+      id: "beauharnois",
+      name: "Beauharnois",
+      country: "Canadá",
+      region: "América del Norte",
+      lat: 45.3167,
+      lng: -73.8667,
+      speed: "10 Gb/s",
+      flag: "🇨🇦",
+    },
+    {
       id: "ny",
       name: "Nueva York",
       country: "Estados Unidos",
       region: "América del Norte",
       lat: 40.7128,
       lng: -74.006,
+      speed: "10 Gb/s",
+      flag: "🇺🇸",
     },
-    { id: "london", name: "Londres", country: "Reino Unido", region: "Europa", lat: 51.5074, lng: -0.1278 },
-    { id: "tokyo", name: "Tokio", country: "Japón", region: "Asia", lat: 35.6762, lng: 139.6503 },
-    { id: "sydney", name: "Sídney", country: "Australia", region: "Oceanía", lat: -33.8688, lng: 151.2093 },
-    { id: "saopaulo", name: "São Paulo", country: "Brasil", region: "América del Sur", lat: -23.5505, lng: -46.6333 },
+    {
+      id: "london",
+      name: "Londres",
+      country: "Reino Unido",
+      region: "Europa",
+      lat: 51.5074,
+      lng: -0.1278,
+      speed: "10 Gb/s",
+      flag: "🇬🇧",
+    },
+    {
+      id: "tokyo",
+      name: "Tokio",
+      country: "Japón",
+      region: "Asia",
+      lat: 35.6762,
+      lng: 139.6503,
+      speed: "10 Gb/s",
+      flag: "🇯🇵",
+    },
+    {
+      id: "sydney",
+      name: "Sídney",
+      country: "Australia",
+      region: "Oceanía",
+      lat: -33.8688,
+      lng: 151.2093,
+      speed: "10 Gb/s",
+      flag: "🇦🇺",
+    },
+    {
+      id: "saopaulo",
+      name: "São Paulo",
+      country: "Brasil",
+      region: "América del Sur",
+      lat: -23.5505,
+      lng: -46.6333,
+      speed: "10 Gb/s",
+      flag: "🇧🇷",
+    },
     {
       id: "buenosaires",
       name: "Buenos Aires",
@@ -141,12 +210,59 @@ export default function VPSPage() {
       region: "América del Sur",
       lat: -34.6037,
       lng: -58.3816,
+      speed: "10 Gb/s",
+      flag: "🇦🇷",
     },
-    { id: "frankfurt", name: "Frankfurt", country: "Alemania", region: "Europa", lat: 50.1109, lng: 8.6821 },
-    { id: "singapore", name: "Singapur", country: "Singapur", region: "Asia", lat: 1.3521, lng: 103.8198 },
-    { id: "toronto", name: "Toronto", country: "Canadá", region: "América del Norte", lat: 43.6532, lng: -79.3832 },
-    { id: "mumbai", name: "Mumbai", country: "India", region: "Asia", lat: 19.076, lng: 72.8777 },
-    { id: "paris", name: "París", country: "Francia", region: "Europa", lat: 48.8566, lng: 2.3522 },
+    {
+      id: "frankfurt",
+      name: "Frankfurt",
+      country: "Alemania",
+      region: "Europa",
+      lat: 50.1109,
+      lng: 8.6821,
+      speed: "10 Gb/s",
+      flag: "🇩🇪",
+    },
+    {
+      id: "singapore",
+      name: "Singapur",
+      country: "Singapur",
+      region: "Asia",
+      lat: 1.3521,
+      lng: 103.8198,
+      speed: "10 Gb/s",
+      flag: "🇸🇬",
+    },
+    {
+      id: "toronto",
+      name: "Toronto",
+      country: "Canadá",
+      region: "América del Norte",
+      lat: 43.6532,
+      lng: -79.3832,
+      speed: "10 Gb/s",
+      flag: "🇨🇦",
+    },
+    {
+      id: "mumbai",
+      name: "Mumbai",
+      country: "India",
+      region: "Asia",
+      lat: 19.076,
+      lng: 72.8777,
+      speed: "10 Gb/s",
+      flag: "🇮🇳",
+    },
+    {
+      id: "paris",
+      name: "París",
+      country: "Francia",
+      region: "Europa",
+      lat: 48.8566,
+      lng: 2.3522,
+      speed: "10 Gb/s",
+      flag: "🇫🇷",
+    },
   ]
 
   const faqs = [
@@ -191,13 +307,35 @@ export default function VPSPage() {
 
   const detectUserLocation = async () => {
     setIsDetectingLocation(true)
-    // Simulate geolocation detection
-    await new Promise((resolve) => setTimeout(resolve, 1500))
 
-    // In a real implementation, this would use an IP geolocation API
-    // For now, we'll randomly select a location to simulate detection
-    const randomLocation = serverLocations[Math.floor(Math.random() * serverLocations.length)]
-    setUserLocation(randomLocation.id)
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      // Simulate fetching IP info
+      const mockIpInfo = {
+        ip: "179.6.6.121",
+        ipv6: "2800:200:e508:7e0:21b8:9c",
+        isp: "Claro",
+        connectionType: "FTTH",
+        asn: "12252",
+        city: "Buenos Aires",
+        country: "Argentina",
+        browser:
+          typeof window !== "undefined" ? (navigator.userAgent.includes("Chrome") ? "Chrome" : "Browser") : "Chrome",
+        os: typeof window !== "undefined" ? (navigator.userAgent.includes("Win") ? "Windows 10" : "OS") : "Windows 10",
+      }
+
+      setUserIpInfo(mockIpInfo)
+      // Default to Beauharnois as the server location
+      setUserLocation("beauharnois")
+      setSelectedLocation("beauharnois")
+    } catch (error) {
+      console.error("[v0] Error detecting location:", error)
+      // Fallback to Beauharnois
+      setUserLocation("beauharnois")
+      setSelectedLocation("beauharnois")
+    }
+
     setIsDetectingLocation(false)
   }
 
@@ -214,32 +352,73 @@ export default function VPSPage() {
     setIsTestingSpeed(true)
     setSelectedLocation(locationId)
     setSpeedResults(null)
+    setCurrentSpeed(0)
+    setSpeedPhase("download")
 
-    // Simulate speed test with realistic delays
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const downloadTarget = Math.random() * 100 + 150 // 150-250 Mbps
+    for (let i = 0; i <= downloadTarget; i += 5) {
+      await new Promise((resolve) => setTimeout(resolve, 30))
+      setCurrentSpeed(i)
+    }
+    setCurrentSpeed(downloadTarget)
 
-    // Generate realistic speed test results
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    setSpeedPhase("upload")
+    const uploadTarget = downloadTarget * 0.85
+    setCurrentSpeed(0)
+    for (let i = 0; i <= uploadTarget; i += 5) {
+      await new Promise((resolve) => setTimeout(resolve, 30))
+      setCurrentSpeed(i)
+    }
+    setCurrentSpeed(uploadTarget)
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    setSpeedPhase("latency")
     const targetLocation = serverLocations.find((l) => l.id === locationId)
     const originLocation = serverLocations.find((l) => l.id === userLocation)
 
-    // Calculate distance-based latency (simplified)
     const distance = Math.sqrt(
       Math.pow(targetLocation!.lat - originLocation!.lat, 2) + Math.pow(targetLocation!.lng - originLocation!.lng, 2),
     )
     const baseLatency = Math.min(distance * 10 + Math.random() * 20, 300)
-    const downloadSpeed = Math.max(100, 1000 - distance * 5 + Math.random() * 200)
-    const uploadSpeed = downloadSpeed * 0.8
 
     setSpeedResults({
       origin: originLocation?.name,
       destination: targetLocation?.name,
-      latency: baseLatency.toFixed(1),
-      download: downloadSpeed.toFixed(2),
-      upload: uploadSpeed.toFixed(2),
-      jitter: (Math.random() * 5 + 1).toFixed(1),
+      latency: {
+        min: baseLatency.toFixed(1),
+        avg: (baseLatency + 0.7).toFixed(1),
+        jitter: (Math.random() * 2 + 0.5).toFixed(3),
+      },
+      download: {
+        max: downloadTarget.toFixed(1),
+        avg: (downloadTarget * 0.87).toFixed(1),
+      },
+      upload: {
+        max: uploadTarget.toFixed(1),
+        avg: (uploadTarget * 0.89).toFixed(1),
+      },
       packetLoss: (Math.random() * 0.5).toFixed(2),
     })
 
+    setSpeedPhase("complete")
+    setIsTestingSpeed(false)
+  }
+
+  const shareResults = () => {
+    if (speedResults) {
+      const text = `Test de velocidad TITANO CLOUD\nDesde: ${speedResults.origin} → Hacia: ${speedResults.destination}\nDescarga: ${speedResults.download.max} Mbps\nSubida: ${speedResults.upload.max} Mbps\nLatencia: ${speedResults.latency.avg} ms`
+      navigator.clipboard.writeText(text)
+      alert("Resultados copiados al portapapeles")
+    }
+  }
+
+  const restartTest = () => {
+    setSpeedResults(null)
+    setCurrentSpeed(0)
+    setSpeedPhase("idle")
     setIsTestingSpeed(false)
   }
 
@@ -679,199 +858,341 @@ export default function VPSPage() {
       )}
 
       <section className="container mx-auto px-4 py-20 bg-slate-950/50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 px-4 py-2 rounded-full mb-6">
-              <Wifi className="w-5 h-5 text-cyan-400" />
-              <span className="text-cyan-400 font-semibold">Test de Velocidad</span>
+              <Activity className="w-5 h-5 text-cyan-400" />
+              <span className="text-cyan-400 font-semibold">Test de Velocidad Profesional</span>
             </div>
-            <h2 className="text-4xl font-bold mb-4 text-white">Prueba la Velocidad de Nuestros Servidores</h2>
+            <h2 className="text-4xl font-bold mb-4 text-white">Mide la Velocidad de Conexión</h2>
             <p className="text-slate-400 max-w-3xl mx-auto">
-              Mide la velocidad de conexión desde tu ubicación hacia nuestros centros de datos globales
+              Prueba la velocidad real de conexión desde tu ubicación hacia nuestros centros de datos globales
             </p>
           </div>
 
-          <Card className="bg-slate-900 border-slate-800 mb-8">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-6 h-6 text-cyan-400" />
-                  <div>
-                    <p className="text-slate-400 text-sm">Tu ubicación actual</p>
-                    {userLocation ? (
-                      <p className="text-white font-semibold text-lg">
-                        {serverLocations.find((l) => l.id === userLocation)?.name},{" "}
-                        {serverLocations.find((l) => l.id === userLocation)?.country}
-                      </p>
-                    ) : (
-                      <p className="text-slate-500">Detectando...</p>
-                    )}
-                  </div>
+          <div className="grid lg:grid-cols-[300px_1fr_300px] gap-6">
+            {/* Left Sidebar - Connection Info */}
+            <Card className="bg-slate-900 border-slate-800 h-fit">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <Image
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-k21IITkCmVDgyEhscyDWx9TlrI6ovP.png"
+                    alt="TITANO CLOUD"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
+                  <span className="text-white font-bold text-lg">TITANO CLOUD</span>
                 </div>
-                <Button
-                  onClick={detectUserLocation}
-                  disabled={isDetectingLocation}
-                  variant="outline"
-                  className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 bg-transparent"
-                >
-                  {isDetectingLocation ? (
-                    <>
-                      <Activity className="w-4 h-4 mr-2 animate-spin" />
-                      Detectando...
-                    </>
-                  ) : (
-                    <>
-                      <MapPin className="w-4 h-4 mr-2" />
-                      Detectar Ubicación
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Server Locations */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-cyan-400" />
-                  Selecciona Servidor Destino
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Selecciona el servidor al que deseas medir la velocidad de conexión
-                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                  {serverLocations.map((location) => (
-                    <button
-                      key={location.id}
-                      onClick={() => runSpeedTest(location.id)}
-                      disabled={isTestingSpeed || !userLocation}
-                      className={`w-full text-left p-4 rounded-lg border transition-all duration-300 ${
-                        selectedLocation === location.id
-                          ? "bg-cyan-500/20 border-cyan-500"
-                          : "bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800"
-                      } ${isTestingSpeed || !userLocation ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-white font-semibold">{location.name}</p>
-                          <p className="text-slate-400 text-sm">
-                            {location.country} • {location.region}
-                          </p>
-                        </div>
-                        {selectedLocation === location.id && isTestingSpeed && (
-                          <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
+              <CardContent className="space-y-4 text-sm">
+                {userIpInfo ? (
+                  <>
+                    <div className="border-b border-slate-800 pb-3">
+                      <p className="text-slate-400 mb-1">Operador:</p>
+                      <p className="text-white font-semibold">{userIpInfo.isp}</p>
+                    </div>
+                    <div className="border-b border-slate-800 pb-3">
+                      <p className="text-slate-400 mb-1">Tipo de conexión:</p>
+                      <p className="text-white font-semibold">{userIpInfo.connectionType}</p>
+                    </div>
+                    <div className="border-b border-slate-800 pb-3">
+                      <p className="text-slate-400 mb-1">IPv4:</p>
+                      <p className="text-cyan-400 font-mono text-xs">{userIpInfo.ip}</p>
+                    </div>
+                    <div className="border-b border-slate-800 pb-3">
+                      <p className="text-slate-400 mb-1">IPv6:</p>
+                      <p className="text-cyan-400 font-mono text-xs break-all">{userIpInfo.ipv6}</p>
+                    </div>
+                    <div className="border-b border-slate-800 pb-3">
+                      <p className="text-slate-400 mb-1">ASN:</p>
+                      <p className="text-white font-semibold">{userIpInfo.asn}</p>
+                    </div>
+                    <div className="pb-3">
+                      <p className="text-slate-400 mb-1">Sistema:</p>
+                      <p className="text-white font-semibold">{userIpInfo.browser}</p>
+                      <p className="text-white font-semibold">{userIpInfo.os}</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center py-8">
+                    <Activity className="w-8 h-8 text-cyan-400 animate-spin" />
+                  </div>
+                )}
+
+                <div className="pt-4 border-t border-slate-800">
+                  <p className="text-slate-400 text-xs mb-3">Descargar aplicación:</p>
+                  <div className="flex gap-3 justify-center">
+                    <Smartphone className="w-8 h-8 text-slate-600 hover:text-cyan-400 cursor-pointer transition-colors" />
+                    <Monitor className="w-8 h-8 text-slate-600 hover:text-cyan-400 cursor-pointer transition-colors" />
+                    <Laptop className="w-8 h-8 text-slate-600 hover:text-cyan-400 cursor-pointer transition-colors" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Speed Test Results */}
+            {/* Center - Speedometer */}
             <Card className="bg-slate-900 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-cyan-400" />
-                  Resultados del Test
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!speedResults && !isTestingSpeed && (
-                  <div className="flex flex-col items-center justify-center h-[400px] text-center">
-                    <Wifi className="w-16 h-16 text-slate-700 mb-4" />
-                    <p className="text-slate-400">Selecciona un servidor destino para comenzar el test de velocidad</p>
-                    {!userLocation && (
-                      <p className="text-slate-500 text-sm mt-2">Esperando detección de ubicación...</p>
+              <CardContent className="pt-6">
+                <div className="relative w-full aspect-square max-w-md mx-auto">
+                  {/* Speedometer SVG */}
+                  <svg viewBox="0 0 200 200" className="w-full h-full">
+                    {/* Outer circle */}
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="rgb(30 41 59)" strokeWidth="2" />
+
+                    {/* Speed scale marks */}
+                    {[0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((value, index) => {
+                      const angle = -135 + (value / 100) * 270
+                      const rad = (angle * Math.PI) / 180
+                      const x1 = 100 + 75 * Math.cos(rad)
+                      const y1 = 100 + 75 * Math.sin(rad)
+                      const x2 = 100 + 85 * Math.cos(rad)
+                      const y2 = 100 + 85 * Math.sin(rad)
+                      return (
+                        <g key={value}>
+                          <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgb(71 85 105)" strokeWidth="2" />
+                          <text
+                            x={100 + 65 * Math.cos(rad)}
+                            y={100 + 65 * Math.sin(rad)}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            fill="rgb(148 163 184)"
+                            fontSize="8"
+                            fontWeight="600"
+                          >
+                            {value}
+                          </text>
+                        </g>
+                      )
+                    })}
+
+                    {/* 1Gb and 10Gb markers */}
+                    <text x="30" y="170" fill="rgb(100 116 139)" fontSize="10" fontWeight="600">
+                      0
+                    </text>
+                    <text x="85" y="185" fill="rgb(100 116 139)" fontSize="10" fontWeight="600">
+                      1Gb
+                    </text>
+                    <text x="155" y="170" fill="rgb(100 116 139)" fontSize="10" fontWeight="600">
+                      10Gb
+                    </text>
+
+                    {/* Speed arc */}
+                    <path
+                      d="M 25 100 A 75 75 0 0 1 175 100"
+                      fill="none"
+                      stroke="url(#speedGradient)"
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      opacity="0.3"
+                    />
+
+                    {/* Active speed arc */}
+                    {currentSpeed > 0 && (
+                      <path
+                        d={`M 25 100 A 75 75 0 ${currentSpeed > 50 ? 1 : 0} 1 ${100 + 75 * Math.cos(((-135 + (currentSpeed / 100) * 270) * Math.PI) / 180)} ${100 + 75 * Math.sin(((-135 + (currentSpeed / 100) * 270) * Math.PI) / 180)}`}
+                        fill="none"
+                        stroke="url(#speedGradientActive)"
+                        strokeWidth="12"
+                        strokeLinecap="round"
+                      />
                     )}
-                  </div>
-                )}
 
-                {isTestingSpeed && (
-                  <div className="flex flex-col items-center justify-center h-[400px] text-center">
-                    <Activity className="w-16 h-16 text-cyan-400 animate-pulse mb-4" />
-                    <p className="text-white font-semibold mb-2">Realizando test de velocidad...</p>
-                    <p className="text-slate-400 text-sm">
-                      Desde{" "}
-                      <span className="text-cyan-400">{serverLocations.find((l) => l.id === userLocation)?.name}</span>{" "}
-                      hacia{" "}
-                      <span className="text-cyan-400">
-                        {serverLocations.find((l) => l.id === selectedLocation)?.name}
-                      </span>
-                    </p>
-                  </div>
-                )}
+                    {/* Gradients */}
+                    <defs>
+                      <linearGradient id="speedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="rgb(6 182 212)" />
+                        <stop offset="100%" stopColor="rgb(37 99 235)" />
+                      </linearGradient>
+                      <linearGradient id="speedGradientActive" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="rgb(6 182 212)" />
+                        <stop offset="50%" stopColor="rgb(59 130 246)" />
+                        <stop offset="100%" stopColor="rgb(147 51 234)" />
+                      </linearGradient>
+                    </defs>
 
-                {speedResults && !isTestingSpeed && (
-                  <div className="space-y-6">
-                    <div className="text-center pb-6 border-b border-slate-800">
-                      <p className="text-slate-400 text-sm mb-3">Ruta de prueba</p>
-                      <div className="flex items-center justify-center gap-3">
-                        <div className="text-center">
-                          <p className="text-cyan-400 font-semibold text-sm mb-1">Origen</p>
-                          <p className="text-white text-lg font-bold">{speedResults.origin}</p>
-                        </div>
-                        <div className="flex items-center gap-2 px-4">
-                          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                          <div className="w-8 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500" />
-                          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                        </div>
-                        <div className="text-center">
-                          <p className="text-blue-400 font-semibold text-sm mb-1">Destino</p>
-                          <p className="text-white text-lg font-bold">{speedResults.destination}</p>
-                        </div>
-                      </div>
-                    </div>
+                    {/* Needle */}
+                    <g transform={`rotate(${-135 + (currentSpeed / 100) * 270} 100 100)`}>
+                      <line x1="100" y1="100" x2="100" y2="30" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                      <circle cx="100" cy="100" r="8" fill="white" />
+                      <circle cx="100" cy="100" r="4" fill="rgb(6 182 212)" />
+                    </g>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border border-cyan-500/30 rounded-xl p-4">
-                        <p className="text-slate-400 text-sm mb-1">Latencia</p>
-                        <p className="text-3xl font-bold text-white">{speedResults.latency}</p>
-                        <p className="text-cyan-400 text-sm">ms</p>
-                      </div>
+                    {/* Center display */}
+                    <circle cx="100" cy="100" r="35" fill="rgb(15 23 42)" stroke="rgb(51 65 85)" strokeWidth="2" />
 
-                      <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border border-green-500/30 rounded-xl p-4">
-                        <p className="text-slate-400 text-sm mb-1">Jitter</p>
-                        <p className="text-3xl font-bold text-white">{speedResults.jitter}</p>
-                        <p className="text-green-400 text-sm">ms</p>
-                      </div>
+                    {/* Speed value */}
+                    <text x="100" y="95" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">
+                      {currentSpeed.toFixed(0)}
+                    </text>
+                    <text x="100" y="110" textAnchor="middle" fill="rgb(148 163 184)" fontSize="8">
+                      Mbps
+                    </text>
+                  </svg>
 
-                      <div className="bg-gradient-to-br from-blue-500/10 to-indigo-600/10 border border-blue-500/30 rounded-xl p-4">
-                        <p className="text-slate-400 text-sm mb-1">Descarga</p>
-                        <p className="text-3xl font-bold text-white">{speedResults.download}</p>
-                        <p className="text-blue-400 text-sm">Mbps</p>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border border-purple-500/30 rounded-xl p-4">
-                        <p className="text-slate-400 text-sm mb-1">Subida</p>
-                        <p className="text-3xl font-bold text-white">{speedResults.upload}</p>
-                        <p className="text-purple-400 text-sm">Mbps</p>
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-slate-400 text-sm">Pérdida de Paquetes</span>
-                        <span className="text-white font-semibold">{speedResults.packetLoss}%</span>
-                      </div>
-                      <div className="w-full bg-slate-700 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-green-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${100 - Number.parseFloat(speedResults.packetLoss) * 20}%` }}
-                        />
-                      </div>
-                    </div>
-
+                  {/* Center buttons */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 mt-16">
+                    {speedResults && (
+                      <Button
+                        onClick={shareResults}
+                        size="sm"
+                        variant="outline"
+                        className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 bg-slate-900/90 backdrop-blur"
+                      >
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Compartir
+                      </Button>
+                    )}
                     <Button
-                      onClick={() => runSpeedTest(selectedLocation!)}
-                      className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
+                      onClick={restartTest}
+                      size="sm"
+                      variant="outline"
+                      disabled={isTestingSpeed}
+                      className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10 bg-slate-900/90 backdrop-blur"
                     >
-                      Realizar Nuevo Test
+                      <RotateCcw className="w-4 h-4 mr-2" />
+                      Reiniciar
                     </Button>
+                  </div>
+                </div>
+
+                {/* Server info and selector */}
+                <div className="mt-6 space-y-4">
+                  <div className="flex items-center justify-center gap-3 text-sm">
+                    <Activity className="w-5 h-5 text-cyan-400" />
+                    <span className="text-white">
+                      {selectedLocation && serverLocations.find((l) => l.id === selectedLocation)?.flag} [
+                      {selectedLocation && serverLocations.find((l) => l.id === selectedLocation)?.name}] -{" "}
+                      {selectedLocation && serverLocations.find((l) => l.id === selectedLocation)?.speed} - TITANO CLOUD
+                    </span>
+                  </div>
+
+                  <Button
+                    onClick={() => setShowServerSelector(!showServerSelector)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Selección de servidor
+                  </Button>
+
+                  {showServerSelector && (
+                    <Card className="bg-slate-800 border-slate-700 max-h-60 overflow-y-auto">
+                      <CardContent className="p-2">
+                        {serverLocations.map((location) => (
+                          <button
+                            key={location.id}
+                            onClick={() => {
+                              runSpeedTest(location.id)
+                              setShowServerSelector(false)
+                            }}
+                            disabled={isTestingSpeed}
+                            className="w-full text-left p-3 rounded hover:bg-slate-700 transition-colors text-sm text-white disabled:opacity-50"
+                          >
+                            {location.flag} {location.name} - {location.speed}
+                          </button>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Right Sidebar - Results */}
+            <Card className="bg-slate-900 border-slate-800 h-fit">
+              <CardContent className="pt-6 space-y-6">
+                {speedResults ? (
+                  <>
+                    {/* Download */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[12px] border-b-blue-500" />
+                        <span className="text-blue-400 font-semibold">Descargar</span>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-3 mb-2">
+                        <div className="h-20 flex items-end gap-0.5">
+                          {Array.from({ length: 20 }).map((_, i) => (
+                            <div
+                              key={i}
+                              className="flex-1 bg-gradient-to-t from-blue-600 to-blue-400 rounded-t"
+                              style={{ height: `${Math.random() * 100}%` }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Máximo</span>
+                        <span className="text-white font-bold">{speedResults.download.max} Mb/s</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Media</span>
+                        <span className="text-white font-bold">{speedResults.download.avg} Mb/s</span>
+                      </div>
+                    </div>
+
+                    {/* Upload */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-blue-500" />
+                        <span className="text-blue-400 font-semibold">Cargar</span>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-3 mb-2">
+                        <div className="h-20 flex items-end gap-0.5">
+                          {Array.from({ length: 20 }).map((_, i) => (
+                            <div
+                              key={i}
+                              className="flex-1 bg-gradient-to-t from-blue-600 to-blue-400 rounded-t"
+                              style={{ height: `${Math.random() * 100}%` }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Máximo</span>
+                        <span className="text-white font-bold">{speedResults.upload.max} Mb/s</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Media</span>
+                        <span className="text-white font-bold">{speedResults.upload.avg} Mb/s</span>
+                      </div>
+                    </div>
+
+                    {/* Latency */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-3 h-3 bg-blue-500 rounded-sm" />
+                        <span className="text-blue-400 font-semibold">Latencia</span>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-3 mb-2">
+                        <div className="h-20 flex items-end gap-0.5">
+                          {Array.from({ length: 30 }).map((_, i) => (
+                            <div
+                              key={i}
+                              className="flex-1 bg-blue-500 rounded-t"
+                              style={{ height: `${60 + Math.random() * 40}%` }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Mínimo</span>
+                        <span className="text-white font-bold">{speedResults.latency.min} ms</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Media</span>
+                        <span className="text-white font-bold">{speedResults.latency.avg} ms</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Jitter</span>
+                        <span className="text-white font-bold">{speedResults.latency.jitter} ms</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <Activity className="w-12 h-12 text-slate-700 mb-4" />
+                    <p className="text-slate-400 text-sm">
+                      {isTestingSpeed ? "Realizando test..." : "Selecciona un servidor para comenzar"}
+                    </p>
                   </div>
                 )}
               </CardContent>

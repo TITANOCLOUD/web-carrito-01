@@ -739,9 +739,13 @@ export default function BareMetalPage() {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
             Máximo Rendimiento Dedicado
           </h1>
-          <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Hardware físico completo para tu proyecto. Sin virtualización, sin vecinos ruidosos. Solo potencia pura y
-            control total. Desde $61/mes.
+          {/* Updated description */}
+          <p className="text-xl text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+            Desarrollamos una infraestructura cloud de alto rendimiento que combina potencia, estabilidad y flexibilidad
+            para entornos empresariales modernos. Nuestra plataforma está optimizada para cargas críticas, escalamiento
+            dinámico y una gestión eficiente de recursos, ofreciendo una base tecnológica sólida que impulsa la
+            innovación y la continuidad operativa. Titanocloud no solo aloja tus sistemas: los acelera, los protege y
+            los hace evolucionar con tecnología de nueva generación.
           </p>
           <div className="flex flex-wrap gap-4 justify-center text-sm text-slate-400">
             <div className="flex items-center gap-2">

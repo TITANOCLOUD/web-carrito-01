@@ -344,9 +344,24 @@ Podemos escalar a **Bare Metal** cuando tu proyecto lo requiera, sin interrupcio
             <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               ¿No sabes quién te puede ayudar a <span className="text-cyan-400">diseñar lo que necesitas?</span>
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Nuestro arquitecto de cloud con IA está aquí para ayudarte a encontrar la solución perfecta
-            </p>
+            <div className="text-lg text-slate-300 max-w-4xl mx-auto space-y-4 text-left">
+              <p>
+                Un arquitecto de cloud es el responsable de diseñar, planificar y supervisar la infraestructura
+                tecnológica en la nube de una organización. Su función principal es garantizar que los servicios cloud
+                —como servidores, redes, almacenamiento y seguridad— estén correctamente integrados, optimizados y
+                alineados con los objetivos del negocio. Este rol implica definir arquitecturas escalables, seguras y
+                resilientes, eligiendo las tecnologías y proveedores adecuados (como AWS, Azure u OpenStack) según las
+                necesidades de cada proyecto.
+              </p>
+              <p>
+                Para validar la información que maneja un arquitecto de cloud, se utilizan procesos y herramientas de
+                control: revisión de arquitecturas mediante peer review, documentación técnica estandarizada, auditorías
+                de configuración, y pruebas de rendimiento o seguridad (por ejemplo, stress testing, penetration testing
+                o análisis de cumplimiento con normas ISO/IEC 27001). Además, toda decisión arquitectónica debe quedar
+                trazada en diagramas, manuales y repositorios verificables, permitiendo a otros equipos validar,
+                mantener y escalar la infraestructura con transparencia y precisión.
+              </p>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -868,6 +883,80 @@ Podemos escalar a **Bare Metal** cuando tu proyecto lo requiera, sin interrupcio
               <p className="text-slate-400">Equipo técnico disponible en todo momento para ayudarte</p>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Partners Gallery Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Con Quiénes <span className="text-cyan-400">Trabajamos</span>
+          </h2>
+          <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+            Integramos las mejores tecnologías cloud del mercado para ofrecerte soluciones de clase mundial
+          </p>
+        </div>
+
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 items-center">
+            {/* OVHcloud */}
+            <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+              <div className="relative h-24 flex items-center justify-center">
+                <Image
+                  src="/ovh-logo.jpg"
+                  alt="OVHcloud Partner"
+                  fill
+                  className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                />
+              </div>
+              <div className="mt-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">OVHcloud</h3>
+                <p className="text-slate-400 text-sm">Infraestructura europea de alto rendimiento</p>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+            </div>
+
+            {/* AWS */}
+            <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+              <div className="relative h-24 flex items-center justify-center">
+                <Image
+                  src="/aws-logo.jpg"
+                  alt="AWS Partner"
+                  fill
+                  className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                />
+              </div>
+              <div className="mt-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">Amazon Web Services</h3>
+                <p className="text-slate-400 text-sm">Líder mundial en servicios cloud</p>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+            </div>
+
+            {/* Azure */}
+            <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+              <div className="relative h-24 flex items-center justify-center">
+                <Image
+                  src="/azure-logo.jpg"
+                  alt="Microsoft Azure Partner"
+                  fill
+                  className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                />
+              </div>
+              <div className="mt-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">Microsoft Azure</h3>
+                <p className="text-slate-400 text-sm">Plataforma cloud empresarial de Microsoft</p>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-slate-400 text-lg">
+              Combinamos lo mejor de cada plataforma para crear soluciones híbridas y multi-cloud optimizadas para tu
+              negocio
+            </p>
+          </div>
         </div>
       </section>
 
