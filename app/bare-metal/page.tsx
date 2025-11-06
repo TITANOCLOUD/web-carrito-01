@@ -588,7 +588,7 @@ export default function BareMetalPage() {
       name: "HGR-HCI-i3",
       cpu: "Dual Intel Xeon Gold 6542Y",
       cores: "2x24c/2x48t - 2.9GHz/3.6GHz",
-      ram: "256GB-1.5TB",
+      ram: "128GB-1TB",
       storage: "6x3.84TB hasta 24x3.84TB",
       bandwidth: "1-25 Gbps público, 50 Gbps privado",
       price: 1116.99,
@@ -598,7 +598,7 @@ export default function BareMetalPage() {
       name: "HGR-HCI-i4",
       cpu: "Dual Intel Xeon Gold 6554S",
       cores: "2x36c/2x72t - 2.2GHz/3GHz",
-      ram: "256GB-1.5TB",
+      ram: "128GB-1TB",
       storage: "6x3.84TB hasta 24x3.84TB",
       bandwidth: "1-25 Gbps público, 50 Gbps privado",
       price: 1206.99,
@@ -980,12 +980,7 @@ export default function BareMetalPage() {
 
       {/* Footer */}
       <footer className="border-t border-slate-800 bg-slate-950 py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center gap-6">
-            <Logo variant="minimal" className="h-16" />
-            <p className="text-slate-400 text-center">Producto desarrollado por Titano Cloud Corporate</p>
-          </div>
-        </div>
+        <div className="container mx-auto px-4"></div>
       </footer>
     </div>
   )

@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logo } from "@/components/logo"
 import {
   Server,
   Zap,
@@ -19,7 +18,6 @@ import {
   Sparkles,
   Send,
 } from "lucide-react"
-import Link from "next/link"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 
@@ -184,41 +182,6 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950">
       {/* Navigation */}
-      <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Logo className="h-20" />
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/vps" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              VPS
-            </Link>
-            <Link href="/bare-metal" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Bare Metal
-            </Link>
-            <Link href="/clusters" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Clusters
-            </Link>
-            <Link href="#dominios" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Dominios
-            </Link>
-            <Link href="#iac" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              IAC
-            </Link>
-            <Link href="/detector-caidas" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Detector de Caídas
-            </Link>
-            <Link href="/calculadora" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Calculadora
-            </Link>
-            <Button
-              asChild
-              variant="outline"
-              className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
-            >
-              <Link href="/login">INGRESAR</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
 
       <section className="relative overflow-hidden w-full">
         <div className="relative h-[700px] md:h-[800px]">
@@ -632,7 +595,9 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
               <p className="text-3xl font-bold text-white mt-6">$120/mes</p>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
+              <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-6">
+                Aprovechar Oferta
+              </Button>
             </CardFooter>
           </Card>
           <Card className="bg-slate-900 border-slate-800">
@@ -656,7 +621,9 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
               <p className="text-3xl font-bold text-white mt-6">$250/mes</p>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
+              <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-6">
+                Aprovechar Oferta
+              </Button>
             </CardFooter>
           </Card>
           <Card className="bg-slate-900 border-slate-800">
@@ -680,7 +647,9 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
               <p className="text-3xl font-bold text-white mt-6">$500/mes</p>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
+              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-6">
+                Aprovechar Oferta
+              </Button>
             </CardFooter>
           </Card>
         </div>
@@ -979,12 +948,7 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
 
       {/* Footer */}
       <footer className="border-t border-slate-800 bg-slate-950 py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center gap-6">
-            <Logo variant="minimal" className="h-16" />
-            <p className="text-slate-400 text-center">Producto desarrollado por Titano Cloud Corporate</p>
-          </div>
-        </div>
+        <div className="container mx-auto px-4"></div>
       </footer>
     </div>
   )

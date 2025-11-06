@@ -64,7 +64,7 @@ rm -rf web-carrito-01-main main.zip
 
 # Instalar dependencias
 echo -e "${YELLOW}[6/9] Instalando dependencias...${NC}"
-npm install
+npm install --legacy-peer-deps
 
 echo -e "${YELLOW}[7/9] Compilando proyecto...${NC}"
 rm -rf .next

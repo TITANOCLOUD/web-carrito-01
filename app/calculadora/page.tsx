@@ -350,12 +350,7 @@ export default function CalculadoraPage() {
 
       {/* Footer */}
       <footer className="border-t border-slate-800 bg-slate-950 py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center gap-6">
-            <Logo variant="minimal" className="h-16" />
-            <p className="text-slate-400 text-center">Producto desarrollado por Titano Cloud Corporate</p>
-          </div>
-        </div>
+        <div className="container mx-auto px-4"></div>
       </footer>
     </div>
   )
