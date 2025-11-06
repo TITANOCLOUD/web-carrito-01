@@ -40,7 +40,8 @@ export default function Home() {
     {
       title: "Despliegue en",
       highlight: "60 Segundos",
-      subtitle: "La velocidad más rápida del mercado para lanzar tu proyecto",
+      subtitle:
+        "No importa si tu idea es grande o pequeña, nosotros la levantamos al instante. Infraestructura cloud ágil, soporte dedicado y tecnología de IA lista para que brilles desde el primer minuto.",
       cta: "COMENZAR AHORA",
       video:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250217_1848_Futuristic%20Truck%20Journey_simple_compose_01jmb4z8tcfm2vf0jhvev9m7fj-WpdItknruB6KhR3HufrlXbjaXLTkwh.mp4",
@@ -91,95 +92,157 @@ export default function Home() {
       const input = userInput.toLowerCase()
       let result = ""
 
+      // Check if the question is related to cloud architecture
+      const isCloudRelated =
+        input.includes("servidor") ||
+        input.includes("hosting") ||
+        input.includes("cloud") ||
+        input.includes("aplicación") ||
+        input.includes("web") ||
+        input.includes("base de datos") ||
+        input.includes("sitio") ||
+        input.includes("proyecto") ||
+        input.includes("infraestructura") ||
+        input.includes("vps") ||
+        input.includes("dedicado") ||
+        input.includes("bare metal") ||
+        input.includes("usuarios") ||
+        input.includes("tráfico") ||
+        input.includes("rendimiento")
+
+      if (!isCloudRelated) {
+        result = `⚠️ **Pregunta fuera de alcance**
+
+Lo siento, solo puedo ayudarte con preguntas relacionadas con arquitectura cloud y nuestros productos (VPS y Bare Metal).
+
+Por favor, describe tu proyecto o necesidad de infraestructura y te ayudaré a encontrar la mejor solución.`
+        setRecommendation(result)
+        setIsAnalyzing(false)
+        return
+      }
+
+      // Recommend VPS or Bare Metal based on requirements
       if (
         input.includes("pequeño") ||
         input.includes("startup") ||
         input.includes("blog") ||
-        input.includes("básico")
+        input.includes("básico") ||
+        input.includes("empezar") ||
+        (input.includes("usuarios") && (input.includes("100") || input.includes("500") || input.includes("1000")))
       ) {
         result = `🎯 **Recomendación: VPS Básico**
 
-Basado en tu descripción, te recomendamos nuestro **VPS Básico** que incluye:
-- 2 vCPU y 4 GB RAM
-- 80 GB SSD NVMe
-- Ancho de banda ilimitado
-- Panel de control cPanel
-- **Precio: $15/mes**
+Basado en tu descripción, te recomendamos nuestro **VPS Básico**:
 
-Ideal para sitios web pequeños, blogs, y aplicaciones en desarrollo.`
+**Especificaciones:**
+• 2 vCPU
+• 4 GB RAM
+• 80 GB SSD NVMe
+• Ancho de banda ilimitado
+• Panel de control cPanel
+
+**Precio: $15/mes**
+
+✅ **Ideal para:**
+- Sitios web pequeños y blogs
+- Aplicaciones en desarrollo
+- Proyectos con tráfico bajo a medio
+
+💡 **Ventaja:** Puedes escalar fácilmente a un plan superior cuando tu proyecto crezca.`
       } else if (
         input.includes("ecommerce") ||
         input.includes("tienda") ||
         input.includes("ventas") ||
-        input.includes("medio")
+        input.includes("medio") ||
+        input.includes("wordpress") ||
+        (input.includes("usuarios") && (input.includes("2000") || input.includes("3000") || input.includes("5000")))
       ) {
         result = `🎯 **Recomendación: VPS Pro**
 
-Para tu proyecto de comercio electrónico, te sugerimos el **VPS Pro**:
-- 4 vCPU y 8 GB RAM
-- 160 GB SSD NVMe
-- SSL gratuito incluido
-- Backups diarios automáticos
-- **Precio: $35/mes**
+Para tu proyecto, te sugerimos el **VPS Pro**:
 
-Perfecto para tiendas online, aplicaciones con tráfico medio y bases de datos.`
+**Especificaciones:**
+• 4 vCPU
+• 8 GB RAM
+• 160 GB SSD NVMe
+• SSL gratuito incluido
+• Backups diarios automáticos
+
+**Precio: $35/mes**
+
+✅ **Ideal para:**
+- Tiendas online y e-commerce
+- Aplicaciones con tráfico medio
+- Bases de datos medianas
+- Múltiples sitios web
+
+💡 **Ventaja:** Rendimiento garantizado con recursos dedicados y backups automáticos.`
       } else if (
         input.includes("alto rendimiento") ||
         input.includes("empresa") ||
         input.includes("dedicado") ||
-        input.includes("bare metal")
+        input.includes("bare metal") ||
+        input.includes("crítico") ||
+        input.includes("potencia") ||
+        (input.includes("usuarios") && (input.includes("10000") || input.includes("20000") || input.includes("50000")))
       ) {
         result = `🎯 **Recomendación: Bare Metal Premium**
 
 Para máximo rendimiento, necesitas nuestro **Bare Metal Premium**:
-- AMD EPYC 7543P (32 cores / 64 threads)
-- 256 GB DDR4 ECC
-- 4x 2TB NVMe SSD RAID 10
-- Red de 10 Gbps ilimitado
-- **Precio: $599/mes**
 
-Ideal para aplicaciones empresariales críticas, big data y alta concurrencia.`
-      } else if (
-        input.includes("kubernetes") ||
-        input.includes("contenedor") ||
-        input.includes("docker") ||
-        input.includes("microservicio")
-      ) {
-        result = `🎯 **Recomendación: Kubernetes Cluster Pro**
+**Especificaciones:**
+• AMD EPYC 7543P (32 cores / 64 threads)
+• 256 GB DDR4 ECC
+• 4x 2TB NVMe SSD RAID 10
+• Red de 10 Gbps ilimitado
+• Hardware 100% dedicado
 
-Para arquitectura de microservicios, te recomendamos **Cluster Pro**:
-- 5 nodos worker
-- Auto-scaling automático
-- CI/CD integrado
-- Load Balancer incluido
-- Backup automático
-- **Precio: $250/mes**
+**Precio: $599/mes**
 
-Perfecto para aplicaciones containerizadas y arquitecturas modernas.`
-      } else if (input.includes("dominio") || input.includes("web") || input.includes("sitio")) {
-        result = `🎯 **Recomendación: VPS Básico + Dominio**
+✅ **Ideal para:**
+- Aplicaciones empresariales críticas
+- Alto tráfico y concurrencia
+- Big data y procesamiento intensivo
+- Máximo control y rendimiento
 
-Para comenzar tu presencia web, te sugerimos:
-- **VPS Básico**: $15/mes
-- **Dominio .com**: $12.99/año
-- SSL gratuito incluido
-- Email profesional
+💡 **Ventaja:** Hardware completamente dedicado sin vecinos ruidosos, rendimiento predecible y constante.`
+      } else if (input.includes("medio rendimiento") || input.includes("crecimiento") || input.includes("escalable")) {
+        result = `🎯 **Recomendación: Bare Metal Standard**
 
-**Total: $15/mes + $12.99/año**
+Para un balance perfecto entre rendimiento y costo, te recomendamos **Bare Metal Standard**:
 
-Todo lo necesario para lanzar tu sitio web profesional.`
+**Especificaciones:**
+• Intel Xeon E-2288G (8 cores / 16 threads)
+• 64 GB DDR4 ECC
+• 2x 1TB NVMe SSD RAID 1
+• Red de 1 Gbps ilimitado
+• Hardware dedicado
+
+**Precio: $199/mes**
+
+✅ **Ideal para:**
+- Aplicaciones en crecimiento
+- Proyectos que necesitan más potencia que VPS
+- Bases de datos grandes
+- Aplicaciones con requisitos específicos
+
+💡 **Ventaja:** Rendimiento de servidor dedicado a un precio accesible.`
       } else {
         result = `🎯 **Recomendación Personalizada**
 
-Basado en tu descripción, te sugerimos comenzar con nuestro **VPS Pro** ($35/mes) que ofrece:
-- Recursos escalables
-- Rendimiento garantizado
-- Soporte técnico 24/7
-- Backups automáticos
+Basado en tu descripción, te sugiero comenzar con nuestro **VPS Pro** ($35/mes):
 
-Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu crecimiento.
+**¿Por qué VPS Pro?**
+• Recursos escalables según tu crecimiento
+• Rendimiento garantizado
+• Soporte técnico 24/7
+• Backups automáticos
+• Fácil upgrade a Bare Metal si lo necesitas
 
-💡 **Consejo**: Nuestro equipo puede ayudarte a diseñar la arquitectura perfecta para tu proyecto. ¡Contáctanos!`
+**Si necesitas más potencia:**
+Podemos escalar a **Bare Metal** cuando tu proyecto lo requiera, sin interrupciones.
+
+💡 **Consejo:** Nuestro equipo puede ayudarte a diseñar la arquitectura perfecta para tu proyecto específico. ¡Contáctanos para una consulta gratuita!`
       }
 
       setRecommendation(result)
@@ -276,98 +339,94 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
 
       {/* AI Product Recommendation Section */}
       <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 shadow-2xl">
-            <CardHeader className="text-center pb-6">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles className="w-8 h-8 text-cyan-400 animate-pulse" />
-                <CardTitle className="text-3xl md:text-4xl font-bold text-white">Asistente IA de Productos</CardTitle>
-                <Sparkles className="w-8 h-8 text-cyan-400 animate-pulse" />
-              </div>
-              <CardDescription className="text-slate-300 text-lg">
-                Describe tu proyecto y nuestra IA te recomendará la solución perfecta
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <label className="text-slate-200 font-medium block">¿Qué tipo de proyecto necesitas alojar?</label>
-                <div className="relative">
-                  <textarea
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    placeholder="Ejemplo: Necesito un servidor para una tienda online con WordPress, espero tener unos 1000 visitantes al día..."
-                    className="w-full h-32 px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none"
-                    disabled={isAnalyzing}
-                  />
-                </div>
-                <Button
-                  onClick={handleRecommendation}
-                  disabled={!userInput.trim() || isAnalyzing}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                      Analizando tu proyecto...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5 mr-2" />
-                      Obtener Recomendación IA
-                    </>
-                  )}
-                </Button>
-              </div>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              ¿No sabes quién te puede ayudar a <span className="text-cyan-400">diseñar lo que necesitas?</span>
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              Nuestro arquitecto de cloud con IA está aquí para ayudarte a encontrar la solución perfecta
+            </p>
+          </div>
 
-              {recommendation && (
-                <div className="mt-6 p-6 bg-slate-950 border border-cyan-500/30 rounded-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="flex items-start gap-3 mb-4">
-                    <Sparkles className="w-6 h-6 text-cyan-400 flex-shrink-0 mt-1" />
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-cyan-400 mb-3">Recomendación Personalizada</h3>
-                      <div className="text-slate-200 whitespace-pre-line leading-relaxed">{recommendation}</div>
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="relative hidden md:block">
+              <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-2xl">
+                <Image src="/friendly-technical-support-person-with-headset-in-.jpg" alt="Arquitecto Cloud" fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
+                    <p className="text-white font-semibold mb-1">Tu Arquitecto Cloud Personal</p>
+                    <p className="text-slate-300 text-sm">Disponible 24/7 para diseñar tu infraestructura ideal</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 shadow-2xl">
+              <CardHeader className="text-center pb-4">
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <Sparkles className="w-7 h-7 text-cyan-400 animate-pulse" />
+                  <CardTitle className="text-2xl md:text-3xl font-bold text-white">Asistente Inteligente</CardTitle>
+                </div>
+                <CardDescription className="text-slate-300 text-base">
+                  Cuéntame sobre tu proyecto y te recomendaré la mejor solución
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="space-y-3">
+                  <label className="text-slate-200 font-medium block text-lg">Describe tu proyecto o necesidad:</label>
+                  <div className="relative">
+                    <textarea
+                      value={userInput}
+                      onChange={(e) => setUserInput(e.target.value)}
+                      placeholder="Ejemplo: Necesito alojar una aplicación web con base de datos que espero tenga 5000 usuarios concurrentes..."
+                      className="w-full h-40 px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none text-base"
+                      disabled={isAnalyzing}
+                    />
+                  </div>
+                  <Button
+                    onClick={handleRecommendation}
+                    disabled={!userInput.trim() || isAnalyzing}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2 animate-spin" />
+                        Analizando tu proyecto...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 mr-2" />
+                        Obtener Recomendación
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {recommendation && (
+                  <div className="mt-6 p-6 bg-slate-950 border border-cyan-500/30 rounded-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="flex items-start gap-3 mb-4">
+                      <Sparkles className="w-6 h-6 text-cyan-400 flex-shrink-0 mt-1" />
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-cyan-400 mb-3">Tu Solución Recomendada</h3>
+                        <div className="text-slate-200 whitespace-pre-line leading-relaxed">{recommendation}</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 mt-6">
+                      <Button className="flex-1 bg-cyan-500 hover:bg-cyan-600">Ver Detalles</Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1 border-slate-700 text-slate-300 hover:bg-slate-800 bg-transparent"
+                      >
+                        Hablar con Experto
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-3 mt-6">
-                    <Button className="flex-1 bg-cyan-500 hover:bg-cyan-600">Ver Detalles del Plan</Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 border-slate-700 text-slate-300 hover:bg-slate-800 bg-transparent"
-                    >
-                      Hablar con un Experto
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4">
-                <button
-                  onClick={() => setUserInput("Necesito un servidor para mi blog personal")}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors border border-slate-700"
-                >
-                  Blog Personal
-                </button>
-                <button
-                  onClick={() => setUserInput("Quiero montar una tienda online con WooCommerce")}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors border border-slate-700"
-                >
-                  Tienda Online
-                </button>
-                <button
-                  onClick={() => setUserInput("Necesito infraestructura para microservicios con Kubernetes")}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors border border-slate-700"
-                >
-                  Microservicios
-                </button>
-                <button
-                  onClick={() => setUserInput("Busco un servidor dedicado de alto rendimiento para mi empresa")}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors border border-slate-700"
-                >
-                  Empresa
-                </button>
-              </div>
-            </CardContent>
-          </Card>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
