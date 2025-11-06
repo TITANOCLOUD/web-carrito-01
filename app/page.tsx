@@ -33,7 +33,8 @@ export default function Home() {
       highlight: "Sin Límites",
       subtitle: "Escalabilidad automática que crece con tu negocio",
       cta: "EXPLORAR SOLUCIONES",
-      image: "/datacenter-professional.png",
+      video:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gen-3%20Alpha%201526416146%2C%20An%20award-winning%20doc%2C%20M%205-VPbQWqMh9T89eE5wBBPdqZ2pHUkKm1.mp4",
     },
     {
       title: "Despliegue en",
@@ -48,14 +49,18 @@ export default function Home() {
       highlight: "Experto 24/7",
       subtitle: "Ingenieros certificados disponibles en tiempo real",
       cta: "CONTACTAR SOPORTE",
-      image: "/technical-support-team-monitoring-servers-24-7.jpg",
+      video:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250210_0934_Futuristic%20Spartan%20Patrol_simple_compose_01jkr4g0rcezjbc3hqvw5jftvc-0dY1WN4r87nCSqF1vcHkpxJjkQcWuG.mp4",
     },
     {
-      title: "Precio",
-      highlight: "Transparente",
-      subtitle: "Sin costos ocultos, paga solo por lo que usas",
-      cta: "VER PRECIOS",
-      image: "/transparent-pricing-dashboard-with-cost-breakdown.jpg",
+      title: "AI + Innovation + Development",
+      highlight: "Building the Next Era of Cloud Technology",
+      subtitle:
+        "Idealizamos e integramos la Inteligencia Artificial en cada aspecto de nuestra operación para ofrecerte soluciones cloud más inteligentes, eficientes y escalables",
+      cta: "DESCUBRE NUESTRA IA",
+      video:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a_4978c8a8-1754-42ab-a1b1-7f3c30df1fa9-xZw6fiRSD5O92S1AU5LQ4FZsxcQHjr.mp4",
+      isAISlide: true,
     },
   ]
 
@@ -208,9 +213,22 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
               </div>
               <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/90" />
               <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center">
-                <h2 className="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight drop-shadow-2xl">
-                  {slide.title} <span className="text-cyan-400">{slide.highlight}</span>
-                </h2>
+                {slide.isAISlide ? (
+                  <>
+                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-2 leading-tight drop-shadow-2xl">
+                      AI <span className="text-cyan-400">+</span> Innovation <span className="text-cyan-400">+</span>{" "}
+                      Development <span className="text-cyan-400">=</span>
+                    </h2>
+                    <h3 className="text-5xl md:text-7xl font-bold mb-6 leading-tight drop-shadow-2xl">
+                      <span className="text-cyan-400">Building</span>{" "}
+                      <span className="text-white">the Next Era of Cloud Technology</span>
+                    </h3>
+                  </>
+                ) : (
+                  <h2 className="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight drop-shadow-2xl">
+                    {slide.title} <span className="text-cyan-400">{slide.highlight}</span>
+                  </h2>
+                )}
                 <p className="text-xl md:text-2xl text-slate-100 mb-8 max-w-3xl drop-shadow-lg">{slide.subtitle}</p>
                 <Button
                   size="lg"
@@ -415,11 +433,13 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/high-speed-fiber-optic-network-cables-with-blue-li.jpg"
-              alt="Red de fibra óptica"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20250210_0934_Futuristic%20Spartan%20Patrol_simple_compose_01jkr4g0rcezjbc3hqvw5jftvc-0dY1WN4r87nCSqF1vcHkpxJjkQcWuG.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -429,11 +449,13 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/cybersecurity-shield-protecting-servers-with-digit.jpg"
-              alt="Seguridad avanzada"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a_4978c8a8-1754-42ab-a1b1-7f3c30df1fa9-xZw6fiRSD5O92S1AU5LQ4FZsxcQHjr.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -443,11 +465,13 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/cloud-computing-infrastructure-with-interconnected.jpg"
-              alt="Infraestructura cloud"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a3757e01-ec2e-4022-a410-4d66541e4c58_7ea54835-a64c-4190-897e-339fa2b91000-iVNgh7Uo8DgNWA7P9r6eVEucnpTIoJ.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">

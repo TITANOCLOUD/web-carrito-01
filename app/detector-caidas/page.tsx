@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Logo } from "@/components/logo"
 import {
   AlertTriangle,
   CheckCircle2,
@@ -16,7 +15,6 @@ import {
   Users,
   Globe,
 } from "lucide-react"
-import Link from "next/link"
 import { useState, useEffect } from "react"
 
 type ServiceStatus = "operational" | "degraded" | "down"
@@ -239,36 +237,6 @@ export default function DetectorCaidas() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950">
-      {/* Navigation */}
-      <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/">
-            <Logo className="h-20" />
-          </Link>
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Inicio
-            </Link>
-            <Link href="/vps" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              VPS
-            </Link>
-            <Link href="/bare-metal" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Bare Metal
-            </Link>
-            <Link href="/clusters" className="text-slate-300 hover:text-cyan-400 transition-colors">
-              Clusters
-            </Link>
-            <Button
-              asChild
-              variant="outline"
-              className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
-            >
-              <Link href="/login">INGRESAR</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
-
       {/* Header */}
       <section className="container mx-auto px-4 py-12">
         <div className="text-center mb-8">
@@ -459,7 +427,7 @@ export default function DetectorCaidas() {
       <footer className="border-t border-slate-800 bg-slate-950 py-12 mt-20">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center gap-6">
-            <Logo variant="minimal" className="h-16" />
+            {/* Logo variant="minimal" className="h-16" /> */}
             <p className="text-slate-400 text-center">
               Detector de Caídas • Monitoreo en tiempo real • Producto de SATURNO
             </p>
