@@ -2,7 +2,21 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Server, Cpu, HardDrive, Network, ChevronDown, Zap, Database, Gamepad2, Filter, TrendingUp } from "lucide-react"
+import {
+  Server,
+  Cpu,
+  HardDrive,
+  Network,
+  ChevronDown,
+  Zap,
+  Database,
+  Gamepad2,
+  Filter,
+  TrendingUp,
+  Terminal,
+  GitBranch,
+  Check,
+} from "lucide-react"
 import { useState } from "react"
 
 export default function BareMetalPage() {
@@ -928,6 +942,58 @@ export default function BareMetalPage() {
               )}
             </Card>
           ))}
+        </div>
+      </section>
+
+      {/* IAC Section */}
+      <section id="iac" className="container mx-auto px-4 py-20 bg-slate-950/50">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4 text-white">Infrastructure as Code</h2>
+          <p className="text-slate-400 max-w-2xl mx-auto">Automatiza tu infraestructura con las mejores herramientas</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <Terminal className="w-12 h-12 text-cyan-400 mb-4" />
+              <CardTitle className="text-white">Terraform</CardTitle>
+              <CardDescription className="text-slate-400">Provisión declarativa de infraestructura</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-slate-300">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-cyan-400" /> Módulos pre-configurados
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-cyan-400" /> State management
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-cyan-400" /> Multi-cloud
+                </li>
+              </ul>
+              <Button className="w-full mt-6 bg-cyan-500 hover:bg-cyan-600">Ver Documentación</Button>
+            </CardContent>
+          </Card>
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <GitBranch className="w-12 h-12 text-cyan-400 mb-4" />
+              <CardTitle className="text-white">Ansible</CardTitle>
+              <CardDescription className="text-slate-400">Automatización de configuración</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-slate-300">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-cyan-400" /> Playbooks listos
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-cyan-400" /> Gestión de inventario
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-cyan-400" /> Idempotencia
+                </li>
+              </ul>
+              <Button className="w-full mt-6 bg-cyan-500 hover:bg-cyan-600">Ver Documentación</Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
