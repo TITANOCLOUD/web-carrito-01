@@ -31,7 +31,8 @@ export default function Home() {
     {
       title: "Infraestructura Cloud",
       highlight: "Sin Límites",
-      subtitle: "Escalabilidad automática que crece con tu negocio",
+      subtitle:
+        "Donde otros ponen barreras, nosotros ponemos posibilidades. Escala, adapta y evoluciona con una plataforma que se alinea con tus sueños y los hace realidad.",
       cta: "EXPLORAR SOLUCIONES",
       video:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gen-3%20Alpha%201526416146%2C%20An%20award-winning%20doc%2C%20M%205-VPbQWqMh9T89eE5wBBPdqZ2pHUkKm1.mp4",
@@ -699,7 +700,7 @@ Si necesitas más potencia, podemos escalar a Bare Metal o Clusters según tu cr
             <input
               type="text"
               placeholder="Busca tu dominio..."
-              className="flex-1 px-4 py-3 bg-slate-900 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              className="flex-1 px-4 py-3 bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
             />
             <Button className="bg-cyan-500 hover:bg-cyan-600">Buscar</Button>
           </div>
