@@ -20,7 +20,12 @@ export default function LoginPage() {
 
     if (username === "admin" && password === "Admin*2020") {
       localStorage.setItem("isAuthenticated", "true")
-      router.push("/dashboard")
+
+      // Get the returnTo parameter from URL
+      const params = new URLSearchParams(window.location.search)
+      const returnTo = params.get("returnTo") || "/dashboard"
+
+      router.push(returnTo)
     } else {
       setError("Usuario o contraseña incorrectos")
     }

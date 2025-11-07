@@ -83,6 +83,36 @@ export default function Home() {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
   }
 
+  useEffect(() => {
+    const checkAuth = () => {
+      const authStatus = localStorage.getItem("isAuthenticated") === "true"
+      setIsAuthenticated(authStatus)
+      console.log("[v0] Authentication status:", authStatus)
+    }
+
+    checkAuth()
+
+    // Listen for storage changes (when user logs in from another tab)
+    window.addEventListener("storage", checkAuth)
+
+    // Check auth when page becomes visible (user returns from login)
+    window.addEventListener("visibilitychange", checkAuth)
+
+    return () => {
+      window.removeEventListener("storage", checkAuth)
+      window.removeEventListener("visibilitychange", checkAuth)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (window.location.hash === "#chat") {
+      const chatSection = document.getElementById("chat")
+      if (chatSection) {
+        chatSection.scrollIntoView({ behavior: "smooth" })
+      }
+    }
+  }, [])
+
   const handleSendMessage = async () => {
     if (!userInput.trim()) return
 
@@ -296,7 +326,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-start">
+          <div id="chat" className="grid md:grid-cols-2 gap-8 items-start">
             <div className="relative hidden md:block">
               <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-2xl sticky top-8">
                 <Image
