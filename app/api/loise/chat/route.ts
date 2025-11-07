@@ -1,3 +1,4 @@
+import { openai } from "@ai-sdk/openai"
 import { streamText } from "ai"
 
 export const maxDuration = 30
@@ -133,7 +134,9 @@ export async function POST(req: Request) {
 
     // Stream the AI response
     const result = streamText({
-      model: "openai/gpt-4o",
+      model: openai("gpt-4o", {
+        apiKey: process.env.OPENAI_API_KEY,
+      }),
       system: LOISE_SYSTEM_PROMPT,
       messages,
       temperature: 0.7,
