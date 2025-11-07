@@ -3,9 +3,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  turbopack: {
-    root: '/home/saturnoocloud/nodeapp',
-  },
   typescript: {
     ignoreBuildErrors: true,
   },

@@ -1,88 +1,32 @@
 import { NextResponse } from "next/server"
-import { createHash } from "crypto"
-
-const VALID_CREDENTIALS = {
-  username: "Admin",
-  // SHA-256 hash of "Admin*2021"
-  passwordHash: createHash("sha256").update("Admin*2021").digest("hex"),
-}
-
-const temporaryCodes = new Map<
-  string,
-  {
-    code: string
-    expiresAt: number
-    used: boolean
-  }
->()
-
-// Function to hash password using SHA-256
-function hashPassword(password: string): string {
-  return createHash("sha256").update(password).digest("hex")
-}
 
 export async function POST(request: Request) {
   try {
-    const { username, password, tempCode } = await request.json()
+    const { username, password } = await request.json()
 
     // Validate input exists
-    if (!username || (!password && !tempCode)) {
+    if (!username || !password) {
       return NextResponse.json({ authenticated: false, message: "Credenciales incompletas" }, { status: 400 })
     }
 
-    if (tempCode) {
-      const codeData = temporaryCodes.get(username)
-
-      if (codeData && codeData.code === tempCode && !codeData.used && Date.now() < codeData.expiresAt) {
-        codeData.used = true
-        const token = createHash("sha256").update(`${username}-${Date.now()}-${Math.random()}`).digest("hex")
-
-        return NextResponse.json(
-          {
-            authenticated: true,
-            message: "Autenticación con código temporal exitosa",
-            token,
-            user: {
-              username,
-              role: "admin",
-            },
-          },
-          { status: 200 },
-        )
-      }
-
-      return NextResponse.json(
-        {
-          authenticated: false,
-          message: "Código temporal inválido o expirado",
-        },
-        { status: 401 },
-      )
+    // Additional server-side validation
+    const sqlPatterns = /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b|--|;|\/\*|\*\/)/gi
+    if (sqlPatterns.test(username) || sqlPatterns.test(password)) {
+      return NextResponse.json({ authenticated: false, message: "Entrada inválida detectada" }, { status: 400 })
     }
 
-    const passwordHash = hashPassword(password)
+    // TODO: Replace with real database authentication
+    // This is where you would:
+    // 1. Query your database (Supabase/Neon)
+    // 2. Hash and compare passwords using bcrypt
+    // 3. Generate JWT tokens
+    // 4. Implement rate limiting
 
-    if (username === VALID_CREDENTIALS.username && passwordHash === VALID_CREDENTIALS.passwordHash) {
-      const token = createHash("sha256").update(`${username}-${Date.now()}-${Math.random()}`).digest("hex")
-
-      return NextResponse.json(
-        {
-          authenticated: true,
-          message: "Autenticación exitosa",
-          token,
-          user: {
-            username,
-            role: "admin",
-          },
-        },
-        { status: 200 },
-      )
-    }
-
+    // Placeholder response - integrate with real auth system
     return NextResponse.json(
       {
         authenticated: false,
-        message: "Usuario o contraseña incorrectos",
+        message: "Por favor, contacte al administrador para configurar su cuenta",
       },
       { status: 401 },
     )
@@ -90,6 +34,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ authenticated: false, message: "Error en el servidor" }, { status: 500 })
   }
 }
-
-// Export for code generation
-export { temporaryCodes }

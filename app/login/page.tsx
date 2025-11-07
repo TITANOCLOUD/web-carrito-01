@@ -9,6 +9,48 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 
+const sanitizeInput = (input: string): string => {
+  // Remove SQL injection patterns
+  const sqlPatterns =
+    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT|JAVASCRIPT)\b|--|;|'|"|<|>|\/\*|\*\/)/gi
+  return input.replace(sqlPatterns, "").trim()
+}
+
+const validatePassword = (password: string): { valid: boolean; message: string } => {
+  if (password.length < 8) {
+    return { valid: false, message: "La contraseña debe tener al menos 8 caracteres" }
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, message: "La contraseña debe contener al menos una mayúscula" }
+  }
+  if (!/[a-z]/.test(password)) {
+    return { valid: false, message: "La contraseña debe contener al menos una minúscula" }
+  }
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, message: "La contraseña debe contener al menos un número" }
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    return { valid: false, message: "La contraseña debe contener al menos un carácter especial" }
+  }
+  return { valid: true, message: "" }
+}
+
+const detectMaliciousInput = (input: string): boolean => {
+  const maliciousPatterns = [
+    /<script/i,
+    /javascript:/i,
+    /on\w+=/i,
+    /eval\(/i,
+    /expression\(/i,
+    /vbscript:/i,
+    /\.\.\/|\.\.\\/, // Path traversal
+    /\bor\b.*=.*\bor\b/i, // SQL injection
+    /\bunion\b.*\bselect\b/i, // SQL injection
+  ]
+
+  return maliciousPatterns.some((pattern) => pattern.test(input))
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -16,10 +58,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [returnTo, setReturnTo] = useState("/")
-  const [showTempCode, setShowTempCode] = useState(false)
-  const [tempCode, setTempCode] = useState("")
-  const [generatedCode, setGeneratedCode] = useState("")
-  const [codeExpiry, setCodeExpiry] = useState("")
+  const [attempts, setAttempts] = useState(0)
+  const [isBlocked, setIsBlocked] = useState(false)
 
   useEffect(() => {
     const returnUrl = searchParams.get("returnTo")
@@ -28,40 +68,29 @@ export default function LoginPage() {
     }
   }, [searchParams])
 
-  const handleGenerateCode = async () => {
-    if (!username) {
-      setError("Ingrese su nombre de usuario primero")
-      return
-    }
-
-    try {
-      const response = await fetch("/api/auth/generate-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setGeneratedCode(data.code)
-        setCodeExpiry(data.expiresIn)
-        setError("")
-      } else {
-        setError(data.message || "Error al generar código")
-      }
-    } catch (err) {
-      setError("Error al conectar con el servidor")
-    }
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!username || (!password && !tempCode)) {
-      setError("Por favor complete todos los campos")
+    if (isBlocked) {
+      setError("Demasiados intentos fallidos. Por favor, espere 5 minutos.")
+      return
+    }
+
+    if (detectMaliciousInput(username) || detectMaliciousInput(password)) {
+      setError("Entrada inválida detectada. Por favor, use solo caracteres alfanuméricos.")
+      setAttempts((prev) => prev + 1)
+      if (attempts >= 4) {
+        setIsBlocked(true)
+        setTimeout(() => setIsBlocked(false), 300000) // 5 minutes
+      }
+      return
+    }
+
+    const cleanUsername = sanitizeInput(username)
+    const cleanPassword = sanitizeInput(password)
+
+    if (cleanUsername.length < 3) {
+      setError("El nombre de usuario debe tener al menos 3 caracteres")
       return
     }
 
@@ -72,9 +101,8 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
-          password: showTempCode ? undefined : password,
-          tempCode: showTempCode ? tempCode : undefined,
+          username: cleanUsername,
+          password: cleanPassword,
         }),
       })
 
@@ -83,12 +111,21 @@ export default function LoginPage() {
       if (response.ok && data.authenticated) {
         localStorage.setItem("isAuthenticated", "true")
         localStorage.setItem("userToken", data.token)
-        router.push("/dashboard")
+        router.push(returnTo)
         setTimeout(() => {
-          window.location.href = "/dashboard"
+          window.location.href = returnTo
         }, 100)
       } else {
-        setError(data.message || "Credenciales incorrectas")
+        setError(data.message || "Usuario o contraseña incorrectos")
+        setAttempts((prev) => prev + 1)
+
+        if (attempts >= 4) {
+          setIsBlocked(true)
+          setTimeout(() => {
+            setIsBlocked(false)
+            setAttempts(0)
+          }, 300000) // 5 minutes
+        }
       }
     } catch (err) {
       setError("Error al conectar con el servidor. Intente nuevamente.")
@@ -97,26 +134,24 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Hero with Background Image */}
+      {/* Left Side - Hero with Video Background */}
       <div className="hidden lg:flex lg:w-3/5 relative bg-slate-950 items-center justify-center p-12 overflow-hidden">
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-uqzWRkXZqo1Emsmbx3RUfYg3REOYkP.png"
-          alt="Login Background"
-          fill
-          className="object-cover opacity-90"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/40 to-blue-950/40" />
+        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-50">
+          <source
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a-uOBsg3eV3kClunb3FBVE1TjSJZ0JIq.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/60 to-blue-950/60" />
 
         <div className="relative z-10 max-w-2xl text-center lg:text-left">
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-white">AI</span> <span className="text-cyan-400">+</span>{" "}
-            <span className="text-white">Innovation</span> <span className="text-cyan-400">+</span>{" "}
-            <span className="text-white">Development</span> <span className="text-cyan-400">=</span>
+          <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
+            AI <span className="text-cyan-400">+</span> Innovation <span className="text-cyan-400">+</span> Development{" "}
+            <span className="text-cyan-400">=</span>
           </h1>
           <h2 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-cyan-400">Building</span>{" "}
-            <span className="text-white">the Next Era of Cloud Technology</span>
+            <span className="text-cyan-400">Building</span> the Next Era of{" "}
+            <span className="text-white">Cloud Technology</span>
           </h2>
 
           <div className="flex items-center gap-3 mt-16 justify-center lg:justify-start">
@@ -135,14 +170,13 @@ export default function LoginPage() {
       {/* Right Side - Login Form */}
       <div className="w-full lg:w-2/5 flex flex-col items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md mb-12">
-          <div className="flex items-center justify-center mb-8">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen14-iOqrZUcVQtbyBOYH9Ywjt9HAsmSKXd.png"
-              alt="SATURNO"
-              width={200}
-              height={50}
-              className="object-contain"
-            />
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 rounded-full border-2 border-cyan-500" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-4 bg-cyan-500 rounded" />
+              <div className="absolute -top-1 -right-1 w-8 h-8 border-2 border-cyan-400 rounded-full opacity-60" />
+            </div>
+            <span className="text-3xl font-bold text-slate-900 tracking-wide">SATURNO</span>
           </div>
         </div>
 
@@ -165,62 +199,25 @@ export default function LoginPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full h-12 bg-slate-50 border-slate-300"
                 required
+                disabled={isBlocked}
               />
             </div>
 
-            {!showTempCode ? (
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700 font-medium">
-                  Contraseña
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Ingrese la contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-12 bg-slate-50 border-slate-300"
-                  required
-                />
-              </div>
-            ) : (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="tempCode" className="text-gray-700 font-medium">
-                    Código Temporal
-                  </Label>
-                  <Input
-                    id="tempCode"
-                    type="text"
-                    placeholder="Ingrese el código de 6 dígitos"
-                    value={tempCode}
-                    onChange={(e) => setTempCode(e.target.value)}
-                    className="w-full h-12 bg-slate-50 border-slate-300"
-                    maxLength={6}
-                    required
-                  />
-                </div>
-
-                {generatedCode && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-sm text-green-800 mb-2">Código temporal generado:</p>
-                    <p className="text-3xl font-mono font-bold text-green-700 text-center tracking-widest">
-                      {generatedCode}
-                    </p>
-                    <p className="text-xs text-green-600 text-center mt-2">Válido hasta: {codeExpiry}</p>
-                  </div>
-                )}
-
-                <Button
-                  type="button"
-                  onClick={handleGenerateCode}
-                  variant="outline"
-                  className="w-full border-cyan-300 text-cyan-600 hover:bg-cyan-50 bg-transparent"
-                >
-                  Generar Nuevo Código
-                </Button>
-              </>
-            )}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-gray-700 font-medium">
+                Contraseña
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Ingrese la contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full h-12 bg-slate-50 border-slate-300"
+                required
+                disabled={isBlocked}
+              />
+            </div>
 
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -231,19 +228,10 @@ export default function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-6 text-lg font-semibold rounded-lg"
+              disabled={isBlocked}
             >
-              Iniciar sesión
+              {isBlocked ? "Bloqueado temporalmente" : "Iniciar sesión"}
             </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setShowTempCode(!showTempCode)}
-                className="text-sm text-cyan-600 hover:text-cyan-700 font-medium transition-colors"
-              >
-                {showTempCode ? "Usar contraseña normal" : "Usar código temporal"}
-              </button>
-            </div>
 
             <div className="text-center">
               <a href="#" className="text-sm text-slate-600 hover:text-cyan-600 transition-colors">
