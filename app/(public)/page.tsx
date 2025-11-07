@@ -18,8 +18,10 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
+  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([])
   const [userInput, setUserInput] = useState("")
@@ -27,6 +29,13 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [requiresCaptcha, setRequiresCaptcha] = useState(false)
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem("isAuthenticated")
+    if (authStatus === "true") {
+      setIsAuthenticated(true)
+    }
+  }, [])
 
   const slides = [
     {
@@ -63,7 +72,7 @@ export default function Home() {
         "Integrar IA en tus procesos no es futuro: es ahora. Creamos soluciones inteligentes que aprenden, optimizan y transforman tu negocio. Con nosotros, no sólo estás en la nube — estás en la nube inteligente.",
       cta: "DESCUBRE NUESTRA IA",
       video:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a_4978c8a8-1754-42ab-a1b1-7f3c30df1fa9-xZw6fiRSD5O92S1AU5LQ4FZsxcQHjr.mp4",
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a-uOBsg3eV3kClunb3FBVE1TjSJZ0JIq.mp4",
       isAISlide: true,
     },
   ]
@@ -172,17 +181,7 @@ export default function Home() {
   }
 
   const handleLogin = () => {
-    // Simulate login - in production, this would redirect to actual login page
-    setIsAuthenticated(true)
-    setShowLoginPrompt(false)
-    setMessages([
-      ...messages,
-      {
-        role: "assistant",
-        content:
-          "✅ ¡Bienvenido! Ahora puedo ayudarte con tu consulta. Por favor, cuéntame sobre tu proyecto o necesidad de infraestructura.",
-      },
-    ])
+    router.push("/login?returnTo=/")
   }
 
   const handleCompleteCaptcha = () => {
@@ -317,7 +316,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
-                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecto Cloud Personal</p>
+                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecta Cloud Personal</p>
                     <p className="text-slate-300 text-sm">Disponible 24/7 para diseñar tu infraestructura ideal</p>
                     {isAuthenticated && (
                       <div className="mt-2 flex items-center gap-2">
@@ -392,6 +391,10 @@ export default function Home() {
                 {showLoginPrompt && (
                   <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
                     <p className="text-orange-400 font-semibold mb-3">🔒 Autenticación Requerida</p>
+                    <p className="text-slate-300 text-sm mb-3">
+                      Para continuar con tu consulta y recibir recomendaciones personalizadas, necesitas iniciar sesión
+                      en la plataforma.
+                    </p>
                     <Button onClick={handleLogin} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
                       Iniciar Sesión / Registrarse
                     </Button>
@@ -461,7 +464,11 @@ export default function Home() {
           Potencia tu negocio con soluciones de hosting escalables, seguras y de alto rendimiento
         </p>
         <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white">
+          <Button
+            size="lg"
+            onClick={() => router.push("/contacto")}
+            className="bg-cyan-500 hover:bg-cyan-600 text-white"
+          >
             Comenzar Ahora
           </Button>
           <Button
@@ -787,68 +794,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Bare Metal Section */}
-      <section id="bare-metal" className="container mx-auto px-4 py-20 bg-slate-950/50">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-white">Servidores Bare Metal</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">Máximo rendimiento con hardware dedicado</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <CardTitle className="text-cyan-400 flex items-center gap-2">
-                <Server className="w-6 h-6" />
-                Bare Metal Standard
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-slate-300">
-                  <strong>CPU:</strong> Intel Xeon E-2288G (8 cores / 16 threads)
-                </p>
-                <p className="text-slate-300">
-                  <strong>RAM:</strong> 64 GB DDR4 ECC
-                </p>
-                <p className="text-slate-300">
-                  <strong>Storage:</strong> 2x 1TB NVMe SSD RAID 1
-                </p>
-                <p className="text-slate-300">
-                  <strong>Network:</strong> 1 Gbps ilimitado
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-white">$199/mes</p>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
-            </CardContent>
-          </Card>
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <CardTitle className="text-cyan-400 flex items-center gap-2">
-                <Server className="w-6 h-6" />
-                Bare Metal Premium
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-slate-300">
-                  <strong>CPU:</strong> AMD EPYC 7543P (32 cores / 64 threads)
-                </p>
-                <p className="text-slate-300">
-                  <strong>RAM:</strong> 256 GB DDR4 ECC
-                </p>
-                <p className="text-slate-300">
-                  <strong>Storage:</strong> 4x 2TB NVMe SSD RAID 10
-                </p>
-                <p className="text-slate-300">
-                  <strong>Network:</strong> 10 Gbps ilimitado
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-white">$599/mes</p>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
       {/* Clusters Section */}
       <section id="clusters" className="container mx-auto px-4 py-20">
         <div className="text-center mb-12">
@@ -1076,6 +1021,32 @@ export default function Home() {
               Combinamos lo mejor de cada plataforma para crear soluciones híbridas y multi-cloud optimizadas para tu
               negocio
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section at bottom */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-cyan-900/30 to-blue-900/30 border border-cyan-500/30 rounded-3xl p-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">¿Listo para comenzar?</h2>
+          <p className="text-xl text-slate-300 mb-8">
+            Despliega tu VPS en menos de 60 segundos. Sin compromisos a largo plazo.
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button
+              size="lg"
+              onClick={() => router.push("/contacto")}
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold px-8 py-6 text-lg"
+            >
+              Comenzar Ahora
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-slate-600 text-slate-300 hover:bg-slate-800 bg-transparent px-8 py-6 text-lg"
+            >
+              Hablar con Ventas
+            </Button>
           </div>
         </div>
       </section>

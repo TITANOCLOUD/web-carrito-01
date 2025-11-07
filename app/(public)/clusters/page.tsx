@@ -228,6 +228,91 @@ export default function ClustersPage() {
         </div>
       </section>
 
+      {/* Intel Xeon for Ceph Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Content on left */}
+            <div className="space-y-6">
+              <h2 className="text-4xl font-bold text-white mb-6">Intel Xeon para Clusters Ceph</h2>
+              <p className="text-slate-300 leading-relaxed">
+                Los procesadores Intel Xeon son preferidos en muchos entornos Ceph empresariales por su alta estabilidad
+                y compatibilidad. Gracias a su larga trayectoria en servidores certificados por fabricantes como Dell,
+                HPE o Lenovo, los Xeon garantizan una integración sin problemas con BIOS, controladores RAID, y tarjetas
+                de red profesionales. En nodos MON y MGR, Intel ofrece una plataforma más madura, ideal para mantener la
+                estabilidad del clúster y asegurar una comunicación confiable entre los servicios de gestión de Ceph.
+              </p>
+              <p className="text-slate-300 leading-relaxed">
+                Además, los Xeon destacan en tareas que dependen de alto rendimiento por núcleo (IPC), como los
+                servidores MDS de CephFS o gateways RGW, que manejan muchas operaciones pequeñas y cifradas. Su soporte
+                para instrucciones AVX-512 y QAT (QuickAssist Technology) acelera procesos de compresión, cifrado y
+                manejo de metadatos, algo muy útil cuando se necesita proteger información sensible o mantener un
+                rendimiento uniforme bajo carga mixta. En entornos híbridos como Proxmox + Ceph, Intel sigue siendo la
+                opción más compatible con BIOS, NICs y controladores integrados.
+              </p>
+
+              {/* Table */}
+              <div className="overflow-x-auto mt-8">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="text-left py-3 px-4 text-cyan-400 font-semibold">Característica</th>
+                      <th className="text-left py-3 px-4 text-cyan-400 font-semibold">Intel Xeon</th>
+                      <th className="text-left py-3 px-4 text-cyan-400 font-semibold">AMD EPYC</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-slate-300">
+                    <tr className="border-b border-slate-800">
+                      <td className="py-3 px-4">Rendimiento por núcleo</td>
+                      <td className="py-3 px-4 text-green-400">Superior</td>
+                      <td className="py-3 px-4">Excelente</td>
+                    </tr>
+                    <tr className="border-b border-slate-800">
+                      <td className="py-3 px-4">Compatibilidad</td>
+                      <td className="py-3 px-4 text-green-400">Máxima</td>
+                      <td className="py-3 px-4">Alta</td>
+                    </tr>
+                    <tr className="border-b border-slate-800">
+                      <td className="py-3 px-4">AVX-512</td>
+                      <td className="py-3 px-4 text-green-400">Sí</td>
+                      <td className="py-3 px-4">No</td>
+                    </tr>
+                    <tr className="border-b border-slate-800">
+                      <td className="py-3 px-4">QAT (Hardware Acceleration)</td>
+                      <td className="py-3 px-4 text-green-400">Sí</td>
+                      <td className="py-3 px-4">No</td>
+                    </tr>
+                    <tr className="border-b border-slate-800">
+                      <td className="py-3 px-4">Cores por socket</td>
+                      <td className="py-3 px-4">Hasta 60</td>
+                      <td className="py-3 px-4 text-green-400">Hasta 128</td>
+                    </tr>
+                    <tr className="border-b border-slate-800">
+                      <td className="py-3 px-4">Ideal para</td>
+                      <td className="py-3 px-4">MON, MGR, MDS, RGW</td>
+                      <td className="py-3 px-4">OSD, Storage</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Image on right */}
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-lg overflow-hidden border border-slate-800 bg-slate-900">
+                <img
+                  src="/intel-xeon-server-datacenter-with-ceph-storage-clu.jpg"
+                  alt="Intel Xeon Servers for Ceph Cluster"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Decorative element */}
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-12">
