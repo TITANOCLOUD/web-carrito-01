@@ -210,13 +210,14 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950/40 to-blue-950/40" />
 
         <div className="relative z-10 max-w-2xl text-center lg:text-left">
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
-            AI <span className="text-cyan-400">+</span> Innovation <span className="text-cyan-400">+</span> Development{" "}
-            <span className="text-cyan-400">=</span>
+          <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <span className="text-white">AI</span> <span className="text-cyan-400">+</span>{" "}
+            <span className="text-white">Innovation</span> <span className="text-cyan-400">+</span>{" "}
+            <span className="text-white">Development</span> <span className="text-cyan-400">=</span>
           </h1>
           <h2 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-cyan-400">Building</span> the Next Era of{" "}
-            <span className="text-white">Cloud Technology</span>
+            <span className="text-cyan-400">Building</span>{" "}
+            <span className="text-white">the Next Era of Cloud Technology</span>
           </h2>
 
           <div className="flex items-center gap-3 mt-16 justify-center lg:justify-start">
