@@ -18,10 +18,8 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 
 export default function Home() {
-  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([])
   const [userInput, setUserInput] = useState("")
@@ -29,13 +27,6 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [requiresCaptcha, setRequiresCaptcha] = useState(false)
-
-  useEffect(() => {
-    const authStatus = localStorage.getItem("isAuthenticated")
-    if (authStatus === "true") {
-      setIsAuthenticated(true)
-    }
-  }, [])
 
   const slides = [
     {
@@ -71,8 +62,8 @@ export default function Home() {
       subtitle:
         "Integrar IA en tus procesos no es futuro: es ahora. Creamos soluciones inteligentes que aprenden, optimizan y transforman tu negocio. Con nosotros, no sólo estás en la nube — estás en la nube inteligente.",
       cta: "DESCUBRE NUESTRA IA",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fondo%201.png-rA9niWaYg9gKIyJsuIypoyOVqIwv9T.jpeg",
+      video:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a_4978c8a8-1754-42ab-a1b1-7f3c30df1fa9-xZw6fiRSD5O92S1AU5LQ4FZsxcQHjr.mp4",
       isAISlide: true,
     },
   ]
@@ -181,7 +172,17 @@ export default function Home() {
   }
 
   const handleLogin = () => {
-    router.push("/login?returnTo=/")
+    // Simulate login - in production, this would redirect to actual login page
+    setIsAuthenticated(true)
+    setShowLoginPrompt(false)
+    setMessages([
+      ...messages,
+      {
+        role: "assistant",
+        content:
+          "✅ ¡Bienvenido! Ahora puedo ayudarte con tu consulta. Por favor, cuéntame sobre tu proyecto o necesidad de infraestructura.",
+      },
+    ])
   }
 
   const handleCompleteCaptcha = () => {
@@ -316,7 +317,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
-                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecta Cloud Personal</p>
+                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecto Cloud Personal</p>
                     <p className="text-slate-300 text-sm">Disponible 24/7 para diseñar tu infraestructura ideal</p>
                     {isAuthenticated && (
                       <div className="mt-2 flex items-center gap-2">
@@ -391,10 +392,6 @@ export default function Home() {
                 {showLoginPrompt && (
                   <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
                     <p className="text-orange-400 font-semibold mb-3">🔒 Autenticación Requerida</p>
-                    <p className="text-slate-300 text-sm mb-3">
-                      Para continuar con tu consulta y recibir recomendaciones personalizadas, necesitas iniciar sesión
-                      en la plataforma.
-                    </p>
                     <Button onClick={handleLogin} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
                       Iniciar Sesión / Registrarse
                     </Button>
@@ -464,11 +461,7 @@ export default function Home() {
           Potencia tu negocio con soluciones de hosting escalables, seguras y de alto rendimiento
         </p>
         <div className="flex gap-4 justify-center">
-          <Button
-            size="lg"
-            onClick={() => router.push("/contacto")}
-            className="bg-cyan-500 hover:bg-cyan-600 text-white"
-          >
+          <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white">
             Comenzar Ahora
           </Button>
           <Button
@@ -1083,32 +1076,6 @@ export default function Home() {
               Combinamos lo mejor de cada plataforma para crear soluciones híbridas y multi-cloud optimizadas para tu
               negocio
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section at bottom */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-cyan-900/30 to-blue-900/30 border border-cyan-500/30 rounded-3xl p-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">¿Listo para comenzar?</h2>
-          <p className="text-xl text-slate-300 mb-8">
-            Despliega tu VPS en menos de 60 segundos. Sin compromisos a largo plazo.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button
-              size="lg"
-              onClick={() => router.push("/contacto")}
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold px-8 py-6 text-lg"
-            >
-              Comenzar Ahora
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-800 bg-transparent px-8 py-6 text-lg"
-            >
-              Hablar con Ventas
-            </Button>
           </div>
         </div>
       </section>
