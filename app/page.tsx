@@ -330,11 +330,12 @@ export default function Home() {
             <div className="relative hidden md:block">
               <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-2xl sticky top-8">
                 <Image
-                  src="/friendly-technical-support-person-with-headset-in-.jpg"
-                  alt="Loise - Arquitecto Cloud"
+                  src="/attractive-professional-tech-woman-with-headset-ai-.jpg"
+                  alt="Loise - Arquitecta Cloud"
                   fill
                   className="object-cover"
                 />
+                {/* </CHANGE> */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
