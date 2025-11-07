@@ -172,17 +172,7 @@ export default function Home() {
   }
 
   const handleLogin = () => {
-    // Simulate login - in production, this would redirect to actual login page
-    setIsAuthenticated(true)
-    setShowLoginPrompt(false)
-    setMessages([
-      ...messages,
-      {
-        role: "assistant",
-        content:
-          "✅ ¡Bienvenido! Ahora puedo ayudarte con tu consulta. Por favor, cuéntame sobre tu proyecto o necesidad de infraestructura.",
-      },
-    ])
+    window.location.href = "/login?returnTo=/#chat"
   }
 
   const handleCompleteCaptcha = () => {
@@ -243,10 +233,11 @@ export default function Home() {
                 )}
                 <p className="text-xl md:text-2xl text-slate-100 mb-8 max-w-3xl drop-shadow-lg">{slide.subtitle}</p>
                 <Button
+                  asChild
                   size="lg"
                   className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-10 py-7 text-lg rounded-full shadow-2xl hover:shadow-xl transition-all"
                 >
-                  {slide.cta}
+                  <a href="/contacto">{slide.cta}</a>
                 </Button>
               </div>
             </div>
@@ -317,7 +308,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
-                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecto Cloud Personal</p>
+                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecta Cloud Personal</p>
                     <p className="text-slate-300 text-sm">Disponible 24/7 para diseñar tu infraestructura ideal</p>
                     {isAuthenticated && (
                       <div className="mt-2 flex items-center gap-2">
@@ -461,15 +452,16 @@ export default function Home() {
           Potencia tu negocio con soluciones de hosting escalables, seguras y de alto rendimiento
         </p>
         <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white">
-            Comenzar Ahora
+          <Button asChild size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white">
+            <a href="/contacto">Comenzar Ahora</a>
           </Button>
           <Button
+            asChild
             size="lg"
             variant="outline"
             className="border-slate-700 text-slate-300 hover:bg-slate-800 bg-transparent"
           >
-            Ver Planes
+            <a href="#vps">Ver Planes</a>
           </Button>
         </div>
       </section>
@@ -686,11 +678,13 @@ export default function Home() {
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/fiber-optic-cables-high-speed-network.jpg"
-              alt="Red de Alta Velocidad"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/65ffb1f37ddab9d2d6003117-1mHLhKwgrx3VSDs5V80gZQRgNBM2Qq.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -700,11 +694,13 @@ export default function Home() {
           </div>
 
           <div className="group relative overflow-hidden rounded-lg aspect-video bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-all duration-300">
-            <Image
-              src="/cybersecurity-shield-protection-multi-layer.jpg"
-              alt="Seguridad Multicapa"
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+            <video
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gen-3%20Alpha%20990622162%2C%20todo%20un%20equipo%20de%20es%20%281%29-iDYoV2fgcDVphStTjtUIbdns3cJQmx.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">

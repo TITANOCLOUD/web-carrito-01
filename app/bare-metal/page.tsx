@@ -899,6 +899,7 @@ export default function BareMetalPage() {
                 </CardContent>
                 <CardFooter className="pt-0">
                   <Button
+                    asChild
                     className={`w-full ${
                       server.popular
                         ? "bg-cyan-500 hover:bg-cyan-600"
@@ -906,7 +907,7 @@ export default function BareMetalPage() {
                     } ${server.status ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={!!server.status}
                   >
-                    {server.status || "Configurar"}
+                    <a href={server.status ? undefined : "/contacto"}>{server.status || "Configurar"}</a>
                   </Button>
                 </CardFooter>
               </Card>

@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   description:
     "Desarrollamos una infraestructura cloud de alto rendimiento que combina potencia, estabilidad y flexibilidad para entornos empresariales modernos. VPS, Bare Metal, Kubernetes y más.",
   generator: "Titanocloud",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
   keywords: [
     "cloud",
     "VPS",

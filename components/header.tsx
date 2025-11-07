@@ -140,6 +140,10 @@ export function Header() {
             variant="outline"
             className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
           >
+            <a href="/contacto">REGISTRAR</a>
+          </Button>
+
+          <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white ml-2">
             <Link href="/login">INGRESAR</Link>
           </Button>
         </div>
@@ -209,6 +213,11 @@ export function Header() {
               variant="outline"
               className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent w-full"
             >
+              <a href="/contacto" onClick={() => setIsMobileMenuOpen(false)}>
+                REGISTRAR
+              </a>
+            </Button>
+            <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white w-full mt-2">
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 INGRESAR
               </Link>

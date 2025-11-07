@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider"
 import { Calculator, TrendingDown, Check, ArrowRight, Award, Zap, Shield, Gauge } from "lucide-react"
 import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function CalculadoraPage() {
   const [cpu, setCpu] = useState(4)
@@ -586,6 +587,32 @@ export default function CalculadoraPage() {
                 <h3 className="text-xl font-bold text-white mb-2">Sin Costos Ocultos</h3>
                 <p className="text-slate-400">Precio transparente, pagas solo por lo que usas</p>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Special Offer Contact CTA Section */}
+      <section className="container mx-auto px-4 py-16">
+        <Card className="bg-gradient-to-br from-cyan-900/30 via-blue-900/20 to-slate-900 border-cyan-500/50">
+          <CardContent className="p-8 md:p-12">
+            <div className="text-center max-w-3xl mx-auto">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-cyan-500/20 rounded-full mb-6">
+                <Award className="w-8 h-8 text-cyan-400" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Me faltó comentarte que tenemos un valor especial si nos contactas
+              </h2>
+              <p className="text-slate-300 text-lg mb-8">
+                Obtén precios exclusivos y personalizados según tus necesidades. Nuestro equipo comercial te ayudará a
+                encontrar la mejor solución para tu negocio con descuentos especiales.
+              </p>
+              <Link href="/contacto">
+                <Button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-6 px-8 text-lg">
+                  Contáctanos
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
