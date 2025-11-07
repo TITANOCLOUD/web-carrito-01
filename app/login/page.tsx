@@ -83,9 +83,9 @@ export default function LoginPage() {
       if (response.ok && data.authenticated) {
         localStorage.setItem("isAuthenticated", "true")
         localStorage.setItem("userToken", data.token)
-        router.push(returnTo)
+        router.push("/dashboard")
         setTimeout(() => {
-          window.location.href = returnTo
+          window.location.href = "/dashboard"
         }, 100)
       } else {
         setError(data.message || "Credenciales incorrectas")
