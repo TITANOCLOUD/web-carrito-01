@@ -134,33 +134,29 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Hero with Video Background */}
-      <div className="hidden lg:flex lg:w-3/5 relative bg-slate-950 items-center justify-center p-12 overflow-hidden">
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-50">
-          <source
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a-uOBsg3eV3kClunb3FBVE1TjSJZ0JIq.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/60 to-blue-950/60" />
-
-        <div className="relative z-10 max-w-2xl text-center lg:text-left">
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
+      {/* Left Side - Hero */}
+      <div className="hidden lg:flex lg:w-3/5 relative bg-slate-950 items-center justify-center p-12">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/10" />
+        <Image
+          src="/futuristic-cyborg-robot-standing-in-server-room-wi.jpg"
+          alt="Futuristic Background"
+          fill
+          className="object-cover opacity-40"
+          priority
+        />
+        <div className="relative z-10 max-w-2xl">
+          <h1 className="text-5xl font-bold mb-6 text-white">
             AI <span className="text-cyan-400">+</span> Innovation <span className="text-cyan-400">+</span> Development{" "}
             <span className="text-cyan-400">=</span>
           </h1>
-          <h2 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-cyan-400">Building</span> the Next Era of{" "}
-            <span className="text-white">Cloud Technology</span>
-          </h2>
-
-          <div className="flex items-center gap-3 mt-16 justify-center lg:justify-start">
-            <span className="text-slate-300 text-lg">Powered By</span>
+          <h2 className="text-6xl font-bold text-cyan-400 mb-8">Building the Next Era of Cloud Technology</h2>
+          <div className="flex items-center gap-3 mt-12">
+            <span className="text-slate-400">Powered by</span>
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/light-logoWHI-U4g3b0uwpZ2MefpUxtA4JDuq0yC2Fh.png"
               alt="Titano Cloud Developer"
-              width={220}
-              height={70}
+              width={200}
+              height={60}
               className="object-contain"
             />
           </div>
@@ -168,27 +164,18 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-full lg:w-2/5 flex flex-col items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-md mb-12">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="relative w-12 h-12">
-              <div className="absolute inset-0 rounded-full border-2 border-cyan-500" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-4 bg-cyan-500 rounded" />
-              <div className="absolute -top-1 -right-1 w-8 h-8 border-2 border-cyan-400 rounded-full opacity-60" />
-            </div>
-            <span className="text-3xl font-bold text-slate-900 tracking-wide">SATURNO</span>
-          </div>
-        </div>
-
+      <div className="w-full lg:w-2/5 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Bienvenido</h2>
-            <p className="text-gray-600">Por favor Inicia sesión para continuar.</p>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">Bienvenido a Titanocloud</h2>
+            <p className="mt-2 text-gray-600">
+              Inicia sesión para acceder a Loise AI y recibir recomendaciones personalizadas.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-gray-700 font-medium">
+              <Label htmlFor="username" className="text-gray-700">
                 Usuario
               </Label>
               <Input
@@ -197,14 +184,14 @@ export default function LoginPage() {
                 placeholder="Ingrese el usuario"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full h-12 bg-slate-50 border-slate-300"
+                className="w-full"
                 required
                 disabled={isBlocked}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-700 font-medium">
+              <Label htmlFor="password" className="text-gray-700">
                 Contraseña
               </Label>
               <Input
@@ -213,7 +200,7 @@ export default function LoginPage() {
                 placeholder="Ingrese la contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-12 bg-slate-50 border-slate-300"
+                className="w-full"
                 required
                 disabled={isBlocked}
               />
@@ -227,16 +214,22 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-6 text-lg font-semibold rounded-lg"
+              className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-6 text-lg font-semibold"
               disabled={isBlocked}
             >
-              {isBlocked ? "Bloqueado temporalmente" : "Iniciar sesión"}
+              {isBlocked ? "Bloqueado temporalmente" : "Iniciar Sesión"}
             </Button>
 
-            <div className="text-center">
-              <a href="#" className="text-sm text-slate-600 hover:text-cyan-600 transition-colors">
+            <div className="text-center space-y-2">
+              <a href="#" className="text-sm text-cyan-600 hover:underline block">
                 ¿Olvidó la contraseña?
               </a>
+              <p className="text-sm text-gray-600">
+                ¿No tienes cuenta?{" "}
+                <a href="/contacto" className="text-cyan-600 hover:underline font-semibold">
+                  Regístrate aquí
+                </a>
+              </p>
             </div>
           </form>
         </div>

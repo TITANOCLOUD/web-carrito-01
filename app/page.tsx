@@ -71,8 +71,8 @@ export default function Home() {
       subtitle:
         "Integrar IA en tus procesos no es futuro: es ahora. Creamos soluciones inteligentes que aprenden, optimizan y transforman tu negocio. Con nosotros, no sólo estás en la nube — estás en la nube inteligente.",
       cta: "DESCUBRE NUESTRA IA",
-      video:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0f39b7b7-2666-4ec8-a0bc-ad51b86ada0a-uOBsg3eV3kClunb3FBVE1TjSJZ0JIq.mp4",
+      image:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fondo%201.png-rA9niWaYg9gKIyJsuIypoyOVqIwv9T.jpeg",
       isAISlide: true,
     },
   ]
@@ -791,6 +791,68 @@ export default function Home() {
               </CardFooter>
             </Card>
           ))}
+        </div>
+      </section>
+
+      {/* Bare Metal Section */}
+      <section id="bare-metal" className="container mx-auto px-4 py-20 bg-slate-950/50">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4 text-white">Servidores Bare Metal</h2>
+          <p className="text-slate-400 max-w-2xl mx-auto">Máximo rendimiento con hardware dedicado</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="text-cyan-400 flex items-center gap-2">
+                <Server className="w-6 h-6" />
+                Bare Metal Standard
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-slate-300">
+                  <strong>CPU:</strong> Intel Xeon E-2288G (8 cores / 16 threads)
+                </p>
+                <p className="text-slate-300">
+                  <strong>RAM:</strong> 64 GB DDR4 ECC
+                </p>
+                <p className="text-slate-300">
+                  <strong>Storage:</strong> 2x 1TB NVMe SSD RAID 1
+                </p>
+                <p className="text-slate-300">
+                  <strong>Network:</strong> 1 Gbps ilimitado
+                </p>
+              </div>
+              <p className="text-3xl font-bold text-white">$199/mes</p>
+              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
+            </CardContent>
+          </Card>
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="text-cyan-400 flex items-center gap-2">
+                <Server className="w-6 h-6" />
+                Bare Metal Premium
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-slate-300">
+                  <strong>CPU:</strong> AMD EPYC 7543P (32 cores / 64 threads)
+                </p>
+                <p className="text-slate-300">
+                  <strong>RAM:</strong> 256 GB DDR4 ECC
+                </p>
+                <p className="text-slate-300">
+                  <strong>Storage:</strong> 4x 2TB NVMe SSD RAID 10
+                </p>
+                <p className="text-slate-300">
+                  <strong>Network:</strong> 10 Gbps ilimitado
+                </p>
+              </div>
+              <p className="text-3xl font-bold text-white">$599/mes</p>
+              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
