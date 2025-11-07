@@ -9,48 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 
-const sanitizeInput = (input: string): string => {
-  // Remove SQL injection patterns
-  const sqlPatterns =
-    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT|JAVASCRIPT)\b|--|;|'|"|<|>|\/\*|\*\/)/gi
-  return input.replace(sqlPatterns, "").trim()
-}
-
-const validatePassword = (password: string): { valid: boolean; message: string } => {
-  if (password.length < 8) {
-    return { valid: false, message: "La contraseña debe tener al menos 8 caracteres" }
-  }
-  if (!/[A-Z]/.test(password)) {
-    return { valid: false, message: "La contraseña debe contener al menos una mayúscula" }
-  }
-  if (!/[a-z]/.test(password)) {
-    return { valid: false, message: "La contraseña debe contener al menos una minúscula" }
-  }
-  if (!/[0-9]/.test(password)) {
-    return { valid: false, message: "La contraseña debe contener al menos un número" }
-  }
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    return { valid: false, message: "La contraseña debe contener al menos un carácter especial" }
-  }
-  return { valid: true, message: "" }
-}
-
-const detectMaliciousInput = (input: string): boolean => {
-  const maliciousPatterns = [
-    /<script/i,
-    /javascript:/i,
-    /on\w+=/i,
-    /eval\(/i,
-    /expression\(/i,
-    /vbscript:/i,
-    /\.\.\/|\.\.\\/, // Path traversal
-    /\bor\b.*=.*\bor\b/i, // SQL injection
-    /\bunion\b.*\bselect\b/i, // SQL injection
-  ]
-
-  return maliciousPatterns.some((pattern) => pattern.test(input))
-}
-
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -58,8 +16,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [returnTo, setReturnTo] = useState("/")
-  const [attempts, setAttempts] = useState(0)
-  const [isBlocked, setIsBlocked] = useState(false)
   const [showTempCode, setShowTempCode] = useState(false)
   const [tempCode, setTempCode] = useState("")
   const [generatedCode, setGeneratedCode] = useState("")
@@ -104,57 +60,8 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (isBlocked) {
-      setError("Demasiados intentos fallidos. Por favor, espere 5 minutos.")
-      return
-    }
-
-    if (showTempCode && tempCode) {
-      try {
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            tempCode,
-          }),
-        })
-
-        const data = await response.json()
-
-        if (response.ok && data.authenticated) {
-          localStorage.setItem("isAuthenticated", "true")
-          localStorage.setItem("userToken", data.token)
-          router.push(returnTo)
-          setTimeout(() => {
-            window.location.href = returnTo
-          }, 100)
-        } else {
-          setError(data.message || "Código temporal inválido")
-        }
-      } catch (err) {
-        setError("Error al conectar con el servidor")
-      }
-      return
-    }
-
-    if (detectMaliciousInput(username) || detectMaliciousInput(password)) {
-      setError("Entrada inválida detectada. Por favor, use solo caracteres alfanuméricos.")
-      setAttempts((prev) => prev + 1)
-      if (attempts >= 4) {
-        setIsBlocked(true)
-        setTimeout(() => setIsBlocked(false), 300000) // 5 minutes
-      }
-      return
-    }
-
-    const cleanUsername = sanitizeInput(username)
-    const cleanPassword = password
-
-    if (cleanUsername.length < 3) {
-      setError("El nombre de usuario debe tener al menos 3 caracteres")
+    if (!username || (!password && !tempCode)) {
+      setError("Por favor complete todos los campos")
       return
     }
 
@@ -165,8 +72,9 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: cleanUsername,
-          password: cleanPassword,
+          username,
+          password: showTempCode ? undefined : password,
+          tempCode: showTempCode ? tempCode : undefined,
         }),
       })
 
@@ -180,16 +88,7 @@ export default function LoginPage() {
           window.location.href = returnTo
         }, 100)
       } else {
-        setError(data.message || "Usuario o contraseña incorrectos")
-        setAttempts((prev) => prev + 1)
-
-        if (attempts >= 4) {
-          setIsBlocked(true)
-          setTimeout(() => {
-            setIsBlocked(false)
-            setAttempts(0)
-          }, 300000) // 5 minutes
-        }
+        setError(data.message || "Credenciales incorrectas")
       }
     } catch (err) {
       setError("Error al conectar con el servidor. Intente nuevamente.")
@@ -266,7 +165,6 @@ export default function LoginPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full h-12 bg-slate-50 border-slate-300"
                 required
-                disabled={isBlocked}
               />
             </div>
 
@@ -283,7 +181,6 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-12 bg-slate-50 border-slate-300"
                   required
-                  disabled={isBlocked}
                 />
               </div>
             ) : (
@@ -301,7 +198,6 @@ export default function LoginPage() {
                     className="w-full h-12 bg-slate-50 border-slate-300"
                     maxLength={6}
                     required
-                    disabled={isBlocked}
                   />
                 </div>
 
@@ -335,9 +231,8 @@ export default function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-6 text-lg font-semibold rounded-lg"
-              disabled={isBlocked}
             >
-              {isBlocked ? "Bloqueado temporalmente" : "Iniciar sesión"}
+              Iniciar sesión
             </Button>
 
             <div className="text-center">
