@@ -17,6 +17,7 @@ export function AssistantWidget() {
   const [contactPhone, setContactPhone] = useState("")
   const [contactCountry, setContactCountry] = useState("")
   const [canChat, setCanChat] = useState(false)
+  const [isQualifiedLead, setIsQualifiedLead] = useState(false)
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([])
   const [userInput, setUserInput] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -120,8 +121,20 @@ export function AssistantWidget() {
         setMessages([...newMessages, { role: "assistant", content: data.message }])
 
         if (data.actions) {
+          const qualifyingActions = data.actions.filter(
+            (a: any) =>
+              a.type === "redirect_whatsapp" ||
+              a.type === "request_call" ||
+              a.type === "make_offer" ||
+              (a.type === "recommend" && data.confidence > 0.7),
+          )
+
+          if (qualifyingActions.length > 0) {
+            setIsQualifiedLead(true)
+          }
+
           const whatsappAction = data.actions.find((a: any) => a.type === "redirect_whatsapp")
-          if (whatsappAction) {
+          if (whatsappAction && isQualifiedLead) {
             window.open(
               `https://api.whatsapp.com/send?phone=573023229535&text=Hola%20estoy%20interesado%20en%20tener%20un%20contacto%20cercano%20para%20venta%20de%20servicio%20o%20producto`,
               "_blank",
@@ -339,35 +352,37 @@ export function AssistantWidget() {
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
-              <div className="mt-2 flex gap-2">
-                <Button
-                  onClick={() =>
-                    window.open(
-                      `https://api.whatsapp.com/send?phone=573023229535&text=Hola%20estoy%20interesado%20en%20tener%20un%20contacto%20cercano%20para%20venta%20de%20servicio%20o%20producto`,
-                      "_blank",
-                    )
-                  }
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 text-xs border-green-500 text-green-400 hover:bg-green-500/10"
-                >
-                  <Phone className="w-3 h-3 mr-1" />
-                  WhatsApp
-                </Button>
-                <Button
-                  onClick={() => {
-                    const contactSection = document.getElementById("contact")
-                    if (contactSection) {
-                      contactSection.scrollIntoView({ behavior: "smooth" })
+              {isQualifiedLead && (
+                <div className="mt-2 flex gap-2">
+                  <Button
+                    onClick={() =>
+                      window.open(
+                        `https://api.whatsapp.com/send?phone=573023229535&text=Hola%20estoy%20interesado%20en%20tener%20un%20contacto%20cercano%20para%20venta%20de%20servicio%20o%20producto`,
+                        "_blank",
+                      )
                     }
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 text-xs border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"
-                >
-                  Formulario
-                </Button>
-              </div>
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-xs border-green-500 text-green-400 hover:bg-green-500/10"
+                  >
+                    <Phone className="w-3 h-3 mr-1" />
+                    WhatsApp
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const contactSection = document.getElementById("contact")
+                      if (contactSection) {
+                        contactSection.scrollIntoView({ behavior: "smooth" })
+                      }
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-xs border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"
+                  >
+                    Formulario
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </Card>
