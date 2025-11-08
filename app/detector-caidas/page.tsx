@@ -1,7 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   AlertTriangle,
   CheckCircle2,
@@ -12,6 +13,7 @@ import {
   Users,
   Globe,
   AlertOctagon,
+  TrendingUp,
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
@@ -269,262 +271,232 @@ export default function DetectorCaidas() {
 
   if (isLoading && services.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-12 h-12 text-cyan-400 animate-spin mx-auto mb-4" />
-          <p className="text-slate-300 text-lg">Cargando datos en tiempo real desde DownDetector...</p>
-          <p className="text-slate-500 text-sm mt-2">Scrapeando múltiples regiones</p>
+          <p className="text-slate-300 text-lg font-semibold">Scrapeando datos en tiempo real...</p>
+          <p className="text-slate-500 text-sm mt-2">Recopilando información desde DownDetector multi-región</p>
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-600">
+            <Globe className="w-4 h-4" />
+            <span>Global • México • Perú • Canadá • Colombia</span>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <section className="container mx-auto px-4 py-8">
+      <section className="container mx-auto px-4 py-6">
         <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <Activity className="w-10 h-10 text-cyan-400 animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
-              Detector de Caídas Cloud
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Activity className="w-8 h-8 text-cyan-400" />
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+              Monitor Cloud NOC/SOC
             </h1>
           </div>
-          <p className="text-lg text-slate-300 max-w-3xl mx-auto mb-1">
-            Monitoreo en tiempo real del estado de los principales proveedores Cloud a nivel mundial
+          <p className="text-sm text-slate-400 max-w-2xl mx-auto mb-2">
+            Scraping en tiempo real desde DownDetector • Datos reales de 5 regiones
           </p>
-          <p className="text-xs text-slate-400 max-w-2xl mx-auto">
-            Datos scrapeados en tiempo real desde múltiples sitios de DownDetector en diferentes regiones
-          </p>
-          <div className="flex items-center justify-center gap-4 mt-4">
-            <div className="flex items-center gap-2 text-slate-400">
-              <Clock className="w-3.5 h-3.5" />
-              <span className="text-xs">Última actualización: {lastUpdate.toLocaleTimeString("es-ES")}</span>
+          <div className="flex items-center justify-center gap-3 text-xs">
+            <div className="flex items-center gap-1.5 text-slate-500">
+              <Clock className="w-3 h-3" />
+              <span>Actualizado: {lastUpdate.toLocaleTimeString("es-ES")}</span>
             </div>
             <Button
               onClick={() => setAutoRefresh(!autoRefresh)}
-              variant="outline"
+              variant="ghost"
               size="sm"
-              className={`border-slate-700 text-xs ${
-                autoRefresh ? "text-cyan-400 border-cyan-500" : "text-slate-400"
-              } hover:bg-slate-800 bg-transparent`}
+              className={`h-7 px-2 text-xs ${autoRefresh ? "text-cyan-400" : "text-slate-500"}`}
             >
-              <RefreshCw className={`w-3.5 h-3.5 mr-2 ${autoRefresh ? "animate-spin" : ""}`} />
-              {autoRefresh ? "Auto ON" : "Auto OFF"}
+              <RefreshCw className={`w-3 h-3 mr-1.5 ${autoRefresh ? "animate-spin" : ""}`} />
+              {autoRefresh ? "Auto" : "Manual"}
             </Button>
-            <Button
-              onClick={loadData}
-              variant="outline"
-              size="sm"
-              className="border-slate-700 text-xs text-slate-400 hover:bg-slate-800 bg-transparent"
-            >
-              <RefreshCw className="w-3.5 h-3.5 mr-2" />
-              Actualizar
+            <Button onClick={loadData} variant="ghost" size="sm" className="h-7 px-2 text-xs text-slate-500">
+              <RefreshCw className="w-3 h-3 mr-1.5" />
+              Refrescar
             </Button>
           </div>
         </div>
 
-        {/* Resumen de Fallas Detectadas */}
         {servicesWithIssues.length > 0 && (
-          <Card className="mb-8 bg-gradient-to-br from-red-950/40 to-orange-950/40 border-2 border-red-500/50 shadow-xl">
+          <Card className="mb-6 bg-gradient-to-br from-red-950/30 to-orange-950/30 border border-red-500/40 shadow-lg">
             <CardHeader className="pb-3">
-              <CardTitle className="text-xl text-white flex items-center gap-3">
-                <AlertOctagon className="w-6 h-6 text-red-400 animate-pulse" />
-                Resumen de Fallas Detectadas
-              </CardTitle>
-              <CardDescription className="text-slate-300">
-                {servicesWithIssues.length} proveedor{servicesWithIssues.length > 1 ? "es" : ""} con problemas
-                reportados actualmente
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <AlertOctagon className="w-5 h-5 text-red-400" />
+                  <CardTitle className="text-base text-white">Alertas Activas</CardTitle>
+                  <Badge variant="destructive" className="ml-2 bg-red-500/20 text-red-300 border-red-500/40">
+                    {servicesWithIssues.length}
+                  </Badge>
+                </div>
+                <div className="text-xs text-red-400 flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" />
+                  {servicesWithIssues.reduce((sum, s) => sum + s.regions.reduce((r, reg) => r + reg.reports, 0), 0)}{" "}
+                  reportes totales
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="grid gap-3">
-                {servicesWithIssues.map((service) => {
-                  const totalReports = service.regions.reduce((sum, r) => sum + r.reports, 0)
-                  const affectedRegions = service.regions.filter((r) => r.status !== "Operacional")
+            <CardContent className="space-y-2">
+              {servicesWithIssues.map((service) => {
+                const totalReports = service.regions.reduce((sum, r) => sum + r.reports, 0)
+                const affectedRegions = service.regions.filter((r) => r.status !== "Operacional")
 
-                  return (
-                    <div
-                      key={service.id}
-                      className={`p-3 rounded-lg border transition-all ${
-                        service.status === "Caído"
-                          ? "bg-red-950/30 border-red-500/40"
-                          : "bg-yellow-950/30 border-yellow-500/40"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={`https://logo.clearbit.com/${service.clearbitDomain}`}
-                            alt={service.name}
-                            className="w-8 h-8 rounded bg-white p-1 object-contain"
-                            onError={(e) => {
-                              e.currentTarget.src = `https://ui-avatars.com/api/?name=${service.name}&background=0D8ABC&color=fff&size=32`
-                            }}
-                          />
-                          <div>
-                            <h3 className="font-semibold text-white text-sm">{service.name}</h3>
-                            <p className="text-xs text-slate-400">
-                              {affectedRegions.length} región{affectedRegions.length > 1 ? "es" : ""} afectada
-                              {affectedRegions.length > 1 ? "s" : ""}
-                              {affectedRegions.length > 0 && ": "}
-                              {affectedRegions.map((r) => r.region).join(", ")}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-right">
-                            <div className="text-lg font-bold text-white">{totalReports}</div>
-                            <div className="text-[10px] text-slate-400">reportes</div>
-                          </div>
-                          <div
-                            className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
-                              service.status === "Caído"
-                                ? "bg-red-500/20 text-red-400 border border-red-500/40"
-                                : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/40"
-                            }`}
-                          >
-                            {service.status === "Caído" ? (
-                              <XCircle className="w-3 h-3" />
-                            ) : (
-                              <AlertTriangle className="w-3 h-3" />
-                            )}
-                            {service.status}
-                          </div>
-                        </div>
+                return (
+                  <div
+                    key={service.id}
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/40 border border-slate-800/50 hover:border-slate-700/50 transition-all"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <img
+                        src={`https://logo.clearbit.com/${service.clearbitDomain}`}
+                        alt={service.name}
+                        className="w-7 h-7 rounded bg-white/95 p-1 object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${service.name}&background=random&size=28`
+                        }}
+                      />
+                      <div>
+                        <h3 className="font-semibold text-white text-xs leading-tight">{service.name}</h3>
+                        <p className="text-[10px] text-slate-500 mt-0.5">
+                          {affectedRegions.map((r) => r.region).join(" • ")}
+                        </p>
                       </div>
                     </div>
-                  )
-                })}
-              </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-white">{totalReports}</div>
+                        <div className="text-[9px] text-slate-500">reportes</div>
+                      </div>
+                      <Badge
+                        variant={service.status === "Caído" ? "destructive" : "secondary"}
+                        className={`text-[10px] px-1.5 py-0.5 ${
+                          service.status === "Caído"
+                            ? "bg-red-500/20 text-red-400 border-red-500/40"
+                            : "bg-yellow-500/20 text-yellow-400 border-yellow-500/40"
+                        }`}
+                      >
+                        {service.status}
+                      </Badge>
+                    </div>
+                  </div>
+                )
+              })}
             </CardContent>
           </Card>
         )}
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-          <Card className="bg-gradient-to-br from-green-900/20 to-green-950/20 border-green-500/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-medium text-green-400 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Operacionales
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-green-400">{operationalCount}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Funcionando bien</p>
+        <div className="grid grid-cols-4 gap-2.5 mb-6">
+          <Card className="bg-gradient-to-br from-green-950/30 to-green-900/20 border-green-500/20">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl font-bold text-green-400">{operationalCount}</p>
+                  <p className="text-[10px] text-slate-400">Operacionales</p>
+                </div>
+                <CheckCircle2 className="w-5 h-5 text-green-400/50" />
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-yellow-900/20 to-yellow-950/20 border-yellow-500/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-medium text-yellow-400 flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5" />
-                Degradados
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-yellow-400">{degradedCount}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Con problemas</p>
+          <Card className="bg-gradient-to-br from-yellow-950/30 to-yellow-900/20 border-yellow-500/20">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl font-bold text-yellow-400">{degradedCount}</p>
+                  <p className="text-[10px] text-slate-400">Degradados</p>
+                </div>
+                <AlertTriangle className="w-5 h-5 text-yellow-400/50" />
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-red-900/20 to-red-950/20 border-red-500/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-medium text-red-400 flex items-center gap-1.5">
-                <XCircle className="w-3.5 h-3.5" />
-                Caídos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-red-400">{downCount}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">No disponibles</p>
+          <Card className="bg-gradient-to-br from-red-950/30 to-red-900/20 border-red-500/20">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl font-bold text-red-400">{downCount}</p>
+                  <p className="text-[10px] text-slate-400">Caídos</p>
+                </div>
+                <XCircle className="w-5 h-5 text-red-400/50" />
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-cyan-900/20 to-cyan-950/20 border-cyan-500/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-medium text-cyan-400 flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5" />
-                Reportes
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-cyan-400">{totalReports.toLocaleString()}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Total activo</p>
+          <Card className="bg-gradient-to-br from-cyan-950/30 to-cyan-900/20 border-cyan-500/20">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl font-bold text-cyan-400">{totalReports.toLocaleString()}</p>
+                  <p className="text-[10px] text-slate-400">Reportes</p>
+                </div>
+                <Users className="w-5 h-5 text-cyan-400/50" />
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Grid de servicios */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {services.map((service) => {
             const totalReports = service.regions.reduce((sum, r) => sum + r.reports, 0)
 
             return (
               <Card
                 key={service.id}
-                className={`bg-slate-900/50 backdrop-blur border transition-all hover:shadow-lg hover:scale-[1.02] ${getStatusColor(service.status)}`}
+                className={`bg-slate-900/40 backdrop-blur border transition-all hover:shadow-md hover:scale-[1.01] ${getStatusColor(service.status)}`}
               >
-                <CardHeader className="pb-2">
+                <CardHeader className="pb-2 px-3 pt-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                       <img
                         src={`https://logo.clearbit.com/${service.clearbitDomain}`}
                         alt={service.name}
-                        className="w-10 h-10 rounded-lg bg-white p-1.5 object-contain"
+                        className="w-8 h-8 rounded-md bg-white/95 p-1 object-contain shadow-sm"
                         onError={(e) => {
-                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${service.name}&background=0D8ABC&color=fff&size=40`
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${service.name}&background=random&size=32`
                         }}
                       />
                       <div>
-                        <CardTitle className="text-sm text-white leading-tight">{service.name}</CardTitle>
-                        <CardDescription className="text-[10px] flex items-center gap-1.5 mt-1">
+                        <CardTitle className="text-xs text-white leading-tight">{service.name}</CardTitle>
+                        <div className="flex items-center gap-1 mt-0.5">
                           {getStatusIcon(service.status)}
                           <span
-                            className={
+                            className={`text-[10px] font-medium ${
                               service.status === "Operacional"
                                 ? "text-green-400"
                                 : service.status === "Degradado"
                                   ? "text-yellow-400"
                                   : "text-red-400"
-                            }
+                            }`}
                           >
                             {service.status}
                           </span>
-                        </CardDescription>
+                        </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-white">{totalReports}</div>
-                      <div className="text-[9px] text-slate-400">reportes</div>
+                      <div className="text-lg font-bold text-white">{totalReports}</div>
+                      <div className="text-[8px] text-slate-500">reportes</div>
                     </div>
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-3">
-                  {/* Gráfica */}
-                  <div className="h-32 w-full">
+                <CardContent className="space-y-2 px-3 pb-3">
+                  <div className="h-24 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={service.graphData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.2} />
-                        <XAxis
-                          dataKey="time"
-                          stroke="#64748b"
-                          fontSize={9}
-                          tickLine={false}
-                          axisLine={{ stroke: "#334155" }}
-                          interval="preserveStartEnd"
-                        />
-                        <YAxis stroke="#64748b" fontSize={9} tickLine={false} axisLine={{ stroke: "#334155" }} />
+                      <LineChart data={service.graphData} margin={{ top: 2, right: 2, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.15} />
+                        <XAxis dataKey="time" stroke="#475569" fontSize={8} tickLine={false} hide />
+                        <YAxis stroke="#475569" fontSize={8} tickLine={false} axisLine={false} />
                         <Tooltip
                           contentStyle={{
                             backgroundColor: "#0f172a",
                             border: "1px solid #334155",
-                            borderRadius: "6px",
-                            fontSize: "11px",
+                            borderRadius: "4px",
+                            fontSize: "10px",
+                            padding: "4px 6px",
                           }}
-                          labelStyle={{ color: "#cbd5e1" }}
                         />
                         {REGIONS.map((region) => (
                           <Line
@@ -535,32 +507,22 @@ export default function DetectorCaidas() {
                             strokeWidth={1.5}
                             dot={false}
                             name={region.label}
-                            animationDuration={300}
                           />
                         ))}
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Leyenda */}
-                  <div className="flex flex-wrap gap-2 pt-1 border-t border-slate-800/50">
-                    {REGIONS.map((region) => (
-                      <div key={region.key} className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: region.color }} />
-                        <span className="text-[10px] text-slate-400">{region.label}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Badges de región */}
-                  <div className="grid grid-cols-5 gap-1.5">
+                  <div className="grid grid-cols-5 gap-1">
                     {service.regions.map((region) => (
                       <div
                         key={region.region}
-                        className="text-center p-1.5 bg-slate-950/50 rounded border border-slate-800/50"
+                        className="text-center p-1 bg-slate-950/40 rounded border border-slate-800/40 hover:border-slate-700/60 transition-colors"
                       >
-                        <div className="text-[9px] text-slate-500 mb-0.5 truncate">{region.region.slice(0, 3)}</div>
-                        <div className="font-bold text-white text-xs">{region.reports}</div>
+                        <div className="text-[8px] text-slate-500 mb-0.5 truncate font-medium">
+                          {region.region.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div className="font-bold text-white text-[11px]">{region.reports}</div>
                       </div>
                     ))}
                   </div>
@@ -575,7 +537,7 @@ export default function DetectorCaidas() {
           <CardHeader>
             <CardTitle className="text-xl text-white flex items-center gap-2.5">
               <Globe className="w-6 h-6 text-cyan-400" />
-              ¿Cómo funciona el Detector de Caídas Cloud?
+              ¿Cómo funciona el Monitor Cloud NOC/SOC?
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-slate-300 text-sm">
@@ -616,7 +578,7 @@ export default function DetectorCaidas() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center gap-4">
             <p className="text-slate-400 text-center text-sm">
-              Detector de Caídas Cloud • Monitoreo Multi-Región en Tiempo Real • Producto de SATURNO
+              Monitor Cloud NOC/SOC • Monitoreo Multi-Región en Tiempo Real • Producto de SATURNO
             </p>
             <p className="text-slate-500 text-xs text-center">
               Datos scrapeados desde downdetector.com, .mx, .pe, .ca y .com.co
