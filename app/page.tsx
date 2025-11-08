@@ -1,20 +1,23 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Server,
   Zap,
   Shield,
   HeadphonesIcon,
   Check,
-  Cpu,
-  HardDrive,
-  Container,
+  Clock,
+  Globe,
+  Award,
+  TrendingUp,
+  Users,
   ChevronLeft,
   ChevronRight,
   Sparkles,
   Send,
+  ArrowRight,
 } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
@@ -87,15 +90,10 @@ export default function Home() {
     const checkAuth = () => {
       const authStatus = localStorage.getItem("isAuthenticated") === "true"
       setIsAuthenticated(authStatus)
-      console.log("[v0] Authentication status:", authStatus)
     }
 
     checkAuth()
-
-    // Listen for storage changes (when user logs in from another tab)
     window.addEventListener("storage", checkAuth)
-
-    // Check auth when page becomes visible (user returns from login)
     window.addEventListener("visibilitychange", checkAuth)
 
     return () => {
@@ -116,13 +114,15 @@ export default function Home() {
   const handleSendMessage = async () => {
     if (!userInput.trim()) return
 
-    // Add user message to chat
     const newMessages = [...messages, { role: "user" as const, content: userInput }]
     setMessages(newMessages)
     setUserInput("")
     setIsAnalyzing(true)
+    setShowLoginPrompt(false)
 
     try {
+      console.log("[v0] Sending message to API")
+
       const response = await fetch("/api/loise/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,59 +132,23 @@ export default function Home() {
         }),
       })
 
+      console.log("[v0] Response status:", response.status)
+
       if (!response.ok) {
-        const errorData = await response.json()
-
-        if (errorData.requiresLogin) {
-          setShowLoginPrompt(true)
-          setMessages([
-            ...newMessages,
-            {
-              role: "assistant",
-              content: errorData.message,
-            },
-          ])
-          setIsAnalyzing(false)
-          return
-        }
-
-        if (errorData.requiresCaptcha) {
-          setRequiresCaptcha(true)
-          setMessages([
-            ...newMessages,
-            {
-              role: "assistant",
-              content: errorData.message,
-            },
-          ])
-          setIsAnalyzing(false)
-          return
-        }
-
-        throw new Error(errorData.message || "Error al procesar la solicitud")
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      // Stream the response
-      const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
-      let assistantMessage = ""
+      const data = await response.json()
+      console.log("[v0] Response received")
 
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
+      if (data.role === "assistant" && data.content) {
+        setMessages([...newMessages, { role: "assistant", content: data.content }])
 
-          const chunk = decoder.decode(value)
-          const lines = chunk.split("\n")
-
-          for (const line of lines) {
-            if (line.startsWith("0:")) {
-              const content = line.slice(2).replace(/^"(.*)"$/, "$1")
-              assistantMessage += content
-              setMessages([...newMessages, { role: "assistant", content: assistantMessage }])
-            }
-          }
+        if (data.content.includes("crear cuenta") || data.content.includes("iniciar sesión")) {
+          setShowLoginPrompt(true)
         }
+      } else {
+        throw new Error("Respuesta inválida del servidor")
       }
 
       setIsAnalyzing(false)
@@ -194,7 +158,8 @@ export default function Home() {
         ...newMessages,
         {
           role: "assistant",
-          content: "❌ Lo siento, ha ocurrido un error. Por favor, intenta de nuevo.",
+          content:
+            "❌ Lo siento, ha ocurrido un error de conexión. Por favor, verifica tu conexión e intenta de nuevo.",
         },
       ])
       setIsAnalyzing(false)
@@ -206,7 +171,6 @@ export default function Home() {
   }
 
   const handleCompleteCaptcha = () => {
-    // Simulate CAPTCHA completion
     setRequiresCaptcha(false)
     setMessages([
       ...messages,
@@ -219,8 +183,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950">
-      {/* Navigation */}
-
+      {/* Hero Carousel */}
       <section className="relative overflow-hidden w-full">
         <div className="relative h-[700px] md:h-[800px]">
           {slides.map((slide, index) => (
@@ -231,16 +194,8 @@ export default function Home() {
               }`}
             >
               <div className="absolute inset-0">
-                {slide.video ? (
+                {slide.video && (
                   <video src={slide.video} autoPlay loop muted playsInline className="w-full h-full object-cover" />
-                ) : (
-                  <Image
-                    src={slide.image || "/placeholder.svg"}
-                    alt={`${slide.title} - SATURNO`}
-                    fill
-                    className="object-cover"
-                    priority={index === 0}
-                  />
                 )}
               </div>
               <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/90" />
@@ -267,14 +222,13 @@ export default function Home() {
                   size="lg"
                   className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-10 py-7 text-lg rounded-full shadow-2xl hover:shadow-xl transition-all"
                 >
-                  <a href="/contacto">{slide.cta}</a>
+                  <a href="/ contacto">{slide.cta}</a>
                 </Button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
           className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-slate-900/80 hover:bg-slate-800 text-white p-3 rounded-full transition-all"
@@ -290,7 +244,6 @@ export default function Home() {
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Dots Navigation */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
           {slides.map((_, index) => (
             <button
@@ -305,7 +258,252 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AI Product Recommendation Section */}
+      <section className="container mx-auto px-4 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+            ¿Por Qué Elegir <span className="text-cyan-400">Titanocloud</span>?
+          </h2>
+          <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            No somos solo otro proveedor de hosting. Somos tu socio tecnológico comprometido con tu éxito
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {/* Advantage 1 */}
+          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+            <CardHeader>
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mb-4">
+                <Clock className="w-8 h-8 text-cyan-400" />
+              </div>
+              <CardTitle className="text-2xl text-white">Despliegue en 60 Segundos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-300 leading-relaxed">
+                Mientras la competencia te hace esperar horas o días, nosotros activamos tu infraestructura en menos de
+                un minuto. Tu tiempo vale oro, y nosotros lo respetamos.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Advantage 2 */}
+          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+            <CardHeader>
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mb-4">
+                <HeadphonesIcon className="w-8 h-8 text-cyan-400" />
+              </div>
+              <CardTitle className="text-2xl text-white">Soporte Humano Real 24/7</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-300 leading-relaxed">
+                Olvídate de bots y respuestas automáticas. Nuestro equipo de expertos está disponible las 24 horas para
+                resolver tus problemas técnicos. No tickets sin respuesta, no esperas infinitas.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Advantage 3 */}
+          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+            <CardHeader>
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mb-4">
+                <Zap className="w-8 h-8 text-cyan-400" />
+              </div>
+              <CardTitle className="text-2xl text-white">Hardware de Última Generación</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-300 leading-relaxed">
+                Mientras otros reciclan hardware de hace 5 años, nosotros invertimos constantemente en AMD EPYC, Intel
+                Xeon de última generación, y NVMe exclusivamente. Rendimiento sin compromisos.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Advantage 4 */}
+          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+            <CardHeader>
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mb-4">
+                <Shield className="w-8 h-8 text-cyan-400" />
+              </div>
+              <CardTitle className="text-2xl text-white">Seguridad Sin Costos Ocultos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-300 leading-relaxed">
+                Protección DDoS, firewalls avanzados, backups automáticos y certificados SSL incluidos sin cargos
+                adicionales. Lo que ves es lo que pagas. Sin sorpresas en tu factura.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Advantage 5 */}
+          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+            <CardHeader>
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mb-4">
+                <TrendingUp className="w-8 h-8 text-cyan-400" />
+              </div>
+              <CardTitle className="text-2xl text-white">Escalabilidad Instantánea</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-300 leading-relaxed">
+                Tu negocio crece, tu infraestructura también. Escala verticalmente u horizontalmente en segundos sin
+                downtime. No necesitas migrar servidores ni perder tu configuración.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Advantage 6 */}
+          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+            <CardHeader>
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mb-4">
+                <Sparkles className="w-8 h-8 text-cyan-400" />
+              </div>
+              <CardTitle className="text-2xl text-white">Arquitecta Cloud con IA</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-300 leading-relaxed">
+                ¿No tienes arquitecto cloud? Loise, nuestra IA experta, diseña tu infraestructura ideal gratuitamente.
+                Análisis profesional sin costo de consultoría.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 py-24 bg-slate-950/50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+              Titanocloud vs <span className="text-slate-500">La Competencia</span>
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              Una comparación honesta de lo que realmente importa
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Left Column - Others */}
+            <div className="space-y-6">
+              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8">
+                <h3 className="text-2xl font-bold text-slate-400 mb-8 flex items-center gap-3">
+                  <div className="w-3 h-3 bg-red-500 rounded-full" />
+                  Otros Proveedores
+                </h3>
+                <ul className="space-y-5">
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-red-500 text-sm">✗</span>
+                    </div>
+                    <span className="text-slate-400">Soporte por tickets que tardan 24-48 horas en responder</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-red-500 text-sm">✗</span>
+                    </div>
+                    <span className="text-slate-400">Cargos ocultos por backups, SSL y protección DDoS</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-red-500 text-sm">✗</span>
+                    </div>
+                    <span className="text-slate-400">Hardware compartido con máquinas de 3-4 años de antigüedad</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-red-500 text-sm">✗</span>
+                    </div>
+                    <span className="text-slate-400">Proceso de activación que puede tomar horas o días</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-red-500 text-sm">✗</span>
+                    </div>
+                    <span className="text-slate-400">Panel de control complicado y poco intuitivo</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-red-500 text-sm">✗</span>
+                    </div>
+                    <span className="text-slate-400">Migración costosa y con downtime garantizado</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Right Column - Titanocloud */}
+            <div className="space-y-6">
+              <div className="bg-gradient-to-br from-cyan-950/50 to-slate-900 border-2 border-cyan-500 rounded-2xl p-8 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <Award className="w-12 h-12 text-cyan-400 opacity-20" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                  <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
+                  Titanocloud
+                </h3>
+                <ul className="space-y-5">
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 font-medium">
+                      Soporte humano real en menos de 5 minutos, 24/7/365
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 font-medium">
+                      Todo incluido: Backups, SSL, DDoS protection sin costos extra
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 font-medium">
+                      Hardware dedicado de última generación: AMD EPYC & Intel Xeon nuevos
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 font-medium">Activación instantánea en 60 segundos o menos</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 font-medium">
+                      Panel moderno con IA incluida (Loise, tu arquitecta cloud)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-slate-200 font-medium">
+                      Migración gratuita asistida con cero downtime garantizado
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold px-12 py-7 text-lg rounded-full shadow-2xl"
+            >
+              <a href="/contacto">
+                Experimenta la Diferencia <ArrowRight className="w-5 h-5 ml-2" />
+              </a>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Loise Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
@@ -335,7 +533,6 @@ export default function Home() {
                   fill
                   className="object-cover"
                 />
-                {/* </CHANGE> */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
@@ -358,12 +555,8 @@ export default function Home() {
                   <Sparkles className="w-7 h-7 text-cyan-400 animate-pulse" />
                   <CardTitle className="text-2xl md:text-3xl font-bold text-white">Loise AI Assistant</CardTitle>
                 </div>
-                <CardDescription className="text-slate-300 text-base">
-                  Arquitecta Cloud con IA • Consulta profesional gratuita
-                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
-                {/* Chat Messages */}
                 <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                   {messages.length === 0 ? (
                     <div className="text-center py-8">
@@ -410,7 +603,6 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Login Prompt */}
                 {showLoginPrompt && (
                   <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
                     <p className="text-orange-400 font-semibold mb-3">🔒 Autenticación Requerida</p>
@@ -420,7 +612,6 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* CAPTCHA Prompt */}
                 {requiresCaptcha && (
                   <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                     <p className="text-red-400 font-semibold mb-3">⚠️ Verificación de Seguridad</p>
@@ -430,7 +621,6 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Input Area */}
                 <div className="space-y-3">
                   <div className="relative">
                     <textarea
@@ -471,199 +661,6 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
-          Infraestructura Cloud de Nueva Generación
-        </h1>
-        <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
-          Potencia tu negocio con soluciones de hosting escalables, seguras y de alto rendimiento
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button asChild size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white">
-            <a href="/contacto">Comenzar Ahora</a>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="border-slate-700 text-slate-300 hover:bg-slate-800 bg-transparent"
-          >
-            <a href="#vps">Ver Planes</a>
-          </Button>
-        </div>
-      </section>
-
-      {/* Offers Section */}
-      <section className="container mx-auto px-4 py-20 bg-slate-950/50">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-full mb-6 animate-pulse">
-            <Zap className="w-6 h-6" />
-            <span className="font-bold text-lg">OFERTAS DEL DÍA</span>
-            <Zap className="w-6 h-6" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Descuentos Especiales por Tiempo Limitado</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-            Aprovecha estas ofertas exclusivas antes de que terminen
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Deal 1: VPS */}
-          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-2 border-orange-500 relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold text-sm rotate-12 shadow-lg">
-              -40% OFF
-            </div>
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-4">
-                <Server className="w-10 h-10 text-orange-400" />
-                <div>
-                  <CardTitle className="text-2xl text-white">VPS Pro</CardTitle>
-                  <CardDescription className="text-slate-400">Oferta Flash</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-orange-400" />
-                  <span>4 vCPU</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-orange-400" />
-                  <span>8 GB RAM</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-orange-400" />
-                  <span>160 GB SSD NVMe</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-orange-400" />
-                  <span>Ancho de banda ilimitado</span>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-slate-700">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-slate-500 line-through text-xl">$35</span>
-                  <span className="text-4xl font-bold text-orange-400">$21</span>
-                  <span className="text-slate-400">/mes</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-2">Precio especial por 12 meses</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-6">
-                Aprovechar Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* Deal 2: Bare Metal */}
-          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-2 border-cyan-500 relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-cyan-500 text-white px-4 py-2 rounded-full font-bold text-sm rotate-12 shadow-lg">
-              -30% OFF
-            </div>
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-4">
-                <Cpu className="w-10 h-10 text-cyan-400" />
-                <div>
-                  <CardTitle className="text-2xl text-white">Bare Metal RISE-3</CardTitle>
-                  <CardDescription className="text-slate-400">Oferta Especial</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-cyan-400" />
-                  <span>AMD Ryzen 9 5900X (12c/24t)</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-cyan-400" />
-                  <span>32 GB RAM DDR4</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-cyan-400" />
-                  <span>2 x 512 GB NVMe SSD</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-cyan-400" />
-                  <span>1 Gbps garantizado</span>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-slate-700">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-slate-500 line-through text-xl">$102</span>
-                  <span className="text-4xl font-bold text-cyan-400">$71</span>
-                  <span className="text-slate-400">/mes</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-2">Ahorra $31/mes durante 6 meses</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-6">
-                Aprovechar Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* Deal 3: Cluster */}
-          <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-2 border-purple-500 relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-purple-500 text-white px-4 py-2 rounded-full font-bold text-sm rotate-12 shadow-lg">
-              -25% OFF
-            </div>
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-4">
-                <Container className="w-10 h-10 text-purple-400" />
-                <div>
-                  <CardTitle className="text-2xl text-white">Cluster Pro</CardTitle>
-                  <CardDescription className="text-slate-400">Kubernetes Managed</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-purple-400" />
-                  <span>5 nodos worker</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-purple-400" />
-                  <span>Auto-scaling automático</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-purple-400" />
-                  <span>CI/CD integrado</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Check className="w-5 h-5 text-purple-400" />
-                  <span>Load Balancer incluido</span>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-slate-700">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-slate-500 line-through text-xl">$250</span>
-                  <span className="text-4xl font-bold text-purple-400">$187</span>
-                  <span className="text-slate-400">/mes</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-2">Oferta válida por 3 meses</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-6">
-                Aprovechar Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="text-slate-400 text-lg">
-            ⏰ Ofertas válidas hasta agotar stock o fin de mes • Sin compromisos a largo plazo
-          </p>
         </div>
       </section>
 
@@ -772,262 +769,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* VPS Section */}
-      <section id="vps" className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-white">Servidores Privados Virtuales</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">VPS escalables con recursos dedicados y control total</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { name: "VPS Básico", cpu: "2 vCPU", ram: "4 GB RAM", storage: "80 GB SSD", price: "$15/mes" },
-            { name: "VPS Pro", cpu: "4 vCPU", ram: "8 GB RAM", storage: "160 GB SSD", price: "$35/mes" },
-            { name: "VPS Enterprise", cpu: "8 vCPU", ram: "16 GB RAM", storage: "320 GB SSD", price: "$70/mes" },
-          ].map((plan) => (
-            <Card key={plan.name} className="bg-slate-900 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-cyan-400">{plan.name}</CardTitle>
-                <CardDescription className="text-slate-400">Ideal para aplicaciones escalables</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Cpu className="w-4 h-4 text-cyan-400" />
-                  <span>{plan.cpu}</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Server className="w-4 h-4 text-cyan-400" />
-                  <span>{plan.ram}</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-300">
-                  <HardDrive className="w-4 h-4 text-cyan-400" />
-                  <span>{plan.storage}</span>
-                </div>
-                <div className="pt-4 border-t border-slate-800">
-                  <p className="text-3xl font-bold text-white">{plan.price}</p>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Bare Metal Section */}
-      <section id="bare-metal" className="container mx-auto px-4 py-20 bg-slate-950/50">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-white">Servidores Bare Metal</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">Máximo rendimiento con hardware dedicado</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <CardTitle className="text-cyan-400 flex items-center gap-2">
-                <Server className="w-6 h-6" />
-                Bare Metal Standard
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-slate-300">
-                  <strong>CPU:</strong> Intel Xeon E-2288G (8 cores / 16 threads)
-                </p>
-                <p className="text-slate-300">
-                  <strong>RAM:</strong> 64 GB DDR4 ECC
-                </p>
-                <p className="text-slate-300">
-                  <strong>Storage:</strong> 2x 1TB NVMe SSD RAID 1
-                </p>
-                <p className="text-slate-300">
-                  <strong>Network:</strong> 1 Gbps ilimitado
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-white">$199/mes</p>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
-            </CardContent>
-          </Card>
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <CardTitle className="text-cyan-400 flex items-center gap-2">
-                <Server className="w-6 h-6" />
-                Bare Metal Premium
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-slate-300">
-                  <strong>CPU:</strong> AMD EPYC 7543P (32 cores / 64 threads)
-                </p>
-                <p className="text-slate-300">
-                  <strong>RAM:</strong> 256 GB DDR4 ECC
-                </p>
-                <p className="text-slate-300">
-                  <strong>Storage:</strong> 4x 2TB NVMe SSD RAID 10
-                </p>
-                <p className="text-slate-300">
-                  <strong>Network:</strong> 10 Gbps ilimitado
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-white">$599/mes</p>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600">Contratar</Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Clusters Section */}
-      <section id="clusters" className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-white">Kubernetes Clusters</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">Orquestación de contenedores gestionada</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <Container className="w-12 h-12 text-cyan-400 mb-4" />
-              <CardTitle className="text-white">Cluster Básico</CardTitle>
-              <CardDescription className="text-slate-400">3 nodos worker</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-slate-300">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Auto-scaling
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Load Balancer
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Monitoreo 24/7
-                </li>
-              </ul>
-              <p className="text-3xl font-bold text-white mt-6">$120/mes</p>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-6">
-                Aprovechar Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <Container className="w-12 h-12 text-cyan-400 mb-4" />
-              <CardTitle className="text-white">Cluster Pro</CardTitle>
-              <CardDescription className="text-slate-400">5 nodos worker</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-slate-300">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Todo de Básico
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> CI/CD integrado
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Backup automático
-                </li>
-              </ul>
-              <p className="text-3xl font-bold text-white mt-6">$250/mes</p>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-6">
-                Aprovechar Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <Container className="w-12 h-12 text-cyan-400 mb-4" />
-              <CardTitle className="text-white">Cluster Enterprise</CardTitle>
-              <CardDescription className="text-slate-400">10+ nodos worker</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-slate-300">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Todo de Pro
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Multi-región
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-cyan-400" /> Soporte dedicado
-                </li>
-              </ul>
-              <p className="text-3xl font-bold text-white mt-6">$500/mes</p>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-6">
-                Aprovechar Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </section>
-
-      {/* Dominios Section */}
-      <section id="dominios" className="container mx-auto px-4 py-20 bg-slate-950/50">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-white">Registro de Dominios</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">Encuentra y registra tu dominio perfecto</p>
-        </div>
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Busca tu dominio..."
-              className="flex-1 px-4 py-3 bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
-            />
-            <Button className="bg-cyan-500 hover:bg-cyan-600">Buscar</Button>
-          </div>
-        </div>
-        <div className="grid md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          {[
-            { tld: ".com", price: "$12.99/año" },
-            { tld: ".net", price: "$14.99/año" },
-            { tld: ".org", price: "$13.99/año" },
-            { tld: ".io", price: "$39.99/año" },
-          ].map((domain) => (
-            <Card key={domain.tld} className="bg-slate-900 border-slate-800 text-center">
-              <CardHeader>
-                <CardTitle className="text-cyan-400 text-2xl">{domain.tld}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white font-bold">{domain.price}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Why Choose Section */}
       <section className="container mx-auto px-4 py-20 bg-slate-950/50">
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">¿Por qué elegir SATURNO?</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <Zap className="w-12 h-12 text-cyan-400 mb-4" />
-              <CardTitle className="text-white">Alto Rendimiento</CardTitle>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4 text-white">Explora Nuestras Soluciones</h2>
+          <p className="text-slate-400 max-w-2xl mx-auto">
+            Desde VPS escalables hasta servidores bare metal de alto rendimiento
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <Card className="bg-slate-900 border-slate-800 hover:border-cyan-500 transition-all duration-300 group">
+            <CardHeader className="text-center">
+              <Server className="w-12 h-12 text-cyan-400 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <CardTitle className="text-white">Servidores VPS</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-slate-400">Infraestructura de última generación con SSD NVMe y red de 10Gbps</p>
+            <CardContent className="text-center">
+              <p className="text-slate-400 text-sm mb-4">Flexibles, escalables y listos en 60 segundos</p>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
+              >
+                <a href="/vps">Ver Planes</a>
+              </Button>
             </CardContent>
           </Card>
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <Shield className="w-12 h-12 text-cyan-400 mb-4" />
-              <CardTitle className="text-white">Seguridad Avanzada</CardTitle>
+
+          <Card className="bg-slate-900 border-slate-800 hover:border-cyan-500 transition-all duration-300 group">
+            <CardHeader className="text-center">
+              <Zap className="w-12 h-12 text-cyan-400 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <CardTitle className="text-white">Bare Metal</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-slate-400">Protección DDoS, firewalls configurables y backups automáticos</p>
+            <CardContent className="text-center">
+              <p className="text-slate-400 text-sm mb-4">Máximo rendimiento con hardware dedicado</p>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
+              >
+                <a href="/bare-metal">Ver Planes</a>
+              </Button>
             </CardContent>
           </Card>
-          <Card className="bg-slate-900 border-slate-800">
-            <CardHeader>
-              <HeadphonesIcon className="w-12 h-12 text-cyan-400 mb-4" />
-              <CardTitle className="text-white">Soporte 24/7</CardTitle>
+
+          <Card className="bg-slate-900 border-slate-800 hover:border-cyan-500 transition-all duration-300 group">
+            <CardHeader className="text-center">
+              <Globe className="w-12 h-12 text-cyan-400 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <CardTitle className="text-white">Clusters Kubernetes</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-slate-400">Equipo técnico disponible en todo momento para ayudarte</p>
+            <CardContent className="text-center">
+              <p className="text-slate-400 text-sm mb-4">Orquestación de contenedores gestionada</p>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
+              >
+                <a href="/clusters">Ver Planes</a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-900 border-slate-800 hover:border-cyan-500 transition-all duration-300 group">
+            <CardHeader className="text-center">
+              <Users className="w-12 h-12 text-cyan-400 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <CardTitle className="text-white">Calculadora VPS</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-slate-400 text-sm mb-4">Diseña tu servidor ideal y compara precios</p>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
+              >
+                <a href="/calculadora">Calcular</a>
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -1046,11 +861,10 @@ export default function Home() {
 
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 items-center">
-            {/* OVHcloud */}
             <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
               <div className="relative h-24 flex items-center justify-center">
                 <Image
-                  src="/ovh-logo.jpg"
+                  src="/ovhcloud-new.png"
                   alt="OVHcloud Partner"
                   fill
                   className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
@@ -1063,11 +877,10 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
             </div>
 
-            {/* AWS */}
             <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
               <div className="relative h-24 flex items-center justify-center">
                 <Image
-                  src="/aws-logo.jpg"
+                  src="/aws-new.png"
                   alt="AWS Partner"
                   fill
                   className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
@@ -1080,11 +893,10 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
             </div>
 
-            {/* Azure */}
             <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
               <div className="relative h-24 flex items-center justify-center">
                 <Image
-                  src="/azure-logo.jpg"
+                  src="/azure-new.png"
                   alt="Microsoft Azure Partner"
                   fill
                   className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
@@ -1106,11 +918,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800 bg-slate-950 py-12">
-        <div className="container mx-auto px-4"></div>
-      </footer>
     </div>
   )
 }
