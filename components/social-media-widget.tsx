@@ -17,14 +17,14 @@ export function SocialMediaWidget() {
       color: "hover:bg-blue-700",
     },
     {
-      name: "Instagram",
+      name: "Instagram LATAM",
       url: "https://www.instagram.com/titanocloudlatam/",
       icon: Instagram,
       color: "hover:bg-pink-600",
       badge: "LATAM",
     },
     {
-      name: "Instagram",
+      name: "Instagram Global",
       url: "https://www.instagram.com/titanocloud/",
       icon: Instagram,
       color: "hover:bg-pink-600",
@@ -34,21 +34,20 @@ export function SocialMediaWidget() {
       name: "TikTok",
       url: "https://www.tiktok.com/@titanocloud",
       icon: null,
-      iconUrl: "/tiktok-icon.svg",
       color: "hover:bg-black",
     },
   ]
 
   return (
-    <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-3">
+    <div className="fixed left-4 bottom-24 z-40 flex flex-col gap-3">
       {socials.map((social, index) => (
         <a
           key={index}
           href={social.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={`w-12 h-12 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 shadow-lg ${social.color} hover:scale-110 hover:border-cyan-400 group relative`}
-          aria-label={`${social.name} ${social.badge || ""}`}
+          className={`w-12 h-12 rounded-full bg-slate-800/90 backdrop-blur-sm border-2 border-slate-700 flex items-center justify-center transition-all duration-300 shadow-lg ${social.color} hover:scale-110 hover:border-cyan-400 group relative`}
+          aria-label={social.name}
         >
           {social.icon ? (
             <social.icon className="w-5 h-5 text-white" />
@@ -64,8 +63,8 @@ export function SocialMediaWidget() {
               {social.badge}
             </span>
           )}
-          <span className="absolute left-full ml-3 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-            {social.name} {social.badge && `(${social.badge})`}
+          <span className="absolute left-full ml-3 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            {social.name}
           </span>
         </a>
       ))}

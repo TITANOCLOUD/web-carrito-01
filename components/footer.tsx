@@ -4,10 +4,10 @@ import { Server, Globe, Mail, Phone, MapPin, Activity } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="border-t border-[#1a1f2e] bg-[#0a0e1a] py-12">
+    <footer className="bg-[#0a0e1a] py-12">
       <div className="container mx-auto px-4">
         {/* Company Info Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-[#1a1f2e]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Company Info - Left Side */}
           <div>
             <Logo variant="minimal" className="h-16 mb-4" />
@@ -143,7 +143,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#1a1f2e] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-400 text-sm text-center md:text-left">
             © 2025 Titano Cloud Corporate. Todos los derechos reservados.
           </p>

@@ -84,6 +84,13 @@ export function Header() {
             Nube Privada Alojada
           </Link>
 
+          <Link
+            href="/monitor"
+            className="text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap"
+          >
+            Monitor Cloud
+          </Link>
+
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
               <span>{currency}</span>
@@ -207,6 +214,13 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Nube Privada Alojada
+            </Link>
+            <Link
+              href="/monitor"
+              className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Monitor Cloud
             </Link>
             <Button
               asChild
