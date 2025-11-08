@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { AssistantWidget } from "@/components/assistant-widget"
+import { SocialMediaWidget } from "@/components/social-media-widget"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -251,6 +252,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <AssistantWidget />
+        <SocialMediaWidget />
         <Analytics />
       </body>
     </html>
