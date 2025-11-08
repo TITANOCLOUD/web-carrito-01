@@ -31,6 +31,18 @@ export async function POST(req: Request) {
 
     console.log("[v0] Received request with", messages?.length, "messages, authenticated:", isAuthenticated)
 
+    if (!isAuthenticated) {
+      console.warn("[v0] Unauthorized access attempt to Loise chat")
+      return new Response(
+        JSON.stringify({
+          role: "assistant",
+          content:
+            "🔒 **Acceso Denegado**\n\nLoise es exclusiva para clientes autenticados de Titanocloud. Por favor, inicia sesión para acceder a la consultoría gratuita con nuestra Arquitecta Cloud.",
+        }),
+        { status: 401, headers: { "Content-Type": "application/json" } },
+      )
+    }
+
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(
         JSON.stringify({ error: "invalid_messages", message: "messages debe ser un array no vacío" }),

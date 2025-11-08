@@ -112,6 +112,19 @@ export default function Home() {
   }, [])
 
   const handleSendMessage = async () => {
+    if (!isAuthenticated) {
+      setShowLoginPrompt(true)
+      setMessages([
+        ...messages,
+        {
+          role: "assistant",
+          content:
+            "🔒 **Acceso Restringido**\n\nLoise es exclusiva para clientes autenticados. Por favor, inicia sesión o crea una cuenta para acceder a la consultoría gratuita con nuestra Arquitecta Cloud.\n\nUna vez autenticado, podrás recibir análisis profesional de infraestructura cloud sin costo.",
+        },
+      ])
+      return
+    }
+
     if (!userInput.trim()) return
 
     const newMessages = [...messages, { role: "user" as const, content: userInput }]
@@ -557,6 +570,29 @@ export default function Home() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-5">
+                {!isAuthenticated && (
+                  <div className="bg-orange-500/20 border-2 border-orange-500 rounded-xl p-6 mb-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Shield className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-bold text-lg mb-2">Autenticación Requerida</h3>
+                        <p className="text-orange-100 text-sm mb-4">
+                          Loise es una herramienta exclusiva para clientes de Titanocloud. Inicia sesión para acceder a
+                          consultoría profesional gratuita.
+                        </p>
+                        <Button
+                          onClick={handleLogin}
+                          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+                        >
+                          Iniciar Sesión para Acceder
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                   {messages.length === 0 ? (
                     <div className="text-center py-8">
@@ -632,17 +668,34 @@ export default function Home() {
                           handleSendMessage()
                         }
                       }}
-                      placeholder="Ejemplo: Necesito alojar una aplicación web con base de datos que espero tenga 5000 usuarios concurrentes..."
+                      placeholder={
+                        isAuthenticated
+                          ? "Ejemplo: Necesito alojar una aplicación web con base de datos que espero tenga 5000 usuarios concurrentes..."
+                          : "Inicia sesión para consultar con Loise..."
+                      }
                       className="w-full h-32 px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none text-base"
-                      disabled={isAnalyzing}
+                      disabled={isAnalyzing || !isAuthenticated}
                     />
+                    {!isAuthenticated && (
+                      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                        <div className="text-center">
+                          <Shield className="w-12 h-12 text-orange-400 mx-auto mb-2" />
+                          <p className="text-orange-400 font-semibold">Inicia sesión para usar Loise</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <Button
-                    onClick={handleSendMessage}
-                    disabled={!userInput.trim() || isAnalyzing}
+                    onClick={isAuthenticated ? handleSendMessage : handleLogin}
+                    disabled={(!userInput.trim() || isAnalyzing) && isAuthenticated}
                     className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   >
-                    {isAnalyzing ? (
+                    {!isAuthenticated ? (
+                      <>
+                        <Shield className="w-5 h-5 mr-2" />
+                        Iniciar Sesión para Consultar
+                      </>
+                    ) : isAnalyzing ? (
                       <>
                         <Sparkles className="w-5 h-5 mr-2 animate-spin" />
                         Loise está pensando...
@@ -655,7 +708,9 @@ export default function Home() {
                     )}
                   </Button>
                   <p className="text-xs text-slate-500 text-center">
-                    Presiona Enter para enviar • Shift + Enter para nueva línea
+                    {isAuthenticated
+                      ? "Presiona Enter para enviar • Shift + Enter para nueva línea"
+                      : "Necesitas iniciar sesión para usar Loise AI"}
                   </p>
                 </div>
               </CardContent>
