@@ -122,8 +122,11 @@ export default function CloudMonitorPage() {
           <h1 className="text-5xl font-bold text-white mb-4">
             Monitor de <span className="text-cyan-400">Cloud Providers</span>
           </h1>
-          <p className="text-slate-300 text-lg mb-6">
+          <p className="text-slate-300 text-lg mb-2">
             Monitoreo en tiempo real de los principales proveedores cloud a nivel global
+          </p>
+          <p className="text-cyan-400/80 text-sm mb-4">
+            Datos scrapeados en tiempo real desde múltiples sitios web de DownDetector
           </p>
           {statusData && (
             <p className="text-slate-500 text-sm">
