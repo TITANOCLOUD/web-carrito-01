@@ -18,9 +18,10 @@ import {
   Sparkles,
   Send,
   ArrowRight,
+  ChevronDown,
 } from "lucide-react"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -30,6 +31,8 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [requiresCaptcha, setRequiresCaptcha] = useState(false)
+  const [isChatExpanded, setIsChatExpanded] = useState(true)
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const slides = [
     {
@@ -111,7 +114,31 @@ export default function Home() {
     }
   }, [])
 
+  const resetInactivityTimer = () => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current)
+    }
+
+    inactivityTimerRef.current = setTimeout(() => {
+      setIsChatExpanded(false)
+    }, 120000) // 2 minutes = 120,000ms
+  }
+
+  useEffect(() => {
+    if (isChatExpanded && isAuthenticated) {
+      resetInactivityTimer()
+    }
+
+    return () => {
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current)
+      }
+    }
+  }, [isChatExpanded, isAuthenticated])
+
   const handleSendMessage = async () => {
+    resetInactivityTimer()
+
     if (!isAuthenticated) {
       setShowLoginPrompt(true)
       setMessages([
@@ -537,185 +564,227 @@ export default function Home() {
             </div>
           </div>
 
-          <div id="chat" className="grid md:grid-cols-2 gap-8 items-start">
-            <div className="relative hidden md:block">
-              <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-2xl sticky top-8">
-                <Image
-                  src="/attractive-professional-tech-woman-with-headset-ai-.jpg"
-                  alt="Loise - Arquitecta Cloud"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
-                    <p className="text-white font-semibold mb-1">Loise - Tu Arquitecta Cloud Personal</p>
-                    <p className="text-slate-300 text-sm">Disponible 24/7 para diseñar tu infraestructura ideal</p>
-                    {isAuthenticated && (
-                      <div className="mt-2 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                        <span className="text-green-400 text-xs font-medium">Sesión activa</span>
-                      </div>
-                    )}
+          <div className="text-center mb-6">
+            <Button
+              onClick={() => {
+                setIsChatExpanded(!isChatExpanded)
+                if (!isChatExpanded) {
+                  resetInactivityTimer()
+                }
+              }}
+              className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg"
+            >
+              {isChatExpanded ? (
+                <>
+                  <ChevronDown className="w-5 h-5 mr-2" />
+                  Minimizar Chat con Loise
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Abrir Chat con Loise
+                </>
+              )}
+            </Button>
+            {isChatExpanded && isAuthenticated && (
+              <p className="text-xs text-slate-500 mt-2">
+                La sección se cerrará automáticamente después de 2 minutos de inactividad
+              </p>
+            )}
+          </div>
+
+          {isChatExpanded && (
+            <div id="chat" className="grid md:grid-cols-2 gap-8 items-start">
+              <div className="relative hidden md:block">
+                <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-cyan-500/30 shadow-2xl sticky top-8">
+                  <Image
+                    src="/attractive-professional-tech-woman-with-headset-ai-.jpg"
+                    alt="Loise - Arquitecta Cloud"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/30">
+                      <p className="text-white font-semibold mb-1">Loise - Tu Arquitecta Cloud Personal</p>
+                      <p className="text-slate-300 text-sm">Disponible 24/7 para diseñar tu infraestructura ideal</p>
+                      {isAuthenticated && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                          <span className="text-green-400 text-xs font-medium">Sesión activa</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 shadow-2xl">
-              <CardHeader className="text-center pb-4">
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  <Sparkles className="w-7 h-7 text-cyan-400 animate-pulse" />
-                  <CardTitle className="text-2xl md:text-3xl font-bold text-white">Loise AI Assistant</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                {!isAuthenticated && (
-                  <div className="bg-orange-500/20 border-2 border-orange-500 rounded-xl p-6 mb-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Shield className="w-6 h-6 text-white" />
+              <Card className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30 shadow-2xl">
+                <CardHeader className="text-center pb-4">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Sparkles className="w-7 h-7 text-cyan-400 animate-pulse" />
+                    <CardTitle className="text-2xl md:text-3xl font-bold text-white">Loise AI Assistant</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent
+                  className="space-y-5"
+                  onMouseMove={resetInactivityTimer}
+                  onClick={resetInactivityTimer}
+                  onKeyDown={resetInactivityTimer}
+                >
+                  {!isAuthenticated && (
+                    <div className="bg-orange-500/20 border-2 border-orange-500 rounded-xl p-6 mb-4">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-white font-bold text-lg mb-2">Autenticación Requerida</h3>
+                          <p className="text-orange-100 text-sm mb-4">
+                            Loise es una herramienta exclusiva para clientes de Titanocloud. Inicia sesión para acceder
+                            a consultoría profesional gratuita.
+                          </p>
+                          <Button
+                            onClick={handleLogin}
+                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+                          >
+                            Iniciar Sesión para Acceder
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-white font-bold text-lg mb-2">Autenticación Requerida</h3>
-                        <p className="text-orange-100 text-sm mb-4">
-                          Loise es una herramienta exclusiva para clientes de Titanocloud. Inicia sesión para acceder a
-                          consultoría profesional gratuita.
+                    </div>
+                  )}
+
+                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    {messages.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Sparkles className="w-12 h-12 text-cyan-400 mx-auto mb-4 animate-pulse" />
+                        <p className="text-slate-400">
+                          ¡Hola! Soy Loise, tu Arquitecta Cloud. Cuéntame sobre tu proyecto y te ayudaré a encontrar la
+                          mejor solución.
                         </p>
-                        <Button
-                          onClick={handleLogin}
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-                        >
-                          Iniciar Sesión para Acceder
-                        </Button>
                       </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                  {messages.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Sparkles className="w-12 h-12 text-cyan-400 mx-auto mb-4 animate-pulse" />
-                      <p className="text-slate-400">
-                        ¡Hola! Soy Loise, tu Arquitecta Cloud. Cuéntame sobre tu proyecto y te ayudaré a encontrar la
-                        mejor solución.
-                      </p>
-                    </div>
-                  ) : (
-                    messages.map((msg, idx) => (
-                      <div key={idx} className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                        {msg.role === "assistant" && (
-                          <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center flex-shrink-0">
-                            <Sparkles className="w-4 h-4 text-white" />
-                          </div>
-                        )}
-                        <div
-                          className={`max-w-[80%] rounded-lg p-4 ${
-                            msg.role === "user"
-                              ? "bg-cyan-500 text-white"
-                              : "bg-slate-950 text-slate-200 border border-cyan-500/30"
-                          }`}
-                        >
-                          <p className="whitespace-pre-line text-sm leading-relaxed">{msg.content}</p>
-                        </div>
-                        {msg.role === "user" && (
-                          <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
-                            <span className="text-white text-sm font-bold">Tú</span>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  )}
-                  {isAnalyzing && (
-                    <div className="flex gap-3 justify-start">
-                      <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center flex-shrink-0">
-                        <Sparkles className="w-4 h-4 text-white animate-spin" />
-                      </div>
-                      <div className="bg-slate-950 border border-cyan-500/30 rounded-lg p-4">
-                        <p className="text-slate-400 text-sm">Loise está analizando tu consulta...</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {showLoginPrompt && (
-                  <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
-                    <p className="text-orange-400 font-semibold mb-3">🔒 Autenticación Requerida</p>
-                    <Button onClick={handleLogin} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
-                      Iniciar Sesión / Registrarse
-                    </Button>
-                  </div>
-                )}
-
-                {requiresCaptcha && (
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                    <p className="text-red-400 font-semibold mb-3">⚠️ Verificación de Seguridad</p>
-                    <Button onClick={handleCompleteCaptcha} className="w-full bg-red-500 hover:bg-red-600 text-white">
-                      Completar CAPTCHA
-                    </Button>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  <div className="relative">
-                    <textarea
-                      value={userInput}
-                      onChange={(e) => setUserInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault()
-                          handleSendMessage()
-                        }
-                      }}
-                      placeholder={
-                        isAuthenticated
-                          ? "Ejemplo: Necesito alojar una aplicación web con base de datos que espero tenga 5000 usuarios concurrentes..."
-                          : "Inicia sesión para consultar con Loise..."
-                      }
-                      className="w-full h-32 px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none text-base"
-                      disabled={isAnalyzing || !isAuthenticated}
-                    />
-                    {!isAuthenticated && (
-                      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                        <div className="text-center">
-                          <Shield className="w-12 h-12 text-orange-400 mx-auto mb-2" />
-                          <p className="text-orange-400 font-semibold">Inicia sesión para usar Loise</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <Button
-                    onClick={isAuthenticated ? handleSendMessage : handleLogin}
-                    disabled={(!userInput.trim() || isAnalyzing) && isAuthenticated}
-                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                  >
-                    {!isAuthenticated ? (
-                      <>
-                        <Shield className="w-5 h-5 mr-2" />
-                        Iniciar Sesión para Consultar
-                      </>
-                    ) : isAnalyzing ? (
-                      <>
-                        <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                        Loise está pensando...
-                      </>
                     ) : (
-                      <>
-                        <Send className="w-5 h-5 mr-2" />
-                        Enviar Consulta
-                      </>
+                      messages.map((msg, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                        >
+                          {msg.role === "assistant" && (
+                            <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center flex-shrink-0">
+                              <Sparkles className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                          <div
+                            className={`max-w-[80%] rounded-lg p-4 ${
+                              msg.role === "user"
+                                ? "bg-cyan-500 text-white"
+                                : "bg-slate-950 text-slate-200 border border-cyan-500/30"
+                            }`}
+                          >
+                            <p className="whitespace-pre-line text-sm leading-relaxed">{msg.content}</p>
+                          </div>
+                          {msg.role === "user" && (
+                            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-sm font-bold">Tú</span>
+                            </div>
+                          )}
+                        </div>
+                      ))
                     )}
-                  </Button>
-                  <p className="text-xs text-slate-500 text-center">
-                    {isAuthenticated
-                      ? "Presiona Enter para enviar • Shift + Enter para nueva línea"
-                      : "Necesitas iniciar sesión para usar Loise AI"}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                    {isAnalyzing && (
+                      <div className="flex gap-3 justify-start">
+                        <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center flex-shrink-0">
+                          <Sparkles className="w-4 h-4 text-white animate-spin" />
+                        </div>
+                        <div className="bg-slate-950 border border-cyan-500/30 rounded-lg p-4">
+                          <p className="text-slate-400 text-sm">Loise está analizando tu consulta...</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {showLoginPrompt && (
+                    <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
+                      <p className="text-orange-400 font-semibold mb-3">🔒 Autenticación Requerida</p>
+                      <Button onClick={handleLogin} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+                        Iniciar Sesión / Registrarse
+                      </Button>
+                    </div>
+                  )}
+
+                  {requiresCaptcha && (
+                    <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                      <p className="text-red-400 font-semibold mb-3">⚠️ Verificación de Seguridad</p>
+                      <Button onClick={handleCompleteCaptcha} className="w-full bg-red-500 hover:bg-red-600 text-white">
+                        Completar CAPTCHA
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <textarea
+                        value={userInput}
+                        onChange={(e) => {
+                          setUserInput(e.target.value)
+                          resetInactivityTimer()
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault()
+                            handleSendMessage()
+                          }
+                        }}
+                        placeholder={
+                          isAuthenticated
+                            ? "Ejemplo: Necesito alojar una aplicación web con base de datos que espero tenga 5000 usuarios concurrentes..."
+                            : "Inicia sesión para consultar con Loise..."
+                        }
+                        className="w-full h-32 px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none text-base"
+                        disabled={isAnalyzing || !isAuthenticated}
+                      />
+                      {!isAuthenticated && (
+                        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                          <div className="text-center">
+                            <Shield className="w-12 h-12 text-orange-400 mx-auto mb-2" />
+                            <p className="text-orange-400 font-semibold">Inicia sesión para usar Loise</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      onClick={isAuthenticated ? handleSendMessage : handleLogin}
+                      disabled={(!userInput.trim() || isAnalyzing) && isAuthenticated}
+                      className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    >
+                      {!isAuthenticated ? (
+                        <>
+                          <Shield className="w-5 h-5 mr-2" />
+                          Iniciar Sesión para Consultar
+                        </>
+                      ) : isAnalyzing ? (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2 animate-spin" />
+                          Loise está pensando...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-5 h-5 mr-2" />
+                          Enviar Consulta
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-slate-500 text-center">
+                      {isAuthenticated
+                        ? "Presiona Enter para enviar • Shift + Enter para nueva línea"
+                        : "Necesitas iniciar sesión para usar Loise AI"}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </section>
 

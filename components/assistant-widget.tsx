@@ -77,7 +77,7 @@ export function AssistantWidget() {
       >
         <div className="relative">
           <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-latina-business-woman-with-headset-cu-EbEl21R5bnl6JtBeJo9hddo1jIw6P4.jpg"
+            src="/andrea-assistant.jpg"
             alt="Andrea - Asistente Virtual"
             className="w-16 h-16 rounded-full object-cover shadow-lg border-2 border-cyan-400 group-hover:border-cyan-300 transition-all"
           />
@@ -97,7 +97,7 @@ export function AssistantWidget() {
         >
           <div className="relative">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-latina-business-woman-with-headset-cu-EbEl21R5bnl6JtBeJo9hddo1jIw6P4.jpg"
+              src="/andrea-assistant.jpg"
               alt="Andrea - Asistente Virtual"
               className="w-16 h-16 rounded-full object-cover shadow-lg border-2 border-cyan-400 group-hover:border-cyan-300 transition-all group-hover:scale-110"
             />
@@ -112,7 +112,7 @@ export function AssistantWidget() {
             {/* Header */}
             <div className="flex items-start gap-3 mb-4">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-latina-business-woman-with-headset-cu-EbEl21R5bnl6JtBeJo9hddo1jIw6P4.jpg"
+                src="/andrea-assistant.jpg"
                 alt="Andrea"
                 className="w-14 h-14 rounded-full object-cover border-2 border-cyan-400 shadow-lg"
               />
