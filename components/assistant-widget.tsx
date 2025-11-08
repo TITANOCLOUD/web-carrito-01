@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { X, MessageCircle, Phone } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { tracker } from "@/lib/tracking-client"
 
 export function AssistantWidget() {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,7 +25,14 @@ export function AssistantWidget() {
     checkAuth()
     window.addEventListener("storage", checkAuth)
 
-    // Show widget after 5 seconds on first visit
+    if (tracker) {
+      tracker.track("page_view", {
+        page: pathname,
+        url: window.location.href,
+        title: document.title,
+      })
+    }
+
     const timer = setTimeout(() => {
       const hasSeenWidget = sessionStorage.getItem("hasSeenAndrea")
       if (!hasSeenWidget) {
@@ -37,9 +45,8 @@ export function AssistantWidget() {
       clearTimeout(timer)
       window.removeEventListener("storage", checkAuth)
     }
-  }, [])
+  }, [pathname])
 
-  // Don't show on dashboard or login pages
   if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/login")) {
     return null
   }
@@ -121,7 +128,7 @@ export function AssistantWidget() {
                   <h3 className="text-white font-semibold">Andrea</h3>
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 </div>
-                <p className="text-xs text-gray-400">Asistente Virtual</p>
+                <p className="text-xs text-gray-400">Asesora Cloud · Online ahora</p>
               </div>
               <div className="flex gap-1">
                 <Button
@@ -168,7 +175,7 @@ export function AssistantWidget() {
             </div>
 
             {/* Footer */}
-            <p className="text-xs text-gray-500 text-center mt-3">Estoy disponible para ayudarte 24/7</p>
+            <p className="text-xs text-gray-500 text-center mt-3">Estoy disponible para ayudarte 24/7 💙</p>
           </div>
         </Card>
       )}
