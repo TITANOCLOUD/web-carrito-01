@@ -153,6 +153,7 @@ export default function DashboardPage() {
         {/* Content Area */}
         <main className="flex-1 p-8">
           <h1 className="text-3xl font-bold text-white">Bienvenido a Titano Cloud</h1>
+          <p className="text-slate-400 mt-2">Selecciona una opción del menú para comenzar</p>
         </main>
 
         {/* Footer */}

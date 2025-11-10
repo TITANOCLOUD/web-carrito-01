@@ -444,35 +444,46 @@ export default function DetectorCaidas() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <Card className="bg-green-600 border-green-700">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-white mb-1">{operationalCount}</div>
-              <div className="text-xs text-white/90">Operacionales</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-yellow-500 border-yellow-600">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-black mb-1">{degradedCount}</div>
-              <div className="text-xs text-black/90">Degradados</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-red-600 border-red-700">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-white mb-1">{downCount}</div>
-              <div className="text-xs text-white/90">Caídos</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-blue-600 border-blue-700">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-white mb-1">{totalReports}</div>
-              <div className="text-xs text-white/90">Reportes</div>
-            </CardContent>
-          </Card>
+        {/* Estado General de Proveedores Cloud */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-cyan-400" />
+            Estado General de Proveedores Cloud
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Card className="bg-green-600 border-green-700">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-white mb-1">{operationalCount}</div>
+                <div className="text-xs text-white/90">Operacionales</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-yellow-500 border-yellow-600">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-black mb-1">{degradedCount}</div>
+                <div className="text-xs text-black/90">Degradados</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-red-600 border-red-700">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-white mb-1">{downCount}</div>
+                <div className="text-xs text-white/90">Caídos</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-blue-600 border-blue-700">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-white mb-1">{totalReports}</div>
+                <div className="text-xs text-white/90">Reportes</div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
+        {/* Tendencia de Reportes por Proveedor */}
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Tendencia de Reportes</h2>
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-cyan-400" />
+            Tendencia de Reportes por Proveedor
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {services.map((service) => {
               const totalReports = service.regions.reduce((sum, r) => sum + r.reports, 0)
@@ -569,6 +580,7 @@ export default function DetectorCaidas() {
           </div>
         </div>
 
+        {/* Gráfica Comparativa de Todos los Proveedores Cloud */}
         <Card className="mb-8 bg-slate-900/40 border border-slate-700">
           <CardHeader>
             <CardTitle className="text-lg text-white flex items-center gap-2">
@@ -649,6 +661,7 @@ export default function DetectorCaidas() {
           </CardContent>
         </Card>
 
+        {/* Alertas Activas */}
         {servicesWithIssues.length > 0 && (
           <Card className="mb-6 bg-gradient-to-br from-red-950/30 to-orange-950/30 border border-red-500/40 shadow-lg">
             <CardHeader className="pb-3">
@@ -716,6 +729,7 @@ export default function DetectorCaidas() {
           </Card>
         )}
 
+        {/* Incidentes Oficiales */}
         {activeIncidents.length > 0 && (
           <Card className="mb-6 bg-gradient-to-br from-orange-950/30 to-red-950/30 border border-orange-500/40 shadow-lg">
             <CardHeader className="pb-3">
