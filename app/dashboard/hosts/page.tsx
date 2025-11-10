@@ -25,27 +25,82 @@ interface Host {
 
 export default function HostsManagementPage() {
   const [hosts, setHosts] = useState<Host[]>([
-    { id: "1", name: "483431-IBG-SCA3-G2-CEPH-BAY-01", ip: "72.251.3.93", type: "Ceph Storage", group: "IBG.COM.CO" },
+    // Clusters (Reactor 1)
     {
-      id: "2",
-      name: "501691-IBG-SCA3-G2-CEPH-BAY-02",
+      id: "483431",
+      name: "483431-ibg-sca3-g2-ceph-bay-01",
+      ip: "72.251.3.93",
+      type: "Ceph Storage",
+      group: "IBG.COM.CO",
+    },
+    {
+      id: "501691",
+      name: "501691-ibg-sca3-g2-ceph-bay-02",
       ip: "72.251.3.238",
       type: "Ceph Storage",
       group: "IBG.COM.CO",
     },
     {
-      id: "3",
-      name: "493196-IBG-SCA3-G2-CEPH-BAY-03",
+      id: "493196",
+      name: "493196-ibg-sca3-g2-ceph-bay-03",
       ip: "72.251.3.212",
       type: "Ceph Storage",
       group: "IBG.COM.CO",
     },
     {
-      id: "4",
-      name: "506748-IBG-ADVSTO-G2-PBS-01",
+      id: "506748",
+      name: "506748-ibg-advsto-g2-pbs-01",
       ip: "148.113.216.7",
       type: "Proxmox Backup",
       group: "IBG.COM.CO",
+    },
+    { id: "408163", name: "408163-ic-hgr3-ceph-01", ip: "51.222.152.249", type: "Ceph Storage", group: "INTEGRA" },
+    { id: "422255", name: "422255-ic-hgr3-ceph-02", ip: "15.235.43.68", type: "Ceph Storage", group: "INTEGRA" },
+    { id: "449125", name: "449125-ic-hgr3-ceph-03", ip: "15.235.67.40", type: "Ceph Storage", group: "INTEGRA" },
+    { id: "444276", name: "444276-x-hgr3-ceph-01", ip: "15.235.117.37", type: "Ceph Storage", group: "XPERTEC" },
+    { id: "447437", name: "447437-x-hgr3-ceph-03", ip: "15.235.117.52", type: "Ceph Storage", group: "XPERTEC" },
+    { id: "447438", name: "447438-x-hgr3-ceph-02", ip: "15.235.117.53", type: "Ceph Storage", group: "XPERTEC" },
+    { id: "447439", name: "447439-s-hgr3-ceph-01", ip: "15.235.117.54", type: "Ceph Storage", group: "SATURN" },
+    { id: "453090", name: "453090-adv5-g2-ceph-1", ip: "15.235.115.179", type: "Ceph Storage", group: "ADVANCED" },
+    { id: "466298", name: "466298-scale-i1-ceph3", ip: "51.222.249.37", type: "Ceph Storage", group: "SCALE" },
+    { id: "469453", name: "469453-sca1-ceph-bay-01", ip: "15.235.67.86", type: "Ceph Storage", group: "SCALE" },
+    { id: "469461", name: "469461-scale-i1-ceph1", ip: "15.235.67.115", type: "Ceph Storage", group: "SCALE" },
+
+    // Servidores de Spam (Reactor 3)
+    { id: "100001", name: "100001-hbtc-spam239-vm-2001", ip: "54.39.125.239", type: "Spam Filter", group: "HBTC" },
+    { id: "100002", name: "100002-hbtc-spam9-vm-2002", ip: "54.39.46.9", type: "Spam Filter", group: "HBTC" },
+    { id: "100003", name: "100003-hbtc-spam234-vm-2003", ip: "144.217.195.234", type: "Spam Filter", group: "HBTC" },
+
+    // Servidores de Correo (Reactor 2)
+    { id: "378012", name: "378012-hbtc-infra-1-zimbra-corzo", ip: "51.222.47.74", type: "Zimbra Mail", group: "HBTC" },
+    {
+      id: "482760",
+      name: "482760-bt-hgr1-g1-mongo-gateway",
+      ip: "51.222.152.216",
+      type: "Mail Gateway",
+      group: "BITEC",
+    },
+
+    // Servidores Virtuales (Reactor 4)
+    { id: "401453", name: "401453-pr-hgr3-bay-01", ip: "51.222.249.84", type: "Proxmox VE", group: "PROXMOX" },
+    { id: "414182", name: "414182-pr-pbs-bay-01", ip: "15.235.10.221", type: "Proxmox Backup", group: "PROXMOX" },
+    { id: "415417", name: "415417-advstore-g2-pbs-01", ip: "15.235.12.57", type: "Proxmox Backup", group: "ADVANCED" },
+
+    // Páginas Web (Reactor 5)
+    { id: "236186", name: "236186-panel", ip: "192.99.33.217", type: "Control Panel", group: "SYSTEM" },
+    {
+      id: "314722",
+      name: "314722-hbtc-rise1-labhack-hackacademy",
+      ip: "54.39.105.106",
+      type: "Web Server",
+      group: "HBTC",
+    },
+    {
+      id: "462754",
+      name: "462754-delta-plataformaintegra",
+      ip: "148.113.168.51",
+      type: "Web Platform",
+      group: "DELTA",
     },
   ])
 
@@ -63,6 +118,10 @@ export default function HostsManagementPage() {
 
   const handleDeleteHost = (id: string) => {
     setHosts(hosts.filter((host) => host.id !== id))
+  }
+
+  const handleEditHost = (id: string, newIp: string) => {
+    setHosts(hosts.map((host) => (host.id === id ? { ...host, ip: newIp } : host)))
   }
 
   const filteredHosts = hosts.filter(

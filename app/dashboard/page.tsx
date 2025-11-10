@@ -4,8 +4,9 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Database, Mail, Shield, Server, Globe } from "lucide-react"
+import { Database, Mail, Shield, Server, Globe, RefreshCw } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
 
 interface Host {
   id: string
@@ -15,31 +16,357 @@ interface Host {
   reactor: number
   uptime?: string
   lastCheck?: string
+  type?: string
 }
 
 export default function DashboardPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const [hosts, setHosts] = useState<Host[]>([
-    { id: "1", name: "Cluster IBG", ip: "192.168.1.10", status: "online", reactor: 1, uptime: "99.9%" },
-    { id: "2", name: "Cluster INTEGRA", ip: "192.168.1.11", status: "online", reactor: 1, uptime: "99.8%" },
-    { id: "3", name: "Cluster KATIA RIVERO", ip: "192.168.1.12", status: "warning", reactor: 1, uptime: "95.2%" },
-    { id: "4", name: "Servidor Principal", ip: "192.168.1.13", status: "online", reactor: 1, uptime: "99.7%" },
-    { id: "5", name: "Mail Server 1", ip: "192.168.2.10", status: "online", reactor: 2, uptime: "99.9%" },
-    { id: "6", name: "Mail Server 2", ip: "192.168.2.11", status: "online", reactor: 2, uptime: "99.8%" },
-    { id: "7", name: "Zimbra Server", ip: "192.168.2.12", status: "offline", reactor: 2, uptime: "0%" },
-    { id: "8", name: "Exchange Server", ip: "192.168.2.13", status: "online", reactor: 2, uptime: "98.5%" },
-    { id: "9", name: "Spam Gateway 1", ip: "192.168.3.10", status: "online", reactor: 3, uptime: "99.9%" },
-    { id: "10", name: "Spam Gateway 2", ip: "192.168.3.11", status: "online", reactor: 3, uptime: "99.7%" },
-    { id: "11", name: "Anti-Spam Filter", ip: "192.168.3.12", status: "online", reactor: 3, uptime: "99.5%" },
-    { id: "12", name: "VPS-001", ip: "192.168.4.10", status: "online", reactor: 4, uptime: "99.9%" },
-    { id: "13", name: "VPS-002", ip: "192.168.4.11", status: "warning", reactor: 4, uptime: "92.3%" },
-    { id: "14", name: "Proxmox Node", ip: "192.168.4.12", status: "online", reactor: 4, uptime: "99.8%" },
-    { id: "15", name: "pfSense Gateway", ip: "192.168.4.13", status: "online", reactor: 4, uptime: "100%" },
-    { id: "16", name: "Web Server 1", ip: "192.168.5.10", status: "online", reactor: 5, uptime: "99.9%" },
-    { id: "17", name: "Web Server 2", ip: "192.168.5.11", status: "online", reactor: 5, uptime: "99.7%" },
-    { id: "18", name: "cPanel Server", ip: "192.168.5.12", status: "online", reactor: 5, uptime: "99.8%" },
+    // Reactor 1 - Clusters (Ceph, Storage)
+    {
+      id: "483431",
+      name: "ibg-sca3-g2-ceph-bay-01",
+      ip: "72.251.3.93",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.9%",
+    },
+    {
+      id: "501691",
+      name: "ibg-sca3-g2-ceph-bay-02",
+      ip: "72.251.3.238",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.8%",
+    },
+    {
+      id: "493196",
+      name: "ibg-sca3-g2-ceph-bay-03",
+      ip: "72.251.3.212",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.7%",
+    },
+    {
+      id: "408163",
+      name: "ic-hgr3-ceph-01",
+      ip: "51.222.152.249",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.9%",
+    },
+    {
+      id: "422255",
+      name: "ic-hgr3-ceph-02",
+      ip: "15.235.43.68",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.6%",
+    },
+    {
+      id: "449125",
+      name: "ic-hgr3-ceph-03",
+      ip: "15.235.67.40",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.5%",
+    },
+    {
+      id: "444276",
+      name: "x-hgr3-ceph-01",
+      ip: "15.235.117.37",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.8%",
+    },
+    {
+      id: "447437",
+      name: "x-hgr3-ceph-03",
+      ip: "15.235.117.52",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.7%",
+    },
+    {
+      id: "447438",
+      name: "x-hgr3-ceph-02",
+      ip: "15.235.117.53",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.9%",
+    },
+    {
+      id: "447439",
+      name: "s-hgr3-ceph-01",
+      ip: "15.235.117.54",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.6%",
+    },
+    {
+      id: "453090",
+      name: "adv5-g2-ceph-1",
+      ip: "15.235.115.179",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.8%",
+    },
+    {
+      id: "466298",
+      name: "scale-i1-ceph3",
+      ip: "51.222.249.37",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.5%",
+    },
+    {
+      id: "469453",
+      name: "sca1-ceph-bay-01",
+      ip: "15.235.67.86",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.9%",
+    },
+    {
+      id: "469461",
+      name: "scale-i1-ceph1",
+      ip: "15.235.67.115",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.7%",
+    },
+    {
+      id: "469855",
+      name: "sca1-ceph-bay-03",
+      ip: "15.235.43.103",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.8%",
+    },
+    {
+      id: "469864",
+      name: "sca1-ceph-bay-02",
+      ip: "15.235.67.180",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.6%",
+    },
+    {
+      id: "469870",
+      name: "scale-i1-ceph2",
+      ip: "15.235.67.186",
+      status: "online",
+      reactor: 1,
+      type: "Ceph Storage",
+      uptime: "99.9%",
+    },
+    {
+      id: "412703",
+      name: "adv-4-clu",
+      ip: "51.222.248.167",
+      status: "online",
+      reactor: 1,
+      type: "Cluster",
+      uptime: "99.8%",
+    },
+
+    // Reactor 2 - Servidores de Correo (Zimbra, Mail)
+    {
+      id: "378012",
+      name: "hbtc-infra-1-zimbra-corzo",
+      ip: "51.222.47.74",
+      status: "online",
+      reactor: 2,
+      type: "Zimbra Mail",
+      uptime: "99.9%",
+    },
+    {
+      id: "482760",
+      name: "bt-hgr1-g1-mongo-gateway",
+      ip: "51.222.152.216",
+      status: "online",
+      reactor: 2,
+      type: "Mail Gateway",
+      uptime: "99.7%",
+    },
+    {
+      id: "484061",
+      name: "bt-hgr3-g1-mongo-gateway",
+      ip: "148.113.187.42",
+      status: "online",
+      reactor: 2,
+      type: "Mail Gateway",
+      uptime: "99.6%",
+    },
+
+    // Reactor 3 - Servidores de Spam
+    {
+      id: "100001",
+      name: "hbtc-spam239-vm-2001",
+      ip: "54.39.125.239",
+      status: "online",
+      reactor: 3,
+      type: "Spam Filter",
+      uptime: "99.9%",
+    },
+    {
+      id: "100002",
+      name: "hbtc-spam9-vm-2002",
+      ip: "54.39.46.9",
+      status: "online",
+      reactor: 3,
+      type: "Spam Filter",
+      uptime: "99.8%",
+    },
+    {
+      id: "100003",
+      name: "hbtc-spam234-vm-2003",
+      ip: "144.217.195.234",
+      status: "online",
+      reactor: 3,
+      type: "Spam Filter",
+      uptime: "99.7%",
+    },
+
+    // Reactor 4 - Servidores Virtuales (VPS, Proxmox, PBS)
+    {
+      id: "401453",
+      name: "pr-hgr3-bay-01",
+      ip: "51.222.249.84",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox VE",
+      uptime: "99.9%",
+    },
+    {
+      id: "414182",
+      name: "pr-pbs-bay-01",
+      ip: "15.235.10.221",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.8%",
+    },
+    {
+      id: "415417",
+      name: "advstore-g2-pbs-01",
+      ip: "15.235.12.57",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.7%",
+    },
+    {
+      id: "422858",
+      name: "t-advstor1-g2-pbs-01",
+      ip: "15.235.12.231",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.9%",
+    },
+    {
+      id: "437541",
+      name: "advs1-pbs-01",
+      ip: "15.235.83.54",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.6%",
+    },
+    {
+      id: "446396",
+      name: "sys-sys-1-sat-32-pbs-bay-1",
+      ip: "192.99.36.34",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.8%",
+    },
+    {
+      id: "451816",
+      name: "ze-rise1-g2-pve",
+      ip: "148.113.159.120",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox VE",
+      uptime: "99.9%",
+    },
+    {
+      id: "472841",
+      name: "advstore-g2-pbs-01",
+      ip: "148.113.169.29",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.7%",
+    },
+    {
+      id: "472844",
+      name: "advs1-pbs-02",
+      ip: "148.113.169.32",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.8%",
+    },
+    {
+      id: "473203",
+      name: "hbtc-advsto-g2-pbs-01",
+      ip: "148.113.169.39",
+      status: "online",
+      reactor: 4,
+      type: "Proxmox Backup",
+      uptime: "99.6%",
+    },
+
+    // Reactor 5 - Páginas Web y Paneles
+    {
+      id: "236186",
+      name: "panel",
+      ip: "192.99.33.217",
+      status: "online",
+      reactor: 5,
+      type: "Control Panel",
+      uptime: "99.9%",
+    },
+    {
+      id: "314722",
+      name: "hbtc-rise1-labhack-hackacademy",
+      ip: "54.39.105.106",
+      status: "online",
+      reactor: 5,
+      type: "Web Server",
+      uptime: "99.8%",
+    },
+    {
+      id: "462754",
+      name: "delta-plataformaintegra",
+      ip: "148.113.168.51",
+      status: "online",
+      reactor: 5,
+      type: "Web Platform",
+      uptime: "99.7%",
+    },
   ])
 
   useEffect(() => {
@@ -51,17 +378,46 @@ export default function DashboardPage() {
     }
 
     const interval = setInterval(() => {
-      setHosts((prev) =>
-        prev.map((host) => ({
-          ...host,
-          status: Math.random() > 0.1 ? "online" : Math.random() > 0.5 ? "warning" : "offline",
-          lastCheck: new Date().toLocaleTimeString(),
-        })),
-      )
+      checkHostsStatus()
     }, 30000)
 
     return () => clearInterval(interval)
   }, [router])
+
+  const checkHostsStatus = async () => {
+    setHosts((prev) =>
+      prev.map((host) => {
+        // Simulación de ping - En producción esto debería llamar a un API endpoint
+        const random = Math.random()
+        let status: Host["status"]
+        let uptime: string
+
+        if (random > 0.95) {
+          status = "offline"
+          uptime = "0%"
+        } else if (random > 0.85) {
+          status = "warning"
+          uptime = `${(85 + Math.random() * 10).toFixed(1)}%`
+        } else {
+          status = "online"
+          uptime = `${(95 + Math.random() * 5).toFixed(1)}%`
+        }
+
+        return {
+          ...host,
+          status,
+          uptime,
+          lastCheck: new Date().toLocaleTimeString(),
+        }
+      }),
+    )
+  }
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await checkHostsStatus()
+    setTimeout(() => setIsRefreshing(false), 1000)
+  }
 
   if (!isAuthenticated) {
     return null
@@ -82,46 +438,71 @@ export default function DashboardPage() {
 
   const ReactorCore = ({ reactorNumber }: { reactorNumber: number }) => {
     const reactorHosts = getReactorHosts(reactorNumber)
-    const maxSlots = 37 // Número total de slots en el reactor (círculos concéntricos)
 
-    // Posiciones en coordenadas polares para simular un reactor circular
-    const positions = [
-      // Centro (1 slot)
-      { ring: 0, angle: 0, distance: 0 },
-      // Anillo 1 (6 slots)
-      ...Array.from({ length: 6 }, (_, i) => ({
-        ring: 1,
-        angle: (i * 60 * Math.PI) / 180,
-        distance: 50,
-      })),
-      // Anillo 2 (12 slots)
-      ...Array.from({ length: 12 }, (_, i) => ({
-        ring: 2,
-        angle: (i * 30 * Math.PI) / 180,
-        distance: 100,
-      })),
-      // Anillo 3 (18 slots)
-      ...Array.from({ length: 18 }, (_, i) => ({
-        ring: 3,
-        angle: (i * 20 * Math.PI) / 180,
-        distance: 150,
-      })),
-    ]
+    // Calcular anillos necesarios basado en cantidad de hosts
+    const calculateRings = (hostCount: number) => {
+      if (hostCount <= 1) return 1
+      if (hostCount <= 7) return 2
+      if (hostCount <= 19) return 3
+      if (hostCount <= 37) return 4
+      if (hostCount <= 61) return 5
+      return 6
+    }
+
+    const rings = calculateRings(reactorHosts.length)
+
+    // Generar posiciones dinámicamente
+    const generatePositions = () => {
+      const positions = [{ ring: 0, angle: 0, distance: 0 }] // Centro
+
+      const slotsPerRing = [0, 6, 12, 18, 24, 30] // Slots por cada anillo
+      const distances = [0, 50, 100, 150, 200, 250] // Distancias de cada anillo
+
+      for (let ring = 1; ring <= rings; ring++) {
+        const slots = slotsPerRing[ring]
+        const distance = distances[ring]
+
+        for (let i = 0; i < slots; i++) {
+          positions.push({
+            ring,
+            angle: (i * (360 / slots) * Math.PI) / 180,
+            distance,
+          })
+        }
+      }
+
+      return positions
+    }
+
+    const positions = generatePositions()
+    const maxSlots = positions.length
 
     return (
       <div className="relative w-full aspect-square max-w-2xl mx-auto">
-        {/* Círculos de fondo del reactor */}
+        {/* Círculos de fondo del reactor - dinámicos según anillos */}
         <div className="absolute inset-0 rounded-full border-4 border-purple-900/30 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-        <div className="absolute inset-[10%] rounded-full border-4 border-green-900/20 bg-slate-800/50" />
-        <div className="absolute inset-[25%] rounded-full border-4 border-blue-900/20 bg-slate-800/50" />
-        <div className="absolute inset-[45%] rounded-full border-2 border-slate-700/30 bg-slate-800/50" />
+        {rings >= 2 && (
+          <div className="absolute inset-[10%] rounded-full border-4 border-green-900/20 bg-slate-800/50" />
+        )}
+        {rings >= 3 && (
+          <div className="absolute inset-[25%] rounded-full border-4 border-blue-900/20 bg-slate-800/50" />
+        )}
+        {rings >= 4 && (
+          <div className="absolute inset-[40%] rounded-full border-2 border-slate-700/30 bg-slate-800/50" />
+        )}
+        {rings >= 5 && (
+          <div className="absolute inset-[50%] rounded-full border-2 border-slate-700/20 bg-slate-800/50" />
+        )}
+        {rings >= 6 && (
+          <div className="absolute inset-[60%] rounded-full border-2 border-slate-700/10 bg-slate-800/50" />
+        )}
 
         {/* Slots del reactor */}
         <TooltipProvider>
           {positions.map((pos, index) => {
             const host = reactorHosts[index]
-            const x = 50 + (pos.distance / 200) * 40 * Math.cos(pos.angle)
-            const y = 50 + (pos.distance / 200) * 40 * Math.sin(pos.angle)
+            const x = 50 + (pos.distance / 300) * 40 * Math.cos(pos.angle)
+            const y = 50 + (pos.distance / 300) * 40 * Math.sin(pos.angle)
 
             return (
               <Tooltip key={index}>
@@ -158,9 +539,11 @@ export default function DashboardPage() {
                     <div className="text-sm">
                       <p className="font-semibold text-white">{host.name}</p>
                       <p className="text-slate-400">IP: {host.ip}</p>
+                      <p className="text-slate-400">Tipo: {host.type}</p>
                       <p className="text-slate-400">Uptime: {host.uptime}</p>
+                      {host.lastCheck && <p className="text-slate-500 text-xs">Último check: {host.lastCheck}</p>}
                       <p
-                        className={`font-semibold ${
+                        className={`font-semibold mt-1 ${
                           host.status === "online"
                             ? "text-green-500"
                             : host.status === "warning"
@@ -196,27 +579,65 @@ export default function DashboardPage() {
   const getReactorDescription = (reactor: number) => {
     switch (reactor) {
       case 1:
-        return "El Reactor 1 muestra los clusteres de bases de datos y almacenamiento distribuido"
+        return "El Reactor 1 muestra los clusteres de bases de datos y almacenamiento distribuido (Ceph, Storage Clusters)"
       case 2:
-        return "El Reactor 2 (SOD) muestra los servidores de correo electrónico y sistemas de mensajería"
+        return "El Reactor 2 (SOD) muestra los servidores de correo electrónico y sistemas de mensajería (Zimbra, Mail Gateways)"
       case 3:
         return "El Reactor 3 muestra los servidores de spam y gateways de seguridad anti-spam"
       case 4:
-        return "El Reactor 4 muestra los servidores virtuales, VPS y sistemas de virtualización"
+        return "El Reactor 4 muestra los servidores virtuales, VPS y sistemas de virtualización (Proxmox VE, PBS)"
       case 5:
-        return "El Reactor 5 muestra las páginas web, servidores de hosting y sistemas cPanel"
+        return "El Reactor 5 muestra las páginas web, servidores de hosting y sistemas de control (cPanel, Web Panels)"
       default:
         return ""
     }
   }
 
+  const totalHosts = hosts.length
+  const onlineHosts = hosts.filter((h) => h.status === "online").length
+  const warningHosts = hosts.filter((h) => h.status === "warning").length
+  const offlineHosts = hosts.filter((h) => h.status === "offline").length
+
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Bienvenido al Reactor</h1>
-        <p className="text-slate-400">
-          Sistema de monitoreo en tiempo real de infraestructura - Visualización tipo núcleo de reactor nuclear
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-white mb-2">Bienvenido al Reactor</h1>
+          <p className="text-slate-400">
+            Sistema de monitoreo en tiempo real de infraestructura - Visualización tipo núcleo de reactor nuclear
+          </p>
+        </div>
+        <Button onClick={handleRefresh} disabled={isRefreshing} className="bg-cyan-600 hover:bg-cyan-700">
+          <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+          Actualizar Estado
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <Card className="bg-slate-800/50 border-slate-700">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-white">{totalHosts}</div>
+            <div className="text-sm text-slate-400">Total Hosts</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-green-900/20 border-green-700">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-green-400">{onlineHosts}</div>
+            <div className="text-sm text-green-300">En Línea</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-yellow-900/20 border-yellow-700">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-yellow-400">{warningHosts}</div>
+            <div className="text-sm text-yellow-300">Advertencias</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-red-900/20 border-red-700">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-red-400">{offlineHosts}</div>
+            <div className="text-sm text-red-300">Fuera de Línea</div>
+          </CardContent>
+        </Card>
       </div>
 
       <Tabs defaultValue="reactor1" className="w-full">
