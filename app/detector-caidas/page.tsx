@@ -10,7 +10,6 @@ import {
   Activity,
   RefreshCw,
   Clock,
-  Users,
   Globe,
   AlertOctagon,
   TrendingUp,
@@ -55,17 +54,41 @@ interface Service {
   }>
 }
 
+interface CloudIncident {
+  provider: string
+  title: string
+  status: "investigating" | "identified" | "monitoring" | "resolved"
+  affectedServices: string[]
+  regions: string[]
+  startTime: string
+  lastUpdate: string
+  description: string
+  url: string
+}
+
 const CLOUD_PROVIDERS = [
-  { id: "aws", name: "Amazon Web Services", slug: "aws", clearbitDomain: "aws.amazon.com" },
-  { id: "azure", name: "Microsoft Azure", slug: "azure", clearbitDomain: "azure.microsoft.com" },
-  { id: "google-cloud", name: "Google Cloud", slug: "google-cloud", clearbitDomain: "cloud.google.com" },
-  { id: "oracle-cloud", name: "Oracle Cloud", slug: "oracle-cloud", clearbitDomain: "oracle.com" },
-  { id: "huawei-cloud", name: "Huawei Cloud", slug: "huawei-cloud", clearbitDomain: "huawei.com" },
-  { id: "alibaba-cloud", name: "Alibaba Cloud", slug: "alibaba-cloud", clearbitDomain: "alibabacloud.com" },
-  { id: "ovhcloud", name: "OVHcloud", slug: "ovhcloud", clearbitDomain: "ovhcloud.com" },
-  { id: "vultr", name: "Vultr", slug: "vultr", clearbitDomain: "vultr.com" },
-  { id: "linode", name: "Linode", slug: "linode", clearbitDomain: "linode.com" },
-  { id: "unihost", name: "Unihost", slug: "unihost", clearbitDomain: "unihost.com" },
+  { id: "aws", name: "Amazon Web Services", slug: "aws", clearbitDomain: "aws.amazon.com", group: "aws" },
+  { id: "azure", name: "Microsoft Azure", slug: "azure", clearbitDomain: "azure.microsoft.com", group: "azure" },
+  {
+    id: "google-cloud",
+    name: "Google Cloud",
+    slug: "google-cloud",
+    clearbitDomain: "cloud.google.com",
+    group: "google",
+  },
+  { id: "oracle-cloud", name: "Oracle Cloud", slug: "oracle-cloud", clearbitDomain: "oracle.com", group: "oracle" },
+  { id: "huawei-cloud", name: "Huawei Cloud", slug: "huawei-cloud", clearbitDomain: "huawei.com", group: "others" },
+  {
+    id: "alibaba-cloud",
+    name: "Alibaba Cloud",
+    slug: "alibaba-cloud",
+    clearbitDomain: "alibabacloud.com",
+    group: "alibaba",
+  },
+  { id: "ovhcloud", name: "OVHcloud", slug: "ovhcloud", clearbitDomain: "ovhcloud.com", group: "ovh" },
+  { id: "vultr", name: "Vultr", slug: "vultr", clearbitDomain: "vultr.com", group: "others" },
+  { id: "linode", name: "Linode", slug: "linode", clearbitDomain: "linode.com", group: "linode" },
+  { id: "unihost", name: "Unihost", slug: "unihost", clearbitDomain: "unihost.com", group: "others" },
 ]
 
 const REGIONS = [
@@ -74,6 +97,17 @@ const REGIONS = [
   { label: "Perú", key: "pe", domain: "downdetector.pe", color: "#a855f7" },
   { label: "Canadá", key: "ca", domain: "downdetector.ca", color: "#eab308" },
   { label: "Colombia", key: "co", domain: "downdetector.com.co", color: "#ec4899" },
+]
+
+const PROVIDER_GROUPS = [
+  { key: "aws", name: "Amazon Web Services", color: "from-orange-500 to-orange-600" },
+  { key: "azure", name: "Microsoft Azure", color: "from-blue-500 to-blue-600" },
+  { key: "google", name: "Google Cloud Platform", color: "from-red-500 to-yellow-500" },
+  { key: "oracle", name: "Oracle Cloud", color: "from-red-600 to-red-700" },
+  { key: "alibaba", name: "Alibaba Cloud", color: "from-orange-400 to-orange-500" },
+  { key: "ovh", name: "OVH Cloud", color: "from-blue-600 to-blue-700" },
+  { key: "linode", name: "Linode / Akamai", color: "from-green-500 to-green-600" },
+  { key: "others", name: "Otros Proveedores", color: "from-slate-500 to-slate-600" },
 ]
 
 async function fetchCloudStatus(): Promise<ApiServiceData[]> {
@@ -95,6 +129,17 @@ async function fetchCloudHistory(): Promise<Record<string, Array<{ ts: number; r
   } catch (error) {
     console.error("[v0] Error fetching cloud history:", error)
     return {}
+  }
+}
+
+async function fetchActiveIncidents(): Promise<CloudIncident[]> {
+  try {
+    const response = await fetch("/api/cloud-incidents")
+    const data = await response.json()
+    return data.incidents || []
+  } catch (error) {
+    console.error("[v0] Error fetching incidents:", error)
+    return []
   }
 }
 
@@ -204,17 +249,52 @@ function transformApiDataToServices(
 
 export default function DetectorCaidas() {
   const [services, setServices] = useState<Service[]>([])
+  const [activeIncidents, setActiveIncidents] = useState<CloudIncident[]>([])
   const [lastUpdate, setLastUpdate] = useState(new Date())
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
+  const [expandedIncidents, setExpandedIncidents] = useState<Record<string, boolean>>({})
+
+  const [masterGraphData, setMasterGraphData] = useState<any[]>([])
 
   const loadData = async () => {
     setIsLoading(true)
     try {
-      const [statusData, historyData] = await Promise.all([fetchCloudStatus(), fetchCloudHistory()])
+      const [statusData, historyData, incidentsData] = await Promise.all([
+        fetchCloudStatus(),
+        fetchCloudHistory(),
+        fetchActiveIncidents(),
+      ])
       const transformedServices = transformApiDataToServices(statusData, historyData)
       setServices(transformedServices)
+      setActiveIncidents(incidentsData)
       setLastUpdate(new Date())
+
+      if (transformedServices.length > 0) {
+        const maxLength = Math.max(...transformedServices.map((s) => s.graphData.length))
+        const masterData = []
+
+        for (let i = 0; i < maxLength; i++) {
+          const point: any = {
+            time: transformedServices[0].graphData[i]?.time || "",
+          }
+
+          transformedServices.forEach((service) => {
+            if (service.graphData[i]) {
+              const totalReports = REGIONS.reduce((sum, region) => {
+                return sum + (service.graphData[i][region.key] || 0)
+              }, 0)
+              point[service.id] = totalReports
+            }
+          })
+
+          if (point.time) {
+            masterData.push(point)
+          }
+        }
+
+        setMasterGraphData(masterData)
+      }
     } catch (error) {
       console.error("[v0] Error loading data:", error)
     } finally {
@@ -239,13 +319,13 @@ export default function DetectorCaidas() {
   const getStatusColor = (status: ServiceStatus) => {
     switch (status) {
       case "Operacional":
-        return "text-green-400 bg-green-500/10 border-green-500/30"
+        return "text-white bg-green-600 border-green-700"
       case "Degradado":
-        return "text-yellow-400 bg-yellow-500/10 border-yellow-500/30"
+        return "text-black bg-yellow-500 border-yellow-600"
       case "Caído":
-        return "text-red-400 bg-red-500/10 border-red-500/30"
+        return "text-white bg-red-600 border-red-700"
       case "Error":
-        return "text-gray-400 bg-gray-500/10 border-gray-500/30"
+        return "text-white bg-blue-600 border-blue-700"
     }
   }
 
@@ -269,9 +349,53 @@ export default function DetectorCaidas() {
 
   const servicesWithIssues = services.filter((s) => s.status === "Degradado" || s.status === "Caído")
 
+  const getIncidentStatusColor = (status: string) => {
+    switch (status) {
+      case "investigating":
+        return "bg-red-500/20 text-red-400 border-red-500/40"
+      case "identified":
+        return "bg-orange-500/20 text-orange-400 border-orange-500/40"
+      case "monitoring":
+        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/40"
+      case "resolved":
+        return "bg-green-500/20 text-green-400 border-green-500/40"
+      default:
+        return "bg-gray-500/20 text-gray-400 border-gray-500/40"
+    }
+  }
+
+  const getIncidentStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      investigating: "Investigando",
+      identified: "Identificado",
+      monitoring: "Monitoreando",
+      resolved: "Resuelto",
+    }
+    return statusMap[status] || status
+  }
+
+  const groupedServices = PROVIDER_GROUPS.map((group) => ({
+    ...group,
+    services: services.filter((s) => {
+      const provider = CLOUD_PROVIDERS.find((p) => p.id === s.id)
+      return provider?.group === group.key
+    }),
+  })).filter((group) => group.services.length > 0)
+
+  const incidentsByProvider = activeIncidents.reduce(
+    (acc, incident) => {
+      if (!acc[incident.provider]) {
+        acc[incident.provider] = []
+      }
+      acc[incident.provider].push(incident)
+      return acc
+    },
+    {} as Record<string, CloudIncident[]>,
+  )
+
   if (isLoading && services.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-12 h-12 text-cyan-400 animate-spin mx-auto mb-4" />
           <p className="text-slate-300 text-lg font-semibold">Scrapeando datos en tiempo real...</p>
@@ -293,7 +417,7 @@ export default function DetectorCaidas() {
           <div className="flex items-center justify-center gap-3 mb-2">
             <Activity className="w-8 h-8 text-cyan-400" />
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              Monitor Cloud NOC/SOC
+              Monitoreo de Proveedores Cloud
             </h1>
           </div>
           <p className="text-sm text-slate-400 max-w-2xl mx-auto mb-2">
@@ -319,6 +443,211 @@ export default function DetectorCaidas() {
             </Button>
           </div>
         </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <Card className="bg-green-600 border-green-700">
+            <CardContent className="p-4 text-center">
+              <div className="text-3xl font-bold text-white mb-1">{operationalCount}</div>
+              <div className="text-xs text-white/90">Operacionales</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-yellow-500 border-yellow-600">
+            <CardContent className="p-4 text-center">
+              <div className="text-3xl font-bold text-black mb-1">{degradedCount}</div>
+              <div className="text-xs text-black/90">Degradados</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-red-600 border-red-700">
+            <CardContent className="p-4 text-center">
+              <div className="text-3xl font-bold text-white mb-1">{downCount}</div>
+              <div className="text-xs text-white/90">Caídos</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-blue-600 border-blue-700">
+            <CardContent className="p-4 text-center">
+              <div className="text-3xl font-bold text-white mb-1">{totalReports}</div>
+              <div className="text-xs text-white/90">Reportes</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-white mb-4">Tendencia de Reportes</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {services.map((service) => {
+              const totalReports = service.regions.reduce((sum, r) => sum + r.reports, 0)
+
+              return (
+                <Card
+                  key={service.id}
+                  className="bg-slate-900/40 backdrop-blur border border-slate-700 transition-all hover:shadow-md hover:scale-[1.01]"
+                >
+                  <CardHeader className="pb-3 px-4 pt-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <img
+                          src={`https://logo.clearbit.com/${service.clearbitDomain}`}
+                          alt={service.name}
+                          className="w-10 h-10 rounded-md bg-white/95 p-1.5 object-contain shadow-sm"
+                          onError={(e) => {
+                            e.currentTarget.src = `https://ui-avatars.com/api/?name=${service.name}&background=random&size=40`
+                          }}
+                        />
+                        <div>
+                          <CardTitle className="text-sm text-white leading-tight">{service.name}</CardTitle>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            {getStatusIcon(service.status)}
+                            <span
+                              className={`text-xs font-medium ${
+                                service.status === "Operacional"
+                                  ? "text-green-400"
+                                  : service.status === "Degradado"
+                                    ? "text-yellow-400"
+                                    : "text-red-400"
+                              }`}
+                            >
+                              {service.status}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-white">{totalReports}</div>
+                        <div className="text-[9px] text-slate-500">reportes</div>
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-3 px-4 pb-4">
+                    <div className="h-32 w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={service.graphData} margin={{ top: 5, right: 5, left: -15, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.2} />
+                          <XAxis dataKey="time" stroke="#475569" fontSize={9} tickLine={false} />
+                          <YAxis stroke="#475569" fontSize={9} tickLine={false} axisLine={false} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "#0f172a",
+                              border: "1px solid #334155",
+                              borderRadius: "6px",
+                              fontSize: "11px",
+                              padding: "6px 8px",
+                            }}
+                          />
+                          {REGIONS.map((region) => (
+                            <Line
+                              key={region.key}
+                              type="monotone"
+                              dataKey={region.key}
+                              stroke={region.color}
+                              strokeWidth={2}
+                              dot={false}
+                              name={region.label}
+                            />
+                          ))}
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="grid grid-cols-5 gap-1.5">
+                      {service.regions.map((region) => (
+                        <div
+                          key={region.region}
+                          className="text-center p-1.5 bg-slate-950/40 rounded border border-slate-800/40 hover:border-slate-700/60 transition-colors"
+                        >
+                          <div className="text-[9px] text-slate-500 mb-0.5 truncate font-medium">
+                            {region.region.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div className="font-bold text-white text-xs">{region.reports}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+
+        <Card className="mb-8 bg-slate-900/40 border border-slate-700">
+          <CardHeader>
+            <CardTitle className="text-lg text-white flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-cyan-400" />
+              Gráfica Comparativa de Todos los Proveedores Cloud
+            </CardTitle>
+            <p className="text-xs text-slate-400 mt-1">
+              Visualización consolidada de reportes en tiempo real por proveedor • Datos desde fuentes oficiales
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={masterGraphData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
+                  <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0f172a",
+                      border: "1px solid #334155",
+                      borderRadius: "8px",
+                      fontSize: "12px",
+                      padding: "8px 12px",
+                    }}
+                  />
+                  {services.map((service, index) => {
+                    const colors = [
+                      "#10b981",
+                      "#3b82f6",
+                      "#a855f7",
+                      "#eab308",
+                      "#ec4899",
+                      "#06b6d4",
+                      "#f97316",
+                      "#8b5cf6",
+                      "#14b8a6",
+                      "#f59e0b",
+                    ]
+                    return (
+                      <Line
+                        key={service.id}
+                        type="monotone"
+                        dataKey={service.id}
+                        stroke={colors[index % colors.length]}
+                        strokeWidth={2}
+                        dot={false}
+                        name={service.name}
+                      />
+                    )
+                  })}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-2">
+              {services.map((service, index) => {
+                const colors = [
+                  "#10b981",
+                  "#3b82f6",
+                  "#a855f7",
+                  "#eab308",
+                  "#ec4899",
+                  "#06b6d4",
+                  "#f97316",
+                  "#8b5cf6",
+                  "#14b8a6",
+                  "#f59e0b",
+                ]
+                return (
+                  <div key={service.id} className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[index % colors.length] }} />
+                    <span className="text-xs text-slate-300">{service.name}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
         {servicesWithIssues.length > 0 && (
           <Card className="mb-6 bg-gradient-to-br from-red-950/30 to-orange-950/30 border border-red-500/40 shadow-lg">
@@ -387,157 +716,101 @@ export default function DetectorCaidas() {
           </Card>
         )}
 
-        <div className="grid grid-cols-4 gap-2.5 mb-6">
-          <Card className="bg-gradient-to-br from-green-950/30 to-green-900/20 border-green-500/20">
-            <CardContent className="p-3">
+        {activeIncidents.length > 0 && (
+          <Card className="mb-6 bg-gradient-to-br from-orange-950/30 to-red-950/30 border border-orange-500/40 shadow-lg">
+            <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xl font-bold text-green-400">{operationalCount}</p>
-                  <p className="text-[10px] text-slate-400">Operacionales</p>
+                <div className="flex items-center gap-2">
+                  <AlertOctagon className="w-5 h-5 text-orange-400" />
+                  <CardTitle className="text-base text-white">Incidentes Oficiales</CardTitle>
+                  <Badge variant="destructive" className="ml-2 bg-orange-500/20 text-orange-300 border-orange-500/40">
+                    {activeIncidents.length}
+                  </Badge>
                 </div>
-                <CheckCircle2 className="w-5 h-5 text-green-400/50" />
+                <div className="text-xs text-orange-400">Desde páginas oficiales de status</div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-yellow-950/30 to-yellow-900/20 border-yellow-500/20">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xl font-bold text-yellow-400">{degradedCount}</p>
-                  <p className="text-[10px] text-slate-400">Degradados</p>
-                </div>
-                <AlertTriangle className="w-5 h-5 text-yellow-400/50" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-red-950/30 to-red-900/20 border-red-500/20">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xl font-bold text-red-400">{downCount}</p>
-                  <p className="text-[10px] text-slate-400">Caídos</p>
-                </div>
-                <XCircle className="w-5 h-5 text-red-400/50" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-cyan-950/30 to-cyan-900/20 border-cyan-500/20">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xl font-bold text-cyan-400">{totalReports.toLocaleString()}</p>
-                  <p className="text-[10px] text-slate-400">Reportes</p>
-                </div>
-                <Users className="w-5 h-5 text-cyan-400/50" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {services.map((service) => {
-            const totalReports = service.regions.reduce((sum, r) => sum + r.reports, 0)
-
-            return (
-              <Card
-                key={service.id}
-                className={`bg-slate-900/40 backdrop-blur border transition-all hover:shadow-md hover:scale-[1.01] ${getStatusColor(service.status)}`}
-              >
-                <CardHeader className="pb-2 px-3 pt-3">
-                  <div className="flex items-center justify-between">
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {Object.entries(incidentsByProvider).map(([provider, incidents]) => (
+                <div key={provider} className="space-y-2">
+                  <Button
+                    onClick={() =>
+                      setExpandedIncidents({ ...expandedIncidents, [provider]: !expandedIncidents[provider] })
+                    }
+                    variant="ghost"
+                    className="w-full justify-between p-3 h-auto bg-slate-900/40 hover:bg-slate-900/60 border border-slate-800/50"
+                  >
                     <div className="flex items-center gap-2">
-                      <img
-                        src={`https://logo.clearbit.com/${service.clearbitDomain}`}
-                        alt={service.name}
-                        className="w-8 h-8 rounded-md bg-white/95 p-1 object-contain shadow-sm"
-                        onError={(e) => {
-                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${service.name}&background=random&size=32`
-                        }}
-                      />
-                      <div>
-                        <CardTitle className="text-xs text-white leading-tight">{service.name}</CardTitle>
-                        <div className="flex items-center gap-1 mt-0.5">
-                          {getStatusIcon(service.status)}
-                          <span
-                            className={`text-[10px] font-medium ${
-                              service.status === "Operacional"
-                                ? "text-green-400"
-                                : service.status === "Degradado"
-                                  ? "text-yellow-400"
-                                  : "text-red-400"
-                            }`}
-                          >
-                            {service.status}
-                          </span>
-                        </div>
-                      </div>
+                      <span className="text-sm font-bold text-white">{provider}</span>
+                      <Badge className="bg-red-500/20 text-red-300 border-red-500/40 text-xs">
+                        {incidents.length} {incidents.length === 1 ? "incidente" : "incidentes"}
+                      </Badge>
                     </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-white">{totalReports}</div>
-                      <div className="text-[8px] text-slate-500">reportes</div>
-                    </div>
-                  </div>
-                </CardHeader>
+                    <span className="text-slate-400">{expandedIncidents[provider] ? "▼" : "▶"}</span>
+                  </Button>
 
-                <CardContent className="space-y-2 px-3 pb-3">
-                  <div className="h-24 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={service.graphData} margin={{ top: 2, right: 2, left: -20, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.15} />
-                        <XAxis dataKey="time" stroke="#475569" fontSize={8} tickLine={false} hide />
-                        <YAxis stroke="#475569" fontSize={8} tickLine={false} axisLine={false} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#0f172a",
-                            border: "1px solid #334155",
-                            borderRadius: "4px",
-                            fontSize: "10px",
-                            padding: "4px 6px",
-                          }}
-                        />
-                        {REGIONS.map((region) => (
-                          <Line
-                            key={region.key}
-                            type="monotone"
-                            dataKey={region.key}
-                            stroke={region.color}
-                            strokeWidth={1.5}
-                            dot={false}
-                            name={region.label}
-                          />
-                        ))}
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <div className="grid grid-cols-5 gap-1">
-                    {service.regions.map((region) => (
-                      <div
-                        key={region.region}
-                        className="text-center p-1 bg-slate-950/40 rounded border border-slate-800/40 hover:border-slate-700/60 transition-colors"
-                      >
-                        <div className="text-[8px] text-slate-500 mb-0.5 truncate font-medium">
-                          {region.region.slice(0, 2).toUpperCase()}
+                  {expandedIncidents[provider] && (
+                    <div className="space-y-2 pl-4">
+                      {incidents.map((incident, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3 rounded-lg bg-slate-900/60 border border-slate-800/50 hover:border-slate-700/50 transition-all"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <Badge
+                                  className={`text-[10px] px-1.5 py-0.5 ${getIncidentStatusColor(incident.status)}`}
+                                >
+                                  {getIncidentStatusText(incident.status)}
+                                </Badge>
+                              </div>
+                              <h4 className="text-sm font-semibold text-white mb-1.5">{incident.title}</h4>
+                              {incident.description && (
+                                <p className="text-xs text-slate-400 mb-2">{incident.description}</p>
+                              )}
+                              <div className="flex items-center gap-3 text-[10px] text-slate-500">
+                                <div className="flex items-center gap-1">
+                                  <Globe className="w-3 h-3" />
+                                  <span>{incident.regions.join(", ")}</span>
+                                </div>
+                                {incident.affectedServices.length > 0 && (
+                                  <div className="flex items-center gap-1">
+                                    <Activity className="w-3 h-3" />
+                                    <span>{incident.affectedServices.slice(0, 3).join(", ")}</span>
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{incident.startTime}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <a
+                              href={incident.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-cyan-400 hover:text-cyan-300 underline ml-3"
+                            >
+                              Ver más
+                            </a>
+                          </div>
                         </div>
-                        <div className="font-bold text-white text-[11px]">{region.reports}</div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Info Section */}
         <Card className="mt-10 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-cyan-500/30">
           <CardHeader>
             <CardTitle className="text-xl text-white flex items-center gap-2.5">
               <Globe className="w-6 h-6 text-cyan-400" />
-              ¿Cómo funciona el Monitor Cloud NOC/SOC?
+              ¿Cómo funciona el Monitoreo de Proveedores Cloud?
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-slate-300 text-sm">
@@ -578,7 +851,7 @@ export default function DetectorCaidas() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center gap-4">
             <p className="text-slate-400 text-center text-sm">
-              Monitor Cloud NOC/SOC • Monitoreo Multi-Región en Tiempo Real • Producto de SATURNO
+              Monitoreo de Proveedores Cloud • Monitoreo Multi-Región en Tiempo Real • Producto de SATURNO
             </p>
             <p className="text-slate-500 text-xs text-center">
               Datos scrapeados desde downdetector.com, .mx, .pe, .ca y .com.co

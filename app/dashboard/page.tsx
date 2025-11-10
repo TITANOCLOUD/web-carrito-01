@@ -10,6 +10,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [clustersOpen, setClustersOpen] = useState(true)
+  const [monitoringOpen, setMonitoringOpen] = useState(false)
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -81,6 +82,43 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+
+            <button
+              onClick={() => setMonitoringOpen(!monitoringOpen)}
+              className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              <span>Monitoreo NOC/SOC</span>
+              {monitoringOpen ? (
+                <ChevronDown className="w-4 h-4 ml-auto" />
+              ) : (
+                <ChevronRight className="w-4 h-4 ml-auto" />
+              )}
+            </button>
+
+            {monitoringOpen && (
+              <div className="ml-4 space-y-1">
+                <button
+                  onClick={() => router.push("/dashboard/monitoring-overview")}
+                  className="w-full text-left px-3 py-2 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                >
+                  Dashboard de Monitoreo
+                </button>
+                <button
+                  onClick={() => router.push("/dashboard/monitoring")}
+                  className="w-full text-left px-3 py-2 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                >
+                  Monitoreo Detallado
+                </button>
+              </div>
+            )}
           </div>
         </nav>
       </aside>

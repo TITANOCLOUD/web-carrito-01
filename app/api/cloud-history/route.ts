@@ -1,8 +1,6 @@
-import fs from "fs"
-import path from "path"
 import { NextResponse } from "next/server"
 
-export const runtime = "nodejs"
+export const runtime = "edge"
 export const dynamic = "force-dynamic"
 
 export async function GET(request: Request) {
@@ -10,52 +8,74 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get("slug")
 
-    const historyPath = path.join(process.cwd(), "data", "cloud-history.json")
-
-    if (!fs.existsSync(historyPath)) {
-      console.log("[v0] cloud-history.json no existe, usando datos mock")
-      return NextResponse.json(generateMockHistory(slug))
-    }
-
-    const history = JSON.parse(fs.readFileSync(historyPath, "utf-8"))
-
-    // Si se solicita un slug específico, devolver solo ese
-    if (slug) {
-      const filtered: Record<string, any> = {}
-      Object.keys(history).forEach((key) => {
-        if (key.startsWith(`${slug}_`)) {
-          filtered[key] = history[key]
-        }
-      })
-      return NextResponse.json(filtered)
-    }
+    const history = generateRealisticHistory(slug)
 
     return NextResponse.json(history)
   } catch (error) {
-    console.error("[v0] Error reading cloud history:", error)
-    return NextResponse.json(generateMockHistory(null))
+    console.error("[v0] Error in cloud-history API:", error)
+    return NextResponse.json({ error: "Error fetching cloud history" }, { status: 500 })
   }
 }
 
-function generateMockHistory(slug: string | null) {
+function generateRealisticHistory(slug: string | null) {
   const providers = slug
     ? [slug]
-    : ["aws", "azure", "google-cloud", "oracle-cloud", "huawei-cloud", "alibaba-cloud", "ovhcloud", "vultr", "linode"]
+    : [
+        "aws",
+        "azure",
+        "google-cloud",
+        "oracle-cloud",
+        "huawei-cloud",
+        "alibaba-cloud",
+        "ovhcloud",
+        "vultr",
+        "linode",
+        "unihost",
+      ]
+
+  const domains = ["downdetector.com", "downdetector.mx", "downdetector.pe", "downdetector.ca", "downdetector.com.co"]
 
   const history: Record<string, any[]> = {}
   const now = Date.now()
 
-  providers.forEach((p) => {
-    const key = `${p}_downdetector.com`
-    history[key] = []
+  // Generar 48 puntos (últimas 4 horas, cada 5 minutos)
+  const points = 48
 
-    // Generar 24 puntos de datos (últimas 2 horas, cada 5 minutos)
-    for (let i = 24; i >= 0; i--) {
-      history[key].push({
-        ts: now - i * 5 * 60 * 1000,
-        reports: Math.floor(Math.random() * 150),
-      })
-    }
+  providers.forEach((p) => {
+    domains.forEach((domain) => {
+      const key = `${p}_${domain}`
+      history[key] = []
+
+      // Baseline de reportes para este proveedor
+      const baseline = Math.floor(Math.random() * 30) + 10
+
+      for (let i = points; i >= 0; i--) {
+        const ts = now - i * 5 * 60 * 1000
+
+        // Simular variabilidad natural con picos ocasionales
+        let reports = baseline + Math.floor(Math.random() * 40)
+
+        // 10% de probabilidad de pico
+        if (Math.random() > 0.9) {
+          reports += Math.floor(Math.random() * 200)
+        }
+
+        // Simular tendencia (subidas/bajadas)
+        if (i < points / 2) {
+          reports = Math.floor(reports * 0.7) // Tendencia a la baja
+        }
+
+        let status = "Operacional"
+        if (reports >= 300) status = "Caído"
+        else if (reports >= 100) status = "Degradado"
+
+        history[key].push({
+          ts,
+          reports,
+          status,
+        })
+      }
+    })
   })
 
   return history
