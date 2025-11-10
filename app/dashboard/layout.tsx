@@ -1,11 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Sun, Lock, Maximize2, Menu, ChevronDown, ChevronRight, Activity, Database, Server } from "lucide-react"
+import { ChevronDown, ChevronRight, Activity, Database, Server, Settings } from "lucide-react"
 import Image from "next/image"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -37,7 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="p-6 border-b border-slate-800">
           <Image
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/light-logoWHI-U4g3b0uwpZ2MefpUxtA4JDuq0yC2Fh.png"
-            alt="SATURNO"
+            alt="TITANO CLOUD"
             width={150}
             height={50}
             className="object-contain"
@@ -84,14 +83,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
 
-            {/* Monitoreo NOC/SOC */}
             <div>
               <button
                 onClick={() => setMonitoringOpen(!monitoringOpen)}
                 className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <Activity className="w-5 h-5" />
-                <span>Monitoreo NOC/SOC</span>
+                <span>Monitoreo NOC</span>
                 {monitoringOpen ? (
                   <ChevronDown className="w-4 h-4 ml-auto" />
                 ) : (
@@ -101,6 +99,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               {monitoringOpen && (
                 <div className="ml-4 mt-2 space-y-1">
+                  <button
+                    onClick={() => router.push("/dashboard")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard")
+                        ? "bg-slate-800 text-slate-200"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    }`}
+                  >
+                    Bienvenido al Reactor
+                  </button>
                   <button
                     onClick={() => router.push("/dashboard/noc-dashboard")}
                     className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
@@ -147,13 +155,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
               )}
             </div>
+
+            <button
+              onClick={() => router.push("/dashboard/admin")}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/dashboard/admin") ? "bg-slate-800 text-slate-200" : "text-slate-300 hover:bg-slate-800"
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+              <span>Panel Interno Administración Página</span>
+            </button>
           </div>
         </nav>
 
         <div className="p-4 border-t border-slate-800">
           <Button
             variant="outline"
-            className="w-full bg-transparent"
+            className="w-full bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800"
             onClick={() => {
               localStorage.removeItem("isAuthenticated")
               router.push("/login")
@@ -164,38 +182,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <header className="bg-slate-950 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-          <Button variant="ghost" size="icon" className="text-slate-400">
-            <Menu className="w-5 h-5" />
-          </Button>
-
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-slate-400">
-              <Sun className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-slate-400">
-              <Lock className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-slate-400">
-              <Maximize2 className="w-5 h-5" />
-            </Button>
-            <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center ml-2">
-              <span className="text-white text-sm font-medium">A</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Content Area */}
-        <main className="flex-1 overflow-y-auto">{children}</main>
-
-        {/* Footer */}
-        <footer className="bg-slate-950 border-t border-slate-800 px-6 py-4 text-center text-sm text-slate-500">
-          Copyright © 2025 Saturno. Desarrollado por Saturno Software. Todos los derechos reservados.
-        </footer>
-      </div>
+      <main className="flex-1 overflow-y-auto bg-slate-900">{children}</main>
     </div>
   )
 }
