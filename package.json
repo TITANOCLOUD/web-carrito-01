@@ -52,6 +52,7 @@
     "fs": "latest",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
+    "mysql2": "3.15.3",
     "next": "16.0.0",
     "next-themes": "latest",
     "node-fetch": "latest",
