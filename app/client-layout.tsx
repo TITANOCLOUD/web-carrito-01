@@ -7,19 +7,17 @@ import { Footer } from "@/components/footer"
 import { AssistantWidget } from "@/components/assistant-widget"
 import { SocialMediaWidget } from "@/components/social-media-widget"
 
-const ClientLayout = ({ children }: { children: React.ReactNode }) => {
+export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const hideHeaderFooter = pathname?.startsWith("/dashboard") || pathname?.startsWith("/login")
+  const isDashboard = pathname?.startsWith("/dashboard")
 
   return (
     <>
-      {!hideHeaderFooter && <Header />}
+      {!isDashboard && <Header />}
       {children}
-      {!hideHeaderFooter && <Footer />}
+      {!isDashboard && <Footer />}
       <AssistantWidget />
       <SocialMediaWidget />
     </>
   )
 }
-
-export default ClientLayout
