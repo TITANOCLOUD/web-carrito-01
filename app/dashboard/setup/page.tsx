@@ -13,9 +13,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 const steps = [
   { id: 1, name: "Información Básica", icon: Building2 },
   { id: 2, name: "Branding", icon: ImageIcon },
-  { id: 3, name: "Módulos y Páginas", icon: Settings },
-  { id: 4, name: "Integración Vercel", icon: Cloud },
-  { id: 5, name: "Integración GitHub", icon: Github },
+  { id: 3, name: "Marcas y Partners", icon: Building2 },
+  { id: 4, name: "Clientes", icon: Building2 },
+  { id: 5, name: "Casos de Éxito", icon: CheckCircle2 },
+  { id: 6, name: "Módulos y Páginas", icon: Settings },
+  { id: 7, name: "Integración Vercel", icon: Cloud },
+  { id: 8, name: "Integración GitHub", icon: Github },
 ]
 
 const modules = [
@@ -35,6 +38,9 @@ export default function SetupWizard() {
     companySlogan: "",
     logo: null as File | null,
     favicon: null as File | null,
+    brands: [] as Array<{ name: string; logo: File | null }>,
+    clients: [] as Array<{ name: string; logo: File | null; testimonial: string }>,
+    successCases: [] as Array<{ title: string; description: string; results: string; client: string }>,
     enabledModules: ["monitoring", "baremetal", "domains"],
     vercelToken: "",
     vercelProject: "",
@@ -79,7 +85,7 @@ export default function SetupWizard() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Configuración Inicial</h1>
-          <p className="text-slate-400">Configura tu plataforma en 5 sencillos pasos</p>
+          <p className="text-slate-400">Configura tu plataforma en 8 sencillos pasos</p>
         </div>
 
         {/* Progress Steps */}
@@ -123,9 +129,12 @@ export default function SetupWizard() {
             <CardDescription className="text-slate-400">
               {currentStep === 1 && "Información básica de tu empresa"}
               {currentStep === 2 && "Carga tu logo y favicon"}
-              {currentStep === 3 && "Selecciona los módulos que deseas activar"}
-              {currentStep === 4 && "Conecta con tu cuenta de Vercel"}
-              {currentStep === 5 && "Conecta con tu repositorio de GitHub"}
+              {currentStep === 3 && "Agrega las marcas y partners con los que trabajas"}
+              {currentStep === 4 && "Agrega tus clientes y testimonios"}
+              {currentStep === 5 && "Agrega casos de éxito de tus proyectos"}
+              {currentStep === 6 && "Selecciona los módulos que deseas activar"}
+              {currentStep === 7 && "Conecta con tu cuenta de Vercel"}
+              {currentStep === 8 && "Conecta con tu repositorio de GitHub"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -216,8 +225,170 @@ export default function SetupWizard() {
               </div>
             )}
 
-            {/* Step 3: Modules */}
+            {/* Step 3: Brands and Partners */}
             {currentStep === 3 && (
+              <div className="space-y-4">
+                <p className="text-slate-400 text-sm mb-4">Agrega las marcas y partners con los que trabajas</p>
+                <Button
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      brands: [...formData.brands, { name: "", logo: null }],
+                    })
+                  }
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                >
+                  Agregar Marca / Partner
+                </Button>
+                {formData.brands.map((brand, index) => (
+                  <div key={index} className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg space-y-3">
+                    <Input
+                      placeholder="Nombre de la marca"
+                      value={brand.name}
+                      onChange={(e) => {
+                        const newBrands = [...formData.brands]
+                        newBrands[index].name = e.target.value
+                        setFormData({ ...formData, brands: newBrands })
+                      }}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          const newBrands = [...formData.brands]
+                          newBrands[index].logo = file
+                          setFormData({ ...formData, brands: newBrands })
+                        }
+                      }}
+                      className="text-slate-400 text-sm"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Step 4: Clients */}
+            {currentStep === 4 && (
+              <div className="space-y-4">
+                <p className="text-slate-400 text-sm mb-4">Agrega tus clientes y testimonios</p>
+                <Button
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      clients: [...formData.clients, { name: "", logo: null, testimonial: "" }],
+                    })
+                  }
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                >
+                  Agregar Cliente
+                </Button>
+                {formData.clients.map((client, index) => (
+                  <div key={index} className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg space-y-3">
+                    <Input
+                      placeholder="Nombre del cliente"
+                      value={client.name}
+                      onChange={(e) => {
+                        const newClients = [...formData.clients]
+                        newClients[index].name = e.target.value
+                        setFormData({ ...formData, clients: newClients })
+                      }}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                    <textarea
+                      placeholder="Testimonio del cliente"
+                      value={client.testimonial}
+                      onChange={(e) => {
+                        const newClients = [...formData.clients]
+                        newClients[index].testimonial = e.target.value
+                        setFormData({ ...formData, clients: newClients })
+                      }}
+                      className="w-full bg-slate-800 border-slate-700 text-white rounded-md p-2 min-h-[100px]"
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          const newClients = [...formData.clients]
+                          newClients[index].logo = file
+                          setFormData({ ...formData, clients: newClients })
+                        }
+                      }}
+                      className="text-slate-400 text-sm"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Step 5: Success Cases */}
+            {currentStep === 5 && (
+              <div className="space-y-4">
+                <p className="text-slate-400 text-sm mb-4">Agrega casos de éxito de tus proyectos</p>
+                <Button
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      successCases: [...formData.successCases, { title: "", description: "", results: "", client: "" }],
+                    })
+                  }
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                >
+                  Agregar Caso de Éxito
+                </Button>
+                {formData.successCases.map((successCase, index) => (
+                  <div key={index} className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg space-y-3">
+                    <Input
+                      placeholder="Título del caso"
+                      value={successCase.title}
+                      onChange={(e) => {
+                        const newCases = [...formData.successCases]
+                        newCases[index].title = e.target.value
+                        setFormData({ ...formData, successCases: newCases })
+                      }}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                    <Input
+                      placeholder="Cliente"
+                      value={successCase.client}
+                      onChange={(e) => {
+                        const newCases = [...formData.successCases]
+                        newCases[index].client = e.target.value
+                        setFormData({ ...formData, successCases: newCases })
+                      }}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                    <textarea
+                      placeholder="Descripción del proyecto"
+                      value={successCase.description}
+                      onChange={(e) => {
+                        const newCases = [...formData.successCases]
+                        newCases[index].description = e.target.value
+                        setFormData({ ...formData, successCases: newCases })
+                      }}
+                      className="w-full bg-slate-800 border-slate-700 text-white rounded-md p-2 min-h-[80px]"
+                    />
+                    <textarea
+                      placeholder="Resultados obtenidos"
+                      value={successCase.results}
+                      onChange={(e) => {
+                        const newCases = [...formData.successCases]
+                        newCases[index].results = e.target.value
+                        setFormData({ ...formData, successCases: newCases })
+                      }}
+                      className="w-full bg-slate-800 border-slate-700 text-white rounded-md p-2 min-h-[80px]"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Step 6: Modules */}
+            {currentStep === 6 && (
               <div className="space-y-4">
                 <p className="text-slate-400 text-sm mb-4">
                   Selecciona los módulos que deseas activar en tu plataforma
@@ -244,8 +415,8 @@ export default function SetupWizard() {
               </div>
             )}
 
-            {/* Step 4: Vercel */}
-            {currentStep === 4 && (
+            {/* Step 7: Vercel */}
+            {currentStep === 7 && (
               <div className="space-y-4">
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-4 mb-6">
                   <p className="text-cyan-400 text-sm">
@@ -281,8 +452,8 @@ export default function SetupWizard() {
               </div>
             )}
 
-            {/* Step 5: GitHub */}
-            {currentStep === 5 && (
+            {/* Step 8: GitHub */}
+            {currentStep === 8 && (
               <div className="space-y-4">
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-4 mb-6">
                   <p className="text-cyan-400 text-sm">
