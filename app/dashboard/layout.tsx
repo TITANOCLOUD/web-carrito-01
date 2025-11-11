@@ -8,7 +8,6 @@ import {
   ChevronDown,
   ChevronRight,
   Activity,
-  Database,
   Server,
   Settings,
   Users,
@@ -31,6 +30,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [monitoringOpen, setMonitoringOpen] = useState(true)
   const [securityOpen, setSecurityOpen] = useState(false)
   const [integrationsOpen, setIntegrationsOpen] = useState(false)
+  const [domainWebOpen, setDomainWebOpen] = useState(false)
+  const [hostingPacksOpen, setHostingPacksOpen] = useState(false)
+  const [quickAccessOpen, setQuickAccessOpen] = useState(false)
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -78,7 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div>
               <button
                 onClick={() => setPublicCloudOpen(!publicCloudOpen)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -88,7 +90,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
                   />
                 </svg>
-                <span>Public Cloud</span>
+                <span className="font-medium">Public Cloud</span>
                 {publicCloudOpen ? (
                   <ChevronDown className="w-4 h-4 ml-auto" />
                 ) : (
@@ -97,58 +99,94 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
 
               {publicCloudOpen && (
-                <div className="ml-4 mt-2 space-y-1">
+                <div className="ml-6 mt-2 space-y-1 border-l border-slate-700 pl-3">
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/compute")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/compute")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Compute
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/storage")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/storage")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Storage
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/network")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/network")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Network
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/containers")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/containers")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Containers & Orchestration
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/databases")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/databases")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Databases
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/analytics")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/analytics")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Analytics
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/ai-ml")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/ai-ml")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     AI & Machine Learning
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/quantum")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/quantum")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Quantum Computing
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/public-cloud/savings-plans")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/public-cloud/savings-plans")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Savings Plans
                   </button>
@@ -159,10 +197,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div>
               <button
                 onClick={() => setPrivateCloudOpen(!privateCloudOpen)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <Server className="w-5 h-5" />
-                <span>Nube Privada Alojada</span>
+                <span className="font-medium">Nube Privada Alojada</span>
                 {privateCloudOpen ? (
                   <ChevronDown className="w-4 h-4 ml-auto" />
                 ) : (
@@ -171,52 +209,84 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
 
               {privateCloudOpen && (
-                <div className="ml-4 mt-2 space-y-1">
+                <div className="ml-6 mt-2 space-y-1 border-l border-slate-700 pl-3">
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/vmware")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/vmware")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     VMware on OVHcloud
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/vcf")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/vcf")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Public VCF as a Service
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/vsphere")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/vsphere")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Managed VMware vSphere
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/nutanix")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/nutanix")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Nutanix
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/sap")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/sap")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     SAP HANA
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/storage")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/storage")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Almacenamiento y Backup
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/network")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/network")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Red
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/private-cloud/security")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/private-cloud/security")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
                     Seguridad de Red
                   </button>
@@ -227,7 +297,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div>
               <button
                 onClick={() => setDomainEmailOpen(!domainEmailOpen)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -237,7 +307,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                <span>Dominio y Email</span>
+                <span className="font-medium">Dominio, Hosting y Email</span>
                 {domainEmailOpen ? (
                   <ChevronDown className="w-4 h-4 ml-auto" />
                 ) : (
@@ -246,98 +316,188 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
 
               {domainEmailOpen && (
-                <div className="ml-4 mt-2 space-y-1">
-                  <button
-                    onClick={() => router.push("/dashboard/domains/search")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Buscar Dominio
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/domains/renew")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Renovar Dominio
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/domains/transfer")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Transferir Dominio
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/domains/whois")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Whois
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/domains/dns")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Servidor DNS
-                  </button>
+                <div className="ml-6 mt-2 space-y-3 border-l border-slate-700 pl-3">
+                  <div>
+                    <button
+                      onClick={() => setDomainWebOpen(!domainWebOpen)}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white text-sm font-medium"
+                    >
+                      <ChevronRight className={`w-3 h-3 transition-transform ${domainWebOpen ? "rotate-90" : ""}`} />
+                      <span>Dominio Web</span>
+                    </button>
+                    {domainWebOpen && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        <button
+                          onClick={() => router.push("/dashboard/domains/search")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/domains/search")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Busque su dominio
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/domains/renew")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/domains/renew")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Renueve su dominio
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/domains/aftermarket")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/domains/aftermarket")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Mercado secundario (aftermarket)
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <button
+                      onClick={() => setHostingPacksOpen(!hostingPacksOpen)}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white text-sm font-medium"
+                    >
+                      <ChevronRight className={`w-3 h-3 transition-transform ${hostingPacksOpen ? "rotate-90" : ""}`} />
+                      <span>Hosting</span>
+                    </button>
+                    {hostingPacksOpen && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        <button
+                          onClick={() => router.push("/dashboard/hosting/all-packs")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/hosting/all-packs")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Todos los packs Web
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/hosting/databases")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/hosting/databases")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Bases de datos adicionales
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/hosting/ssl")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/hosting/ssl")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Opción SSL
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/hosting/cdn")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/hosting/cdn")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Opción CDN
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <button
+                      onClick={() => setQuickAccessOpen(!quickAccessOpen)}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white text-sm font-medium"
+                    >
+                      <ChevronRight className={`w-3 h-3 transition-transform ${quickAccessOpen ? "rotate-90" : ""}`} />
+                      <span>Acceso rápido</span>
+                    </button>
+                    {quickAccessOpen && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        <button
+                          onClick={() => router.push("/dashboard/domains/prices")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/domains/prices")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Precios de los dominios
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/domains/whois")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/domains/whois")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Whois: buscar información
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/domains/dns")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/domains/dns")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Servidor DNS
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/quick-access/create-website")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/quick-access/create-website")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          ¿Cómo crear un sitio web?
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/quick-access/wordpress-hosting")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/quick-access/wordpress-hosting")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Aloje su sitio WordPress
+                        </button>
+                        <button
+                          onClick={() => router.push("/dashboard/quick-access/one-click-website")}
+                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                            isActive("/dashboard/quick-access/one-click-website")
+                              ? "bg-cyan-600 text-white"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800"
+                          }`}
+                        >
+                          Cree su sitio web en un clic
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     onClick={() => router.push("/dashboard/email/management")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/email/management")
+                        ? "bg-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
                   >
-                    Gestión de Email
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/email/accounts")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Cuentas de Correo
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div>
-              <button
-                onClick={() => setHostingOpen(!hostingOpen)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
-              >
-                <Database className="w-5 h-5" />
-                <span>Hosting</span>
-                {hostingOpen ? (
-                  <ChevronDown className="w-4 h-4 ml-auto" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 ml-auto" />
-                )}
-              </button>
-
-              {hostingOpen && (
-                <div className="ml-4 mt-2 space-y-1">
-                  <button
-                    onClick={() => router.push("/dashboard/hosting/shared")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Hosting Compartido
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/hosting/vps")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    VPS
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/hosting/dedicated")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    Servidores Dedicados
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/hosting/cpanel")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    cPanel
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/hosting/wordpress")}
-                    className="w-full text-left px-3 py-1.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
-                  >
-                    WordPress Hosting
+                    Email
                   </button>
                 </div>
               )}
