@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     // Example email content
     const emailContent = `
-      Nueva solicitud de contacto de Titanocloud
+      Nueva solicitud de contacto de Titano Cloud
 
       Información del Cliente:
       - Nombre: ${formData.nombre}

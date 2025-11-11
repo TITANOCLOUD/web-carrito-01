@@ -1,4 +1,4 @@
-# Guía de Implementación SEO - Titanocloud
+# Guía de Implementación SEO - Titano Cloud
 
 ## Configuración Completada
 

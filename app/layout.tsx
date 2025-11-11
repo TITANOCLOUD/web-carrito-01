@@ -9,10 +9,10 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Titanocloud | Cloud Hosting con IA - Infraestructura Inteligente Global",
+  title: "Titano Cloud | Cloud Hosting con IA - Infraestructura Inteligente Global",
   description:
-    "Cloud inteligente con IA integrada. Titanocloud ofrece hosting NVMe, bare metal, VPS y soluciones cloud optimizadas por inteligencia artificial. Soporte 24/7 en español para LATAM y global.",
-  generator: "Titanocloud",
+    "Cloud inteligente con IA integrada. Titano Cloud ofrece hosting NVMe, bare metal, VPS y soluciones cloud optimizadas por inteligencia artificial. Soporte 24/7 en español para LATAM y global.",
+  generator: "Titano Cloud",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -128,28 +128,28 @@ export const metadata: Metadata = {
     "servidores dedicados en México y LATAM",
     "Ceph storage",
     "AI NVMe hosting",
-    "Titanocloud",
+    "Titano Cloud",
   ],
-  authors: [{ name: "Titanocloud" }],
+  authors: [{ name: "Titano Cloud" }],
   openGraph: {
-    title: "Titanocloud | Cloud Hosting con IA - Infraestructura Inteligente Global",
+    title: "Titano Cloud | Cloud Hosting con IA - Infraestructura Inteligente Global",
     description:
       "Soluciones cloud con inteligencia artificial. Hosting NVMe, bare metal, VPS y Ceph optimizado por IA con soporte 24/7 en español.",
     type: "website",
     locale: "es_MX",
-    siteName: "Titanocloud",
+    siteName: "Titano Cloud",
     images: [
       {
         url: "/datacenter-professional.png",
         width: 1200,
         height: 630,
-        alt: "Infraestructura cloud con IA de Titanocloud",
+        alt: "Infraestructura cloud con IA de Titano Cloud",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Titanocloud | Cloud Hosting con IA - Infraestructura Inteligente",
+    title: "Titano Cloud | Cloud Hosting con IA - Infraestructura Inteligente",
     description:
       "Hosting optimizado con IA: servidores NVMe, bare metal, GPU y Ceph con soporte 24/7. Rendimiento y automatización inteligente.",
     images: ["/datacenter-professional.png"],
@@ -184,7 +184,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "Titanocloud",
+              name: "Titano Cloud",
               url: "https://titanocloud.com",
               logo: "https://titanocloud.com/logo-minimal.png",
               description:
@@ -199,7 +199,7 @@ export default function RootLayout({
               sameAs: ["https://www.linkedin.com/company/titanocloud", "https://twitter.com/titanocloud"],
               department: {
                 "@type": "Organization",
-                name: "Titanocloud AI Division",
+                name: "Titano Cloud AI Division",
                 description: "Soluciones de IA aplicadas a infraestructura cloud y optimización de servidores.",
               },
               hasOfferCatalog: {

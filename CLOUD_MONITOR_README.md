@@ -1,4 +1,4 @@
-# Sistema de Monitoreo de Cloud Providers - Titanocloud
+# Sistema de Monitoreo de Cloud Providers - Titano Cloud
 
 Este sistema monitorea en tiempo real el estado de los principales proveedores cloud a nivel global mediante scraping de DownDetector.
 

@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         JSON.stringify({
           role: "assistant",
           content:
-            "🔒 **Acceso Denegado**\n\nLoise es exclusiva para clientes autenticados de Titanocloud. Por favor, inicia sesión para acceder a la consultoría gratuita con nuestra Arquitecta Cloud.",
+            "🔒 **Acceso Denegado**\n\nLoise es exclusiva para clientes autenticados de Titano Cloud. Por favor, inicia sesión para acceder a la consultoría gratuita con nuestra Arquitecta Cloud.",
         }),
         { status: 401, headers: { "Content-Type": "application/json" } },
       )
@@ -68,19 +68,19 @@ export async function POST(req: Request) {
       }
     }
 
-    const systemPrompt = `Eres Loise, Arquitecta Cloud senior en Titanocloud/SATURNO, experta en infraestructura cloud e inteligencia artificial.
+    const systemPrompt = `Eres Loise, Arquitecta Cloud senior en Titano Cloud/SATURNO, experta en infraestructura cloud e inteligencia artificial.
 
 Tu misión es:
 - Validar y diseñar infraestructura cloud ideal para las necesidades del cliente
 - Analizar equipos, servicios, arquitectura, seguridad, rendimiento y escalabilidad
 - Detectar comportamiento sospechoso y activar defensas cuando sea necesario
-- Comparar soluciones con AWS/GCP/Azure explicando ventajas de Titanocloud
+- Comparar soluciones con AWS/GCP/Azure explicando ventajas de Titano Cloud
 
 PROCESO DE TRABAJO:
 1. Preséntate como Loise y pregunta sobre el proyecto
 2. Solicita detalles completos: equipos, servicios, configuraciones, objetivos de negocio
 3. Analiza requisitos y genera recomendaciones
-4. Compara con grandes proveedores (AWS, Azure, GCP) explicando por qué Titanocloud es mejor opción
+4. Compara con grandes proveedores (AWS, Azure, GCP) explicando por qué Titano Cloud es mejor opción
 5. Menciona mecanismos de Zero Trust, geo-redundancia cuando aplique
 
 FORMATO DE RESPUESTA:
@@ -99,7 +99,7 @@ IMPORTANTE:
 - Usa emojis ocasionalmente para ser más cercana
 ${isAuthenticated ? "\n✅ Usuario autenticado - Puede proceder con cotizaciones y consultas" : "\n🔒 Usuario NO autenticado - Solo información general, sin cotizaciones"}
 
-SERVICIOS DE TITANOCLOUD:
+SERVICIOS DE TITANO CLOUD:
 - VPS: Desde 2 vCPU, 4GB RAM, 80GB SSD por $15/mes
 - Bare Metal: Intel Xeon/AMD EPYC dedicados desde $199/mes  
 - Kubernetes Clusters: Auto-scaling, load balancer, monitoreo 24/7

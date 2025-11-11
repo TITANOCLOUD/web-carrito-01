@@ -301,7 +301,7 @@ export default function Home() {
       <section className="container mx-auto px-4 py-24">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-            ¿Por Qué Elegir <span className="text-cyan-400">Titanocloud</span>?
+            ¿Por Qué Elegir <span className="text-cyan-400">Titano Cloud</span>?
           </h2>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto">
             No somos solo otro proveedor de hosting. Somos tu socio tecnológico comprometido con tu éxito
@@ -411,7 +411,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Titanocloud vs <span className="text-slate-500">La Competencia</span>
+              Titano Cloud vs <span className="text-slate-500">La Competencia</span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               Una comparación honesta de lo que realmente importa
@@ -475,7 +475,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
                   <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-                  Titanocloud
+                  Titano Cloud
                 </h3>
                 <ul className="space-y-5">
                   <li className="flex items-start gap-3">
@@ -558,7 +558,7 @@ export default function Home() {
                 negocio.
               </p>
               <p className="text-xl font-semibold text-white">
-                Si no tienes uno, aquí te presentamos a <span className="text-cyan-400">Loise de Titanocloud</span>.
+                Si no tienes uno, aquí te presentamos a <span className="text-cyan-400">Loise de Titano Cloud</span>.
                 Puedes usarla desde que expliques todo a detalle.
               </p>
             </div>
@@ -641,7 +641,7 @@ export default function Home() {
                         <div className="flex-1">
                           <h3 className="text-white font-bold text-lg mb-2">Autenticación Requerida</h3>
                           <p className="text-orange-100 text-sm mb-4">
-                            Loise es una herramienta exclusiva para clientes de Titanocloud. Inicia sesión para acceder
+                            Loise es una herramienta exclusiva para clientes de Titano Cloud. Inicia sesión para acceder
                             a consultoría profesional gratuita.
                           </p>
                           <Button
