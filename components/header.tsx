@@ -35,7 +35,7 @@ export function Header() {
               <span>Bare Metal & VPS</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-            <div className="absolute left-0 mt-2 w-56 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/vps"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
@@ -49,22 +49,190 @@ export function Header() {
                 Bare Metal
               </Link>
               <Link
+                href="/servidores-dedicados"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Servidores Dedicados
+              </Link>
+              <Link
                 href="/clusters"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Clusters
+                Clusters de Servidores
+              </Link>
+              <Link
+                href="/gpu-servers"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Servidores GPU
+              </Link>
+              <Link
+                href="/storage-servers"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Servidores de Almacenamiento
               </Link>
               <Link
                 href="/calculadora"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Calculadora de Configuración
+              </Link>
+              <Link
+                href="/comparador-servidores"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                Calculadora de VPS
+                Comparador de Servidores
               </Link>
             </div>
           </div>
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap">
+              <span>Public Cloud</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <div className="absolute left-0 mt-2 w-80 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-h-[80vh] overflow-y-auto">
+              {/* Información General */}
+              <Link
+                href="/public-cloud"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm font-medium first:rounded-t-lg border-b border-cyan-500/30"
+              >
+                Descubrir Public Cloud
+              </Link>
+              <Link
+                href="/public-cloud/pricing"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Tarificación
+              </Link>
+              <Link
+                href="/public-cloud/free-trial"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Prueba gratuita de Public Cloud
+              </Link>
+              <Link
+                href="/public-cloud/savings-plans"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm flex items-center justify-between"
+              >
+                <span>Savings Plans</span>
+                <span className="text-xs bg-cyan-500 text-white px-2 py-0.5 rounded">Nuevo</span>
+              </Link>
+              <Link
+                href="/public-cloud/advantages"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Ventajas de la solución Public Cloud
+              </Link>
+              <Link
+                href="/public-cloud/cloud-computing"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Cloud Computing
+              </Link>
+              <Link
+                href="/public-cloud/compliance"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Conformidad y certificaciones
+              </Link>
+              <Link
+                href="/public-cloud/trust-zones"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Zonas de confianza
+              </Link>
+              <Link
+                href="/public-cloud/regional-availability"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Disponibilidad por regiones
+              </Link>
+              <Link
+                href="/public-cloud/local-zones"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm flex items-center justify-between"
+              >
+                <span>Local Zones</span>
+                <span className="text-xs bg-cyan-500 text-white px-2 py-0.5 rounded">Nuevo</span>
+              </Link>
+              <Link
+                href="/public-cloud/documentation"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm border-b border-cyan-500/30"
+              >
+                Documentación
+              </Link>
+
+              {/* Servicios */}
+              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30">
+                <p className="text-cyan-400 font-bold text-sm">Servicios</p>
+              </div>
+              <Link
+                href="/public-cloud/compute"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Compute
+              </Link>
+              <Link
+                href="/public-cloud/storage"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Storage
+              </Link>
+              <Link
+                href="/public-cloud/network"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Network
+              </Link>
+              <Link
+                href="/public-cloud/containers"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Containers & Orchestration
+              </Link>
+              <Link
+                href="/public-cloud/databases"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Databases
+              </Link>
+              <Link
+                href="/public-cloud/analytics"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Analytics
+              </Link>
+              <Link
+                href="/public-cloud/data-platform"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm flex items-center justify-between"
+              >
+                <span>Data Platform</span>
+                <span className="text-xs bg-cyan-500 text-white px-2 py-0.5 rounded">Nuevo</span>
+              </Link>
+              <Link
+                href="/public-cloud/ai-ml"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                AI & Machine Learning
+              </Link>
+              <Link
+                href="/public-cloud/quantum"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Quantum Computing
+              </Link>
+              <Link
+                href="/public-cloud/security"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm last:rounded-b-lg"
+              >
+                Identity, Security & Operations
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
               <span>Dominios, Hosting y Email</span>
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -272,14 +440,14 @@ export function Header() {
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Clusters
+              Clusters de Servidores
             </Link>
             <Link
               href="/calculadora"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Calculadora de VPS
+              Calculadora de Configuración
             </Link>
             <Link
               href="/dominios"

@@ -124,6 +124,14 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link
+                    href="/conformidad-certificaciones"
+                    className="text-slate-400 hover:text-cyan-400 transition-colors"
+                  >
+                    Conformidad y certificaciones
+                  </Link>
+                </li>
+                <li>
                   <Link href="/contact" className="text-slate-400 hover:text-cyan-400 transition-colors">
                     Contacto
                   </Link>
