@@ -145,6 +145,46 @@ export default function HostMonitorPage() {
 
       if (isWebsite) {
         const response = await fetch(`/api/website-monitor/${params.id}`)
+
+        if (!response.ok) {
+          console.error("[v0] Error al cargar datos del sitio web:", response.status)
+          setHostData({
+            id: params.id.toString(),
+            name: `Sitio Web (${params.id})`,
+            ip: "No disponible",
+            status: "offline",
+            type: "Website",
+            reactor: 5,
+            ping: {
+              current: 0,
+              average: 0,
+              min: 0,
+              max: 0,
+              packetLoss: 100,
+              history: Array(20).fill(0),
+            },
+            web: {
+              lastCheck: new Date().toLocaleString(),
+              responseTime: 0,
+              statusCode: response.status,
+              sslCert: {
+                valid: false,
+                issuer: "No disponible",
+                expiryDate: "No disponible",
+                daysRemaining: 0,
+              },
+              blacklistStatus: {
+                isListed: false,
+                lists: [],
+              },
+              openSpeed: 0,
+              closeSpeed: 0,
+            },
+          })
+          setLoading(false)
+          return
+        }
+
         const data = await response.json()
 
         setHostData({
@@ -192,6 +232,22 @@ export default function HostMonitorPage() {
       setLoading(false)
     } catch (error) {
       console.error("[v0] Error loading host data:", error)
+      setHostData({
+        id: params.id.toString(),
+        name: `Host (${params.id})`,
+        ip: "Error al cargar",
+        status: "offline",
+        type: "Desconocido",
+        reactor: 0,
+        ping: {
+          current: 0,
+          average: 0,
+          min: 0,
+          max: 0,
+          packetLoss: 100,
+          history: Array(20).fill(0),
+        },
+      })
       setLoading(false)
     }
   }

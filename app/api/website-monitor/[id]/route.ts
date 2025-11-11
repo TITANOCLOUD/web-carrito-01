@@ -50,7 +50,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const domainInfo = await getDomainInfo(hostname)
 
     // Verificar listas negras
-    const blacklistStatus = await checkBlacklists(ipAddress)
+    const blacklistStatus = await checkBlacklists(ipAddress, hostname)
 
     return NextResponse.json({
       id,
@@ -162,20 +162,124 @@ async function getDomainInfo(hostname: string) {
   }
 }
 
-// Función para verificar listas negras
-async function checkBlacklists(ip: string) {
-  try {
-    // Simular verificación de listas negras
-    // En producción, verificarías contra múltiples RBLs
+// Función para verificar listas negras usando múltiples RBLs y APIs públicas
+async function checkBlacklists(ip: string, hostname: string) {
+  if (ip === "N/A") {
     return {
       listed: false,
-      lists: [],
+      error: "IP no disponible para verificación",
       lastCheck: new Date().toISOString(),
+    }
+  }
+
+  try {
+    const results = {
+      listed: false,
+      lists: [] as string[],
+      checks: [] as any[],
+      lastCheck: new Date().toISOString(),
+    }
+
+    // Lista de RBLs más comunes para verificar
+    const rblServices = [
+      "zen.spamhaus.org",
+      "bl.spamcop.net",
+      "b.barracudacentral.org",
+      "dnsbl.sorbs.net",
+      "cbl.abuseat.org",
+      "pbl.spamhaus.org",
+      "sbl.spamhaus.org",
+    ]
+
+    // Verificar IP en múltiples RBLs usando DNS lookup reverso
+    const reversedIP = ip.split(".").reverse().join(".")
+
+    for (const rbl of rblServices) {
+      try {
+        const query = `${reversedIP}.${rbl}`
+        // Usar Google DNS API para verificar si la IP está listada
+        const response = await fetch(`https://dns.google/resolve?name=${query}&type=A`, {
+          headers: {
+            Accept: "application/dns-json",
+          },
+        })
+        const data = await response.json()
+
+        const isListed = data.Answer && data.Answer.length > 0
+
+        results.checks.push({
+          service: rbl,
+          listed: isListed,
+          result: isListed ? data.Answer[0].data : "clean",
+        })
+
+        if (isListed) {
+          results.listed = true
+          results.lists.push(rbl)
+        }
+      } catch (error) {
+        // Silenciar errores individuales de RBL, continuar con otros
+        results.checks.push({
+          service: rbl,
+          listed: false,
+          error: "Unable to query",
+        })
+      }
+    }
+
+    // Verificar dominio en Google Safe Browsing (alternativa)
+    try {
+      // Nota: En producción deberías usar la API oficial de Google Safe Browsing
+      // Por ahora hacemos una verificación básica
+      const domainCheck = await checkDomainReputation(hostname)
+      if (domainCheck.suspicious) {
+        results.listed = true
+        results.lists.push("Domain Reputation Check")
+        results.checks.push({
+          service: "Domain Reputation",
+          listed: true,
+          reason: domainCheck.reason,
+        })
+      }
+    } catch {
+      // Ignorar si falla
+    }
+
+    return results
+  } catch (error) {
+    return {
+      listed: false,
+      error: error instanceof Error ? error.message : "Error al verificar listas negras",
+      lastCheck: new Date().toISOString(),
+    }
+  }
+}
+
+// Función para verificar reputación del dominio
+async function checkDomainReputation(hostname: string) {
+  try {
+    // Verificar si el dominio tiene patrones sospechosos
+    const suspiciousPatterns = [
+      /\d{1,3}-\d{1,3}-\d{1,3}-\d{1,3}/i, // IPs en el nombre
+      /temp|temporary|test|fake/i, // Palabras sospechosas
+      /\.(tk|ml|ga|cf|gq)$/i, // TLDs comúnmente usados para spam
+    ]
+
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(hostname)) {
+        return {
+          suspicious: true,
+          reason: "Patrón de dominio sospechoso detectado",
+        }
+      }
+    }
+
+    return {
+      suspicious: false,
     }
   } catch {
     return {
-      listed: false,
-      error: "No se pudo verificar listas negras",
+      suspicious: false,
     }
   }
 }

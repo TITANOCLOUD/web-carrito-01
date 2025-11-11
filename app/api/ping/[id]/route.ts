@@ -1,23 +1,28 @@
 import { NextResponse } from "next/server"
 
-export const runtime = "edge"
+export const runtime = "nodejs"
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-  // Simulación de ping - En producción esto haría ping real
-  const latency = Math.floor(Math.random() * 40) + 8
-  const packetLoss = Math.random() > 0.95 ? Math.floor(Math.random() * 10) : 0
+  try {
+    console.log(`[v0] Solicitando ping para host: ${params.id}`)
 
-  const status = packetLoss > 5 ? "offline" : latency > 100 ? "warning" : "online"
+    // TODO: Obtener últimos 20 pings desde MariaDB
+    // const pingData = await db.query(`
+    //   SELECT ping_ms, packet_loss, timestamp
+    //   FROM host_pings
+    //   WHERE host_id = ?
+    //   ORDER BY timestamp DESC
+    //   LIMIT 20
+    // `, [params.id])
 
-  return NextResponse.json({
-    ping: {
-      current: latency,
-      average: Math.floor(latency * 1.2),
-      min: Math.floor(latency * 0.6),
-      max: Math.floor(latency * 2.5),
-      packetLoss,
-      history: Array.from({ length: 20 }, () => Math.floor(Math.random() * 40) + 8),
-    },
-    status,
-  })
+    // Por ahora estructura vacía hasta que lleguen datos reales
+    return NextResponse.json({
+      message: "Esperando datos de ping del agente",
+      ping: null,
+      status: "waiting",
+    })
+  } catch (error) {
+    console.error(`[v0] Error obteniendo ping:`, error)
+    return NextResponse.json({ error: "Failed to get ping data" }, { status: 500 })
+  }
 }
