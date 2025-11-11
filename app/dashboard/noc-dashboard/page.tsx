@@ -1,16 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Activity, AlertTriangle, CheckCircle2, Server, TrendingUp, XCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Activity, AlertTriangle, CheckCircle2, Server, TrendingUp, XCircle, Network, MapPin } from "lucide-react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
-// Mock data for uptime history
-const generateUptimeData = () => {
-  return Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}:00`,
-    uptime: 95 + Math.random() * 5,
-  }))
+interface PingResult {
+  host: string
+  ip: string
+  alive: boolean
+  time: number
+  timestamp: Date
+}
+
+interface TracerouteHop {
+  hop: number
+  ip: string
+  hostname: string
+  rtt: number[]
+}
+
+interface TracerouteResult {
+  host: string
+  hops: TracerouteHop[]
+  complete: boolean
 }
 
 export default function NOCDashboardPage() {
@@ -63,7 +77,7 @@ export default function NOCDashboardPage() {
       name: "506748-IBG-ADVSTO-G2-PBS-01",
       ip: "148.113.216.7",
       status: "up",
-      uptime: 99.5,
+      uptime: 99.95,
       responseTime: 12,
       reactor: 4,
     },
@@ -99,6 +113,110 @@ export default function NOCDashboardPage() {
     { name: "sistemaexcell.com", ip: "158.69.43.232", status: "up", uptime: 99.97, responseTime: 17, reactor: 5 },
     { name: "oaksystem.co", ip: "158.69.43.233", status: "up", uptime: 99.99, responseTime: 14, reactor: 5 },
   ])
+
+  const [activePings, setActivePings] = useState<Record<string, PingResult>>({})
+  const [selectedHost, setSelectedHost] = useState<string | null>(null)
+  const [tracerouteData, setTracerouteData] = useState<TracerouteResult | null>(null)
+  const [isTracingRoute, setIsTracingRoute] = useState(false)
+
+  const executePing = async (host: { name: string; ip: string }) => {
+    console.log("[v0] Ejecutando ping real a:", host.ip)
+    try {
+      const startTime = Date.now()
+      const response = await fetch(`/api/network/ping`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host: host.ip }),
+      })
+
+      const data = await response.json()
+      const endTime = Date.now()
+
+      const result: PingResult = {
+        host: host.name,
+        ip: host.ip,
+        alive: data.alive || response.ok,
+        time: data.time || endTime - startTime,
+        timestamp: new Date(),
+      }
+
+      setActivePings((prev) => ({ ...prev, [host.ip]: result }))
+
+      // Actualizar el estado del host
+      setHosts((prevHosts) =>
+        prevHosts.map((h) =>
+          h.ip === host.ip
+            ? {
+                ...h,
+                status: result.alive ? "up" : "down",
+                responseTime: result.time,
+              }
+            : h,
+        ),
+      )
+    } catch (error) {
+      console.error("[v0] Error en ping:", error)
+      setActivePings((prev) => ({
+        ...prev,
+        [host.ip]: {
+          host: host.name,
+          ip: host.ip,
+          alive: false,
+          time: -1,
+          timestamp: new Date(),
+        },
+      }))
+    }
+  }
+
+  const executeTraceroute = async (host: { name: string; ip: string }) => {
+    console.log("[v0] Ejecutando traceroute a:", host.ip)
+    setIsTracingRoute(true)
+    setSelectedHost(host.ip)
+    setTracerouteData(null)
+
+    try {
+      const response = await fetch(`/api/network/traceroute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host: host.ip }),
+      })
+
+      const data = await response.json()
+
+      setTracerouteData({
+        host: host.name,
+        hops: data.hops || [],
+        complete: data.complete || true,
+      })
+    } catch (error) {
+      console.error("[v0] Error en traceroute:", error)
+      setTracerouteData({
+        host: host.name,
+        hops: [],
+        complete: false,
+      })
+    } finally {
+      setIsTracingRoute(false)
+    }
+  }
+
+  useEffect(() => {
+    // Ping inicial a todos los hosts
+    hosts.forEach((host) => {
+      executePing(host)
+    })
+
+    // Configurar intervalo para pings continuos
+    const interval = setInterval(() => {
+      console.log("[v0] Ejecutando pings automáticos...")
+      hosts.forEach((host) => {
+        executePing(host)
+      })
+    }, 30000) // Cada 30 segundos
+
+    return () => clearInterval(interval)
+  }, [hosts.length])
 
   const stats = {
     total: hosts.length,
@@ -152,12 +270,19 @@ export default function NOCDashboardPage() {
     5: "Reactor 5 - Websites",
   }
 
+  const generateUptimeData = () => {
+    return Array.from({ length: 24 }, (_, i) => ({
+      time: `${i}:00`,
+      uptime: 95 + Math.random() * 5,
+    }))
+  }
+
   return (
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard NOC - Disponibilidad de Hosts</h1>
-        <p className="text-slate-400">Monitoreo en tiempo real de todos los hosts y servicios</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Dashboard NOC - Monitoreo en Tiempo Real</h1>
+        <p className="text-slate-400">Sistema de monitoreo con ping y traceroute en tiempo real</p>
       </div>
 
       {/* Stats Cards */}
@@ -246,6 +371,97 @@ export default function NOCDashboardPage() {
         </CardContent>
       </Card>
 
+      {selectedHost && (
+        <Card className="bg-slate-950 border-slate-800 mb-8">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-white flex items-center gap-2">
+              <Network className="w-5 h-5" />
+              Traceroute - {tracerouteData?.host || selectedHost}
+            </CardTitle>
+            <Button variant="outline" size="sm" onClick={() => setSelectedHost(null)}>
+              Cerrar
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {isTracingRoute ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <Activity className="w-12 h-12 text-cyan-400 animate-spin mx-auto mb-4" />
+                  <p className="text-slate-400">Trazando ruta...</p>
+                </div>
+              </div>
+            ) : tracerouteData ? (
+              <div className="space-y-4">
+                {/* Mapa visual de nodos */}
+                <div className="bg-slate-900 rounded-lg p-6 mb-6">
+                  <h3 className="text-white font-medium mb-4 flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-cyan-400" />
+                    Mapa de Red
+                  </h3>
+                  <div className="flex items-center gap-4 overflow-x-auto pb-4">
+                    <div className="flex items-center gap-2 bg-cyan-900/20 px-4 py-3 rounded-lg border border-cyan-800 flex-shrink-0">
+                      <Server className="w-5 h-5 text-cyan-400" />
+                      <span className="text-white font-medium text-sm">Origen</span>
+                    </div>
+                    {tracerouteData.hops.map((hop, idx) => (
+                      <div key={idx} className="flex items-center gap-2 flex-shrink-0">
+                        <div className="h-0.5 w-8 bg-cyan-600" />
+                        <div className="bg-slate-800 px-3 py-2 rounded-lg border border-slate-700">
+                          <div className="text-slate-400 text-xs mb-1">Hop {hop.hop}</div>
+                          <div className="text-white text-sm font-medium">{hop.hostname || hop.ip}</div>
+                          <div className="text-cyan-400 text-xs">{hop.rtt[0]?.toFixed(1)}ms</div>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="h-0.5 w-8 bg-green-600" />
+                      <div className="bg-green-900/20 px-4 py-3 rounded-lg border border-green-800">
+                        <Server className="w-5 h-5 text-green-400" />
+                        <span className="text-white font-medium text-sm">Destino</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Lista detallada de hops */}
+                <div className="space-y-2">
+                  {tracerouteData.hops.map((hop, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="bg-cyan-900/20 px-3 py-1 rounded-full">
+                          <span className="text-cyan-400 font-mono text-sm">{hop.hop}</span>
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">{hop.hostname || "Unknown"}</p>
+                          <p className="text-slate-400 text-sm">{hop.ip}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        {hop.rtt.map((time, timeIdx) => (
+                          <div key={timeIdx} className="text-right">
+                            <p className="text-slate-400 text-xs">RTT {timeIdx + 1}</p>
+                            <p className="text-white font-medium">{time.toFixed(1)}ms</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <XCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                <p className="text-slate-400">Error al trazar la ruta</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Hosts by Reactor */}
       {Object.entries(hostsByReactor).map(([reactor, reactorHosts]) => (
         <Card key={reactor} className="bg-slate-950 border-slate-800 mb-6">
           <CardHeader>
@@ -253,33 +469,61 @@ export default function NOCDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {reactorHosts.map((host, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
-                    <div className="flex-1">
-                      <h3 className="text-white font-medium text-sm">{host.name}</h3>
-                      <p className="text-slate-500 text-xs">{host.ip}</p>
+              {reactorHosts.map((host, index) => {
+                const pingResult = activePings[host.ip]
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+                  >
+                    <div className="flex items-center gap-4 flex-1">
+                      <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-medium text-sm">{host.name}</h3>
+                        <p className="text-slate-500 text-xs">{host.ip}</p>
+                        {pingResult && (
+                          <p className="text-slate-600 text-xs">
+                            Último ping: {pingResult.timestamp.toLocaleTimeString()}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <p className="text-slate-400 text-xs">Uptime</p>
+                        <p className="text-white font-medium">{host.uptime}%</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-slate-400 text-xs">Response</p>
+                        <p className="text-white font-medium">{host.responseTime}ms</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => executePing(host)}
+                          className="text-xs"
+                          disabled={pingResult && Date.now() - pingResult.timestamp.getTime() < 5000}
+                        >
+                          Ping
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => executeTraceroute(host)}
+                          className="text-xs"
+                          disabled={isTracingRoute}
+                        >
+                          Trace
+                        </Button>
+                      </div>
+                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
+                        {host.status.toUpperCase()}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-6">
-                    <div className="text-right">
-                      <p className="text-slate-400 text-xs">Uptime</p>
-                      <p className="text-white font-medium">{host.uptime}%</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-slate-400 text-xs">Response</p>
-                      <p className="text-white font-medium">{host.responseTime}ms</p>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
-                      {host.status.toUpperCase()}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </CardContent>
         </Card>

@@ -1,7 +1,9 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "penelope-platform",
+  "version": "1.0.0",
   "private": true,
+  "description": "Sistema de Gestión Cloud Empresarial - Penelope® by Titano Cloud Corporate",
+  "author": "Penelope® - Titano Cloud Corporate",
   "scripts": {
     "build": "next build",
     "dev": "next dev",

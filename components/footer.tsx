@@ -151,20 +151,27 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-400 text-sm text-center md:text-left">
-            © 2025 Titano Cloud Corporate. Todos los derechos reservados.
-          </p>
-          <div className="flex gap-6 text-sm">
-            <Link href="/privacy" className="text-slate-400 hover:text-cyan-400 transition-colors">
-              Política de Privacidad
-            </Link>
-            <Link href="/terms" className="text-slate-400 hover:text-cyan-400 transition-colors">
-              Términos de Servicio
-            </Link>
-            <Link href="/cookies" className="text-slate-400 hover:text-cyan-400 transition-colors">
-              Política de Cookies
-            </Link>
+        <div className="border-t border-slate-800 pt-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+            <div className="text-center md:text-left">
+              <p className="text-slate-400 text-sm">© 2025 Titano Cloud Corporate. Todos los derechos reservados.</p>
+              <p className="text-slate-500 text-xs mt-1">
+                Desarrollado por <span className="text-cyan-400 font-semibold">Penelope®</span> - Sistema de
+                Arquitectura Empresarial
+              </p>
+              <p className="text-slate-600 text-xs">Penelope es una marca registrada de Titano Cloud Corporate</p>
+            </div>
+            <div className="flex gap-6 text-sm">
+              <Link href="/privacy" className="text-slate-400 hover:text-cyan-400 transition-colors">
+                Política de Privacidad
+              </Link>
+              <Link href="/terms" className="text-slate-400 hover:text-cyan-400 transition-colors">
+                Términos de Servicio
+              </Link>
+              <Link href="/cookies" className="text-slate-400 hover:text-cyan-400 transition-colors">
+                Política de Cookies
+              </Link>
+            </div>
           </div>
         </div>
       </div>

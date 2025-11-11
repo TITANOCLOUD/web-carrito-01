@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   title: "Titano Cloud | Cloud Hosting con IA - Infraestructura Inteligente Global",
   description:
     "Cloud inteligente con IA integrada. Titano Cloud ofrece hosting NVMe, bare metal, VPS y soluciones cloud optimizadas por inteligencia artificial. Soporte 24/7 en español para LATAM y global.",
-  generator: "Titano Cloud",
+  generator: "Penelope® by Titano Cloud Corporate",
+  applicationName: "Penelope Platform",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -130,7 +131,7 @@ export const metadata: Metadata = {
     "AI NVMe hosting",
     "Titano Cloud",
   ],
-  authors: [{ name: "Titano Cloud" }],
+  authors: [{ name: "Penelope® - Titano Cloud Corporate" }],
   openGraph: {
     title: "Titano Cloud | Cloud Hosting con IA - Infraestructura Inteligente Global",
     description:
@@ -239,6 +240,11 @@ export default function RootLayout({
                     },
                   },
                 ],
+              },
+              brand: {
+                "@type": "Brand",
+                name: "Penelope",
+                description: "Sistema de Arquitectura Empresarial - Marca registrada de Titano Cloud Corporate",
               },
             }),
           }}
