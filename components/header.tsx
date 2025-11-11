@@ -63,12 +63,106 @@ export function Header() {
             </div>
           </div>
 
-          <Link
-            href="/dominios"
-            className="text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap"
-          >
-            Dominios, Hosting y Email
-          </Link>
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap">
+              <span>Dominios, Hosting y Email</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-h-[80vh] overflow-y-auto">
+              {/* Dominio Web */}
+              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30">
+                <p className="text-cyan-400 font-bold text-sm">Dominio Web</p>
+              </div>
+              <Link
+                href="/domains/search"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Busque su dominio
+              </Link>
+              <Link
+                href="/domains/renew"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Renueve su dominio
+              </Link>
+              <Link
+                href="/domains/aftermarket"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Mercado secundario (aftermarket)
+              </Link>
+
+              {/* Hosting */}
+              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30 border-t border-cyan-500/30 mt-1">
+                <p className="text-cyan-400 font-bold text-sm">Hosting</p>
+              </div>
+              <Link
+                href="/hosting/packages"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Todos los packs Web
+              </Link>
+              <Link
+                href="/hosting/databases"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Bases de datos adicionales
+              </Link>
+              <Link
+                href="/hosting/ssl"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Opción SSL
+              </Link>
+              <Link
+                href="/hosting/cdn"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Opción CDN
+              </Link>
+
+              {/* Acceso rápido */}
+              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30 border-t border-cyan-500/30 mt-1">
+                <p className="text-cyan-400 font-bold text-sm">Acceso rápido</p>
+              </div>
+              <Link
+                href="/domains/pricing"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Precios de los dominios
+              </Link>
+              <Link
+                href="/domains/whois"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Whois: buscar información de un dominio
+              </Link>
+              <Link
+                href="/domains/dns"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Servidor DNS
+              </Link>
+              <Link
+                href="/hosting/how-to-create"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                ¿Cómo crear un sitio web?
+              </Link>
+              <Link
+                href="/hosting/wordpress"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+              >
+                Aloje su sitio web WordPress
+              </Link>
+              <Link
+                href="/hosting/one-click"
+                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm last:rounded-b-lg"
+              >
+                Cree su sitio web en un clic
+              </Link>
+            </div>
+          </div>
 
           <Link
             href="/nube-publica"
