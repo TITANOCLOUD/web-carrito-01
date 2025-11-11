@@ -15,20 +15,89 @@ const generateUptimeData = () => {
 
 export default function NOCDashboardPage() {
   const [hosts, setHosts] = useState([
-    { name: "483431-IBG-SCA3-G2-CEPH-BAY-01", ip: "72.251.3.93", status: "up", uptime: 99.98, responseTime: 12 },
-    { name: "501691-IBG-SCA3-G2-CEPH-BAY-02", ip: "72.251.3.238", status: "up", uptime: 99.95, responseTime: 15 },
-    { name: "493196-IBG-SCA3-G2-CEPH-BAY-03", ip: "72.251.3.212", status: "up", uptime: 99.99, responseTime: 10 },
+    // Reactor 1 - CEPH Clusters
+    {
+      name: "483431-IBG-SCA3-G2-CEPH-BAY-01",
+      ip: "72.251.3.93",
+      status: "up",
+      uptime: 99.98,
+      responseTime: 12,
+      reactor: 1,
+    },
+    {
+      name: "501691-IBG-SCA3-G2-CEPH-BAY-02",
+      ip: "72.251.3.238",
+      status: "up",
+      uptime: 99.95,
+      responseTime: 15,
+      reactor: 1,
+    },
+    {
+      name: "493196-IBG-SCA3-G2-CEPH-BAY-03",
+      ip: "72.251.3.212",
+      status: "up",
+      uptime: 99.99,
+      responseTime: 10,
+      reactor: 1,
+    },
+    { name: "469453-SCA1-CEPH-BAY-01", ip: "15.235.67.86", status: "up", uptime: 100, responseTime: 8, reactor: 1 },
+    { name: "469864-SCA1-CEPH-BAY-02", ip: "15.235.67.180", status: "up", uptime: 99.97, responseTime: 11, reactor: 1 },
+    { name: "469855-SCA1-CEPH-BAY-03", ip: "15.235.43.103", status: "up", uptime: 99.92, responseTime: 13, reactor: 1 },
+    { name: "COOTRARIS-CEPH-BAY-01", ip: "72.251.3.189", status: "up", uptime: 99.95, responseTime: 14, reactor: 1 },
+    { name: "COOTRARIS-CEPH-BAY-02", ip: "72.251.3.227", status: "up", uptime: 99.98, responseTime: 12, reactor: 1 },
+    { name: "ICONET-CEPH-BAY-01", ip: "72.251.3.159", status: "up", uptime: 99.96, responseTime: 13, reactor: 1 },
+    {
+      name: "BETCONNECTIONS-CEPH-BAY-01",
+      ip: "72.251.3.108",
+      status: "up",
+      uptime: 99.94,
+      responseTime: 15,
+      reactor: 1,
+    },
+
+    // Reactor 4 - VPS y Bare Metal
+    { name: "VPS-CTRLONLINE-01", ip: "158.69.43.200", status: "up", uptime: 99.99, responseTime: 8, reactor: 4 },
+    { name: "VPS-CTRLONLINE-02", ip: "158.69.43.201", status: "up", uptime: 99.97, responseTime: 10, reactor: 4 },
+    { name: "VPS-OAKSYSTEM-01", ip: "158.69.43.202", status: "up", uptime: 99.98, responseTime: 9, reactor: 4 },
     {
       name: "506748-IBG-ADVSTO-G2-PBS-01",
       ip: "148.113.216.7",
-      status: "degraded",
-      uptime: 98.5,
-      responseTime: 45,
+      status: "up",
+      uptime: 99.5,
+      responseTime: 12,
+      reactor: 4,
     },
-    { name: "469453-SCA1-CEPH-BAY-01", ip: "15.235.67.86", status: "up", uptime: 100, responseTime: 8 },
-    { name: "469864-SCA1-CEPH-BAY-02", ip: "15.235.67.180", status: "up", uptime: 99.97, responseTime: 11 },
-    { name: "469855-SCA1-CEPH-BAY-03", ip: "15.235.43.103", status: "down", uptime: 85.2, responseTime: 0 },
-    { name: "472841-ADVSTORE-G2-PBS-01", ip: "148.113.169.29", status: "up", uptime: 99.96, responseTime: 13 },
+    {
+      name: "472841-ADVSTORE-G2-PBS-01",
+      ip: "148.113.169.29",
+      status: "up",
+      uptime: 99.96,
+      responseTime: 13,
+      reactor: 4,
+    },
+    { name: "PROXMOX-VE-01", ip: "148.113.216.8", status: "up", uptime: 99.99, responseTime: 7, reactor: 4 },
+    { name: "PROXMOX-VE-02", ip: "148.113.169.30", status: "up", uptime: 99.98, responseTime: 8, reactor: 4 },
+
+    // Reactor 2 - Correo
+    { name: "MAIL-SERVER-01", ip: "158.69.43.210", status: "up", uptime: 99.99, responseTime: 6, reactor: 2 },
+    { name: "MAIL-SERVER-02", ip: "158.69.43.211", status: "up", uptime: 99.98, responseTime: 7, reactor: 2 },
+
+    // Reactor 3 - SPAM
+    { name: "SPAM-FILTER-01", ip: "158.69.43.220", status: "up", uptime: 99.97, responseTime: 9, reactor: 3 },
+    { name: "SPAM-FILTER-02", ip: "158.69.43.221", status: "up", uptime: 99.96, responseTime: 10, reactor: 3 },
+
+    // Websites
+    {
+      name: "controlonlineinternational.com",
+      ip: "158.69.43.230",
+      status: "up",
+      uptime: 99.99,
+      responseTime: 15,
+      reactor: 5,
+    },
+    { name: "controlonline.app", ip: "158.69.43.231", status: "up", uptime: 99.98, responseTime: 16, reactor: 5 },
+    { name: "sistemaexcell.com", ip: "158.69.43.232", status: "up", uptime: 99.97, responseTime: 17, reactor: 5 },
+    { name: "oaksystem.co", ip: "158.69.43.233", status: "up", uptime: 99.99, responseTime: 14, reactor: 5 },
   ])
 
   const stats = {
@@ -63,6 +132,24 @@ export default function NOCDashboardPage() {
       default:
         return <Activity className="w-4 h-4" />
     }
+  }
+
+  const hostsByReactor = hosts.reduce(
+    (acc, host) => {
+      const reactor = host.reactor || 0
+      if (!acc[reactor]) acc[reactor] = []
+      acc[reactor].push(host)
+      return acc
+    },
+    {} as Record<number, typeof hosts>,
+  )
+
+  const reactorNames: Record<number, string> = {
+    1: "Reactor 1 - CEPH Clusters",
+    2: "Reactor 2 - Correo",
+    3: "Reactor 3 - SPAM",
+    4: "Reactor 4 - VPS y Bare Metal",
+    5: "Reactor 5 - Websites",
   }
 
   return (
@@ -159,43 +246,44 @@ export default function NOCDashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Hosts List */}
-      <Card className="bg-slate-950 border-slate-800">
-        <CardHeader>
-          <CardTitle className="text-white">Estado de Hosts</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {hosts.map((host, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
-              >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-medium text-sm">{host.name}</h3>
-                    <p className="text-slate-500 text-xs">{host.ip}</p>
+      {Object.entries(hostsByReactor).map(([reactor, reactorHosts]) => (
+        <Card key={reactor} className="bg-slate-950 border-slate-800 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white">{reactorNames[Number(reactor)]}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {reactorHosts.map((host, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+                >
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
+                    <div className="flex-1">
+                      <h3 className="text-white font-medium text-sm">{host.name}</h3>
+                      <p className="text-slate-500 text-xs">{host.ip}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <p className="text-slate-400 text-xs">Uptime</p>
+                      <p className="text-white font-medium">{host.uptime}%</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-slate-400 text-xs">Response</p>
+                      <p className="text-white font-medium">{host.responseTime}ms</p>
+                    </div>
+                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
+                      {host.status.toUpperCase()}
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-6">
-                  <div className="text-right">
-                    <p className="text-slate-400 text-xs">Uptime</p>
-                    <p className="text-white font-medium">{host.uptime}%</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-slate-400 text-xs">Response</p>
-                    <p className="text-white font-medium">{host.responseTime}ms</p>
-                  </div>
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
-                    {host.status.toUpperCase()}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   )
 }
