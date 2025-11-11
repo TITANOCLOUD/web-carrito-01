@@ -1,533 +1,1269 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Activity, AlertTriangle, CheckCircle2, Server, TrendingUp, XCircle, Network, MapPin } from "lucide-react"
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useState } from "react"
 
-interface PingResult {
-  host: string
-  ip: string
-  alive: boolean
-  time: number
-  timestamp: Date
-}
+const ALL_HOSTS = [
+  // Reactor 1 - CEPH Clusters
+  {
+    id: "483431",
+    name: "CEPH-IBG-SCA3-G2-BAY-01",
+    ip: "72.251.3.93",
+    type: "CEPH",
+    reactor: 1,
+    company: "IBG.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "501691",
+    name: "CEPH-IBG-SCA3-G2-BAY-02",
+    ip: "72.251.3.238",
+    type: "CEPH",
+    reactor: 1,
+    company: "IBG.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 12,
+  },
+  {
+    id: "493196",
+    name: "CEPH-IBG-SCA3-G2-BAY-03",
+    ip: "72.251.3.212",
+    type: "CEPH",
+    reactor: 1,
+    company: "IBG.COM.CO",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
 
-interface TracerouteHop {
-  hop: number
-  ip: string
-  hostname: string
-  rtt: number[]
-}
+  {
+    id: "469453",
+    name: "CEPH-SCA1-BAY-01",
+    ip: "15.235.67.86",
+    type: "CEPH",
+    reactor: 1,
+    company: "COOTRARIS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "469864",
+    name: "CEPH-SCA1-BAY-02",
+    ip: "15.235.67.180",
+    type: "CEPH",
+    reactor: 1,
+    company: "COOTRARIS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "469855",
+    name: "CEPH-SCA1-BAY-03",
+    ip: "15.235.43.103",
+    type: "CEPH",
+    reactor: 1,
+    company: "COOTRARIS.COM",
+    status: "online",
+    uptime: "99.7%",
+    responseTime: 19,
+  },
 
-interface TracerouteResult {
-  host: string
-  hops: TracerouteHop[]
-  complete: boolean
-}
+  {
+    id: "408163",
+    name: "CEPH-IC-HGR3-01",
+    ip: "51.222.152.249",
+    type: "CEPH",
+    reactor: 1,
+    company: "ICONET.COM.MX",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "422255",
+    name: "CEPH-IC-HGR3-02",
+    ip: "15.235.43.68",
+    type: "CEPH",
+    reactor: 1,
+    company: "ICONET.COM.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
+  {
+    id: "449125",
+    name: "CEPH-IC-HGR3-03",
+    ip: "15.235.67.40",
+    type: "CEPH",
+    reactor: 1,
+    company: "ICONET.COM.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-export default function NOCDashboardPage() {
-  const [hosts, setHosts] = useState([
-    // Reactor 1 - CEPH Clusters
-    {
-      name: "483431-IBG-SCA3-G2-CEPH-BAY-01",
-      ip: "72.251.3.93",
-      status: "up",
-      uptime: 99.98,
-      responseTime: 12,
-      reactor: 1,
-    },
-    {
-      name: "501691-IBG-SCA3-G2-CEPH-BAY-02",
-      ip: "72.251.3.238",
-      status: "up",
-      uptime: 99.95,
-      responseTime: 15,
-      reactor: 1,
-    },
-    {
-      name: "493196-IBG-SCA3-G2-CEPH-BAY-03",
-      ip: "72.251.3.212",
-      status: "up",
-      uptime: 99.99,
-      responseTime: 10,
-      reactor: 1,
-    },
-    { name: "469453-SCA1-CEPH-BAY-01", ip: "15.235.67.86", status: "up", uptime: 100, responseTime: 8, reactor: 1 },
-    { name: "469864-SCA1-CEPH-BAY-02", ip: "15.235.67.180", status: "up", uptime: 99.97, responseTime: 11, reactor: 1 },
-    { name: "469855-SCA1-CEPH-BAY-03", ip: "15.235.43.103", status: "up", uptime: 99.92, responseTime: 13, reactor: 1 },
-    { name: "COOTRARIS-CEPH-BAY-01", ip: "72.251.3.189", status: "up", uptime: 99.95, responseTime: 14, reactor: 1 },
-    { name: "COOTRARIS-CEPH-BAY-02", ip: "72.251.3.227", status: "up", uptime: 99.98, responseTime: 12, reactor: 1 },
-    { name: "ICONET-CEPH-BAY-01", ip: "72.251.3.159", status: "up", uptime: 99.96, responseTime: 13, reactor: 1 },
-    {
-      name: "BETCONNECTIONS-CEPH-BAY-01",
-      ip: "72.251.3.108",
-      status: "up",
-      uptime: 99.94,
-      responseTime: 15,
-      reactor: 1,
-    },
+  {
+    id: "482770",
+    name: "CEPH-BT-HGR4-G2-BAY-01",
+    ip: "51.222.152.212",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "490629",
+    name: "CEPH-BT-HGR4-G2-BAY-02",
+    ip: "148.113.193.172",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "482769",
+    name: "CEPH-BT-HGR4-G2-BAY-03",
+    ip: "148.113.199.14",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 12,
+  },
+  {
+    id: "499053",
+    name: "CEPH-BT-HGR4-G2-BAY-05",
+    ip: "148.113.211.68",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "499056",
+    name: "CEPH-BT-HGR4-G2-BAY-06",
+    ip: "148.113.211.71",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "499054",
+    name: "CEPH-BT-HGR4-G2-BAY-07",
+    ip: "148.113.211.67",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
+  {
+    id: "499059",
+    name: "CEPH-BT-HGR4-G2-BAY-08",
+    ip: "148.113.211.70",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "499055",
+    name: "CEPH-BT-HGR4-G2-BAY-09",
+    ip: "148.113.211.87",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.7%",
+    responseTime: 18,
+  },
+  {
+    id: "499057",
+    name: "CEPH-BT-HGR4-G2-BAY-10",
+    ip: "148.113.211.69",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "499058",
+    name: "CEPH-BT-HGR4-G2-BAY-11",
+    ip: "148.113.211.83",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "505062",
+    name: "CEPH-BT-HGR4-G2-BAY-12",
+    ip: "148.113.215.29",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
+  {
+    id: "510531",
+    name: "CEPH-BT-HGR4-G2-BAY-13",
+    ip: "51.222.249.56",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "510532",
+    name: "CEPH-BT-HGR4-G2-BAY-14",
+    ip: "148.113.219.12",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "510533",
+    name: "CEPH-BT-HGR4-G2-BAY-15",
+    ip: "148.113.224.50",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 12,
+  },
+  {
+    id: "510534",
+    name: "CEPH-BT-HGR4-G2-BAY-16",
+    ip: "15.235.67.107",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "510535",
+    name: "CEPH-BT-HGR4-G2-BAY-17",
+    ip: "148.113.224.22",
+    type: "CEPH",
+    reactor: 1,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-    // Reactor 4 - VPS y Bare Metal
-    { name: "VPS-CTRLONLINE-01", ip: "158.69.43.200", status: "up", uptime: 99.99, responseTime: 8, reactor: 4 },
-    { name: "VPS-CTRLONLINE-02", ip: "158.69.43.201", status: "up", uptime: 99.97, responseTime: 10, reactor: 4 },
-    { name: "VPS-OAKSYSTEM-01", ip: "158.69.43.202", status: "up", uptime: 99.98, responseTime: 9, reactor: 4 },
-    {
-      name: "506748-IBG-ADVSTO-G2-PBS-01",
-      ip: "148.113.216.7",
-      status: "up",
-      uptime: 99.95,
-      responseTime: 12,
-      reactor: 4,
-    },
-    {
-      name: "472841-ADVSTORE-G2-PBS-01",
-      ip: "148.113.169.29",
-      status: "up",
-      uptime: 99.96,
-      responseTime: 13,
-      reactor: 4,
-    },
-    { name: "PROXMOX-VE-01", ip: "148.113.216.8", status: "up", uptime: 99.99, responseTime: 7, reactor: 4 },
-    { name: "PROXMOX-VE-02", ip: "148.113.169.30", status: "up", uptime: 99.98, responseTime: 8, reactor: 4 },
+  {
+    id: "484063",
+    name: "CEPH-HBTC-HGR3-G2-BAY-01",
+    ip: "148.113.187.44",
+    type: "CEPH",
+    reactor: 1,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "490630",
+    name: "CEPH-HBTC-HGR3-G2-BAY-02",
+    ip: "148.113.193.173",
+    type: "CEPH",
+    reactor: 1,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "484062",
+    name: "CEPH-HBTC-HGR3-G2-BAY-03",
+    ip: "148.113.187.43",
+    type: "CEPH",
+    reactor: 1,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-    // Reactor 2 - Correo
-    { name: "MAIL-SERVER-01", ip: "158.69.43.210", status: "up", uptime: 99.99, responseTime: 6, reactor: 2 },
-    { name: "MAIL-SERVER-02", ip: "158.69.43.211", status: "up", uptime: 99.98, responseTime: 7, reactor: 2 },
+  {
+    id: "476771",
+    name: "CEPH-PO-SCAI3-01",
+    ip: "72.251.3.67",
+    type: "CEPH",
+    reactor: 1,
+    company: "PROCOM-INC.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "476772",
+    name: "CEPH-PO-SCAI3-02",
+    ip: "72.251.3.72",
+    type: "CEPH",
+    reactor: 1,
+    company: "PROCOM-INC.NET",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "476784",
+    name: "CEPH-PO-SCAI3-03",
+    ip: "72.251.3.45",
+    type: "CEPH",
+    reactor: 1,
+    company: "PROCOM-INC.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
 
-    // Reactor 3 - SPAM
-    { name: "SPAM-FILTER-01", ip: "158.69.43.220", status: "up", uptime: 99.97, responseTime: 9, reactor: 3 },
-    { name: "SPAM-FILTER-02", ip: "158.69.43.221", status: "up", uptime: 99.96, responseTime: 10, reactor: 3 },
+  {
+    id: "491554",
+    name: "CEPH-PC-SCA1-G2-BAY-1",
+    ip: "148.113.199.58",
+    type: "CEPH",
+    reactor: 1,
+    company: "PCCORP.COM.AR",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "491555",
+    name: "CEPH-PC-SCA1-G2-BAY-2",
+    ip: "148.113.199.29",
+    type: "CEPH",
+    reactor: 1,
+    company: "PCCORP.COM.AR",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "491553",
+    name: "CEPH-PC-SCA1-G2-BAY-3",
+    ip: "148.113.199.59",
+    type: "CEPH",
+    reactor: 1,
+    company: "PCCORP.COM.AR",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-    // Websites
-    {
-      name: "controlonlineinternational.com",
-      ip: "158.69.43.230",
-      status: "up",
-      uptime: 99.99,
-      responseTime: 15,
-      reactor: 5,
-    },
-    { name: "controlonline.app", ip: "158.69.43.231", status: "up", uptime: 99.98, responseTime: 16, reactor: 5 },
-    { name: "sistemaexcell.com", ip: "158.69.43.232", status: "up", uptime: 99.97, responseTime: 17, reactor: 5 },
-    { name: "oaksystem.co", ip: "158.69.43.233", status: "up", uptime: 99.99, responseTime: 14, reactor: 5 },
-  ])
+  {
+    id: "483445",
+    name: "CEPH-RYN-SCA3-G2-BAY-01",
+    ip: "72.251.3.103",
+    type: "CEPH",
+    reactor: 1,
+    company: "RYNDEM.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "483442",
+    name: "CEPH-RYN-SCA3-G2-BAY-02",
+    ip: "72.251.3.96",
+    type: "CEPH",
+    reactor: 1,
+    company: "RYNDEM.MX",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "486095",
+    name: "CEPH-RYN-SCA3-G2-BAY-03",
+    ip: "72.251.3.139",
+    type: "CEPH",
+    reactor: 1,
+    company: "RYNDEM.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-  const [activePings, setActivePings] = useState<Record<string, PingResult>>({})
-  const [selectedHost, setSelectedHost] = useState<string | null>(null)
-  const [tracerouteData, setTracerouteData] = useState<TracerouteResult | null>(null)
-  const [isTracingRoute, setIsTracingRoute] = useState(false)
+  {
+    id: "482995",
+    name: "CEPH-IN-HGR3-G2-01",
+    ip: "72.251.3.100",
+    type: "CEPH",
+    reactor: 1,
+    company: "IINUBE.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "498611",
+    name: "CEPH-IN-HGR3-G2-02",
+    ip: "72.251.3.229",
+    type: "CEPH",
+    reactor: 1,
+    company: "IINUBE.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "503809",
+    name: "CEPH-IN-HGR3-G2-03",
+    ip: "72.251.3.242",
+    type: "CEPH",
+    reactor: 1,
+    company: "IINUBE.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "510878",
+    name: "CEPH-IN-HGR3-G2-04",
+    ip: "72.251.11.57",
+    type: "CEPH",
+    reactor: 1,
+    company: "IINUBE.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 12,
+  },
 
-  const executePing = async (host: { name: string; ip: string }) => {
-    console.log("[v0] Ejecutando ping real a:", host.ip)
-    try {
-      const startTime = Date.now()
-      const response = await fetch(`/api/network/ping`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ host: host.ip }),
-      })
+  {
+    id: "511678",
+    name: "CEPH-STK-HGR-I1-G3-BAY-01",
+    ip: "148.113.220.141",
+    type: "CEPH",
+    reactor: 1,
+    company: "SERVERPY.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "500759",
+    name: "CEPH-STK-HGR-I1-G3-BAY-02",
+    ip: "148.113.212.220",
+    type: "CEPH",
+    reactor: 1,
+    company: "SERVERPY.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "506218",
+    name: "CEPH-STK-HGR-I1-G3-BAY-03",
+    ip: "148.113.222.33",
+    type: "CEPH",
+    reactor: 1,
+    company: "SERVERPY.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-      const data = await response.json()
-      const endTime = Date.now()
+  {
+    id: "469461",
+    name: "CEPH-scale-i1-01",
+    ip: "15.235.67.115",
+    type: "CEPH",
+    reactor: 1,
+    company: "CENTRALTELEFONICA.COM.AR",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "469870",
+    name: "CEPH-scale-i1-02",
+    ip: "15.235.67.186",
+    type: "CEPH",
+    reactor: 1,
+    company: "CENTRALTELEFONICA.COM.AR",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "466298",
+    name: "CEPH-scale-i1-03",
+    ip: "51.222.249.37",
+    type: "CEPH",
+    reactor: 1,
+    company: "CENTRALTELEFONICA.COM.AR",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-      const result: PingResult = {
-        host: host.name,
-        ip: host.ip,
-        alive: data.alive || response.ok,
-        time: data.time || endTime - startTime,
-        timestamp: new Date(),
-      }
+  {
+    id: "475799",
+    name: "CEPH-A-HGR3-BAY-01",
+    ip: "15.235.117.106",
+    type: "CEPH",
+    reactor: 1,
+    company: "AVANTIKA.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "475798",
+    name: "CEPH-A-HGR3-BAY-02",
+    ip: "15.235.117.104",
+    type: "CEPH",
+    reactor: 1,
+    company: "AVANTIKA.MX",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "475797",
+    name: "CEPH-A-HGR3-BAY-03",
+    ip: "15.235.117.105",
+    type: "CEPH",
+    reactor: 1,
+    company: "AVANTIKA.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
 
-      setActivePings((prev) => ({ ...prev, [host.ip]: result }))
+  {
+    id: "444276",
+    name: "CEPH-X-HGR3-01",
+    ip: "15.235.117.37",
+    type: "CEPH",
+    reactor: 1,
+    company: "HPSERVIDOR.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "447438",
+    name: "CEPH-X-HGR3-02",
+    ip: "15.235.117.53",
+    type: "CEPH",
+    reactor: 1,
+    company: "HPSERVIDOR.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "447437",
+    name: "CEPH-X-HGR3-03",
+    ip: "15.235.117.52",
+    type: "CEPH",
+    reactor: 1,
+    company: "HPSERVIDOR.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-      // Actualizar el estado del host
-      setHosts((prevHosts) =>
-        prevHosts.map((h) =>
-          h.ip === host.ip
-            ? {
-                ...h,
-                status: result.alive ? "up" : "down",
-                responseTime: result.time,
-              }
-            : h,
-        ),
-      )
-    } catch (error) {
-      console.error("[v0] Error en ping:", error)
-      setActivePings((prev) => ({
-        ...prev,
-        [host.ip]: {
-          host: host.name,
-          ip: host.ip,
-          alive: false,
-          time: -1,
-          timestamp: new Date(),
-        },
-      }))
-    }
-  }
+  {
+    id: "494339",
+    name: "CEPH-AG-SCAI1-G2-BAY-01",
+    ip: "148.113.208.166",
+    type: "CEPH",
+    reactor: 1,
+    company: "AGSAMERICAS.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "494350",
+    name: "CEPH-AG-SCAI1-G2-BAY-02",
+    ip: "15.235.43.42",
+    type: "CEPH",
+    reactor: 1,
+    company: "AGSAMERICAS.COM.CO",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "494351",
+    name: "CEPH-AG-SCAI1-G2-BAY-03",
+    ip: "15.235.43.115",
+    type: "CEPH",
+    reactor: 1,
+    company: "AGSAMERICAS.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-  const executeTraceroute = async (host: { name: string; ip: string }) => {
-    console.log("[v0] Ejecutando traceroute a:", host.ip)
-    setIsTracingRoute(true)
-    setSelectedHost(host.ip)
-    setTracerouteData(null)
+  {
+    id: "483332",
+    name: "CEPH-EX-HGR3-3",
+    ip: "15.235.43.231",
+    type: "CEPH",
+    reactor: 1,
+    company: "XPERSOFT.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "483333",
+    name: "CEPH-EX-HGR3-1",
+    ip: "15.235.43.230",
+    type: "CEPH",
+    reactor: 1,
+    company: "XPERSOFT.NET",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "483334",
+    name: "CEPH-EX-HGR3-2",
+    ip: "15.235.43.237",
+    type: "CEPH",
+    reactor: 1,
+    company: "XPERSOFT.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
 
-    try {
-      const response = await fetch(`/api/network/traceroute`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ host: host.ip }),
-      })
+  {
+    id: "496225",
+    name: "CEPH-CSH-SCA-I3-G2-BAY-01",
+    ip: "72.251.3.203",
+    type: "CEPH",
+    reactor: 1,
+    company: "CEIBA.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "493198",
+    name: "CEPH-CSH-SCA-I3-G2-BAY-03",
+    ip: "72.251.3.216",
+    type: "CEPH",
+    reactor: 1,
+    company: "CEIBA.COM.CO",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "493199",
+    name: "CEPH-CSH-SCA-I3-G2-BAY-02",
+    ip: "72.251.3.215",
+    type: "CEPH",
+    reactor: 1,
+    company: "CEIBA.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-      const data = await response.json()
+  {
+    id: "486569",
+    name: "CEPH-TAB-SCA3-BAY-01",
+    ip: "148.113.187.110",
+    type: "CEPH",
+    reactor: 1,
+    company: "ABPROSYSTEMS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "486568",
+    name: "CEPH-TAB-SCA3-BAY-02",
+    ip: "148.113.187.109",
+    type: "CEPH",
+    reactor: 1,
+    company: "ABPROSYSTEMS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "483529",
+    name: "CEPH-TAB-SCA3-BAY-03",
+    ip: "148.113.187.35",
+    type: "CEPH",
+    reactor: 1,
+    company: "ABPROSYSTEMS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-      setTracerouteData({
-        host: host.name,
-        hops: data.hops || [],
-        complete: data.complete || true,
-      })
-    } catch (error) {
-      console.error("[v0] Error en traceroute:", error)
-      setTracerouteData({
-        host: host.name,
-        hops: [],
-        complete: false,
-      })
-    } finally {
-      setIsTracingRoute(false)
-    }
-  }
+  {
+    id: "501686",
+    name: "CEPH-MRK-HGR4-G2-01",
+    ip: "15.235.43.16",
+    type: "CEPH",
+    reactor: 1,
+    company: "KDUCEO.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "501685",
+    name: "CEPH-MRK-HGR4-G2-02",
+    ip: "148.113.213.79",
+    type: "CEPH",
+    reactor: 1,
+    company: "KDUCEO.NET",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "501684",
+    name: "CEPH-MRK-HGR4-G2-03",
+    ip: "15.235.43.97",
+    type: "CEPH",
+    reactor: 1,
+    company: "KDUCEO.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "501683",
+    name: "CEPH-MRK-HGR4-G2-04",
+    ip: "15.235.43.104",
+    type: "CEPH",
+    reactor: 1,
+    company: "KDUCEO.NET",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 12,
+  },
 
-  useEffect(() => {
-    // Ping inicial a todos los hosts
-    hosts.forEach((host) => {
-      executePing(host)
-    })
+  {
+    id: "9002640",
+    name: "CEPH-DG-HGR4-BAY-01",
+    ip: "15.235.117.114",
+    type: "CEPH",
+    reactor: 1,
+    company: "DG",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "9002641",
+    name: "CEPH-DG-HGR4-BAY-02",
+    ip: "148.113.199.165",
+    type: "CEPH",
+    reactor: 1,
+    company: "DG",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "9002642",
+    name: "CEPH-DG-HGR4-BAY-03",
+    ip: "15.235.117.181",
+    type: "CEPH",
+    reactor: 1,
+    company: "DG",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "9002643",
+    name: "CEPH-DG-HGR4-BAY-04",
+    ip: "148.113.215.11",
+    type: "CEPH",
+    reactor: 1,
+    company: "DG",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "9002644",
+    name: "CEPH-DG-HGR4-BAY-05",
+    ip: "148.113.212.203",
+    type: "CEPH",
+    reactor: 1,
+    company: "DG",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "9002645",
+    name: "CEPH-DG-HGR4-BAY-05-B",
+    ip: "148.113.215.5",
+    type: "CEPH",
+    reactor: 1,
+    company: "DG",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-    // Configurar intervalo para pings continuos
-    const interval = setInterval(() => {
-      console.log("[v0] Ejecutando pings automáticos...")
-      hosts.forEach((host) => {
-        executePing(host)
-      })
-    }, 30000) // Cada 30 segundos
+  {
+    id: "9002647",
+    name: "CEPH-GP-HGR4-G2-01",
+    ip: "148.113.218.177",
+    type: "CEPH",
+    reactor: 1,
+    company: "GP",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "9002648",
+    name: "CEPH-GP-HGR4-G2-02",
+    ip: "148.113.218.168",
+    type: "CEPH",
+    reactor: 1,
+    company: "GP",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "9002649",
+    name: "CEPH-GP-HGR4-G2-03",
+    ip: "148.113.218.176",
+    type: "CEPH",
+    reactor: 1,
+    company: "GP",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
 
-    return () => clearInterval(interval)
-  }, [hosts.length])
+  {
+    id: "300001",
+    name: "CEPH-OAK-HGR3-G3-BAY-01",
+    ip: "72.251.11.68",
+    type: "CEPH",
+    reactor: 1,
+    company: "OAKSYSTEM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "300002",
+    name: "CEPH-OAK-HGR3-G3-BAY-02",
+    ip: "72.251.11.73",
+    type: "CEPH",
+    reactor: 1,
+    company: "OAKSYSTEM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "300003",
+    name: "CEPH-OAK-HGR3-G3-BAY-03",
+    ip: "72.251.11.201",
+    type: "CEPH",
+    reactor: 1,
+    company: "OAKSYSTEM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
 
-  const stats = {
-    total: hosts.length,
-    up: hosts.filter((h) => h.status === "up").length,
-    degraded: hosts.filter((h) => h.status === "degraded").length,
-    down: hosts.filter((h) => h.status === "down").length,
-    avgUptime: (hosts.reduce((acc, h) => acc + h.uptime, 0) / hosts.length).toFixed(2),
-  }
+  {
+    id: "600001",
+    name: "CEPH-SKY-HGR-I4-G3-BAY-01",
+    ip: "148.113.220.120",
+    type: "CEPH",
+    reactor: 1,
+    company: "SKY",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "600002",
+    name: "CEPH-SKY-HGR-I4-G3-BAY-02",
+    ip: "148.113.220.253",
+    type: "CEPH",
+    reactor: 1,
+    company: "SKY",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "600003",
+    name: "CEPH-SKY-HGR-I4-G3-BAY-03",
+    ip: "148.113.222.35",
+    type: "CEPH",
+    reactor: 1,
+    company: "SKY",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
+  {
+    id: "600004",
+    name: "CEPH-SKY-HGR-I4-G3-BAY-04",
+    ip: "148.113.220.246",
+    type: "CEPH",
+    reactor: 1,
+    company: "SKY",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "600005",
+    name: "CEPH-SKY-HGR-I4-G3-BAY-05",
+    ip: "148.113.222.37",
+    type: "CEPH",
+    reactor: 1,
+    company: "SKY",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "up":
-        return "text-green-400"
-      case "degraded":
-        return "text-yellow-400"
-      case "down":
-        return "text-red-400"
-      default:
-        return "text-gray-400"
-    }
-  }
+  // Reactor 2 - Servidores de Correo/SPAM
+  {
+    id: "100001",
+    name: "SPAM-HBTC-VM-2001",
+    ip: "54.39.125.239",
+    type: "SPAM",
+    reactor: 2,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "100002",
+    name: "SPAM-HBTC-VM-2002",
+    ip: "54.39.46.9",
+    type: "SPAM",
+    reactor: 2,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "100003",
+    name: "SPAM-HBTC-VM-2003",
+    ip: "144.217.195.234",
+    type: "SPAM",
+    reactor: 2,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "up":
-        return <CheckCircle2 className="w-4 h-4" />
-      case "degraded":
-        return <AlertTriangle className="w-4 h-4" />
-      case "down":
-        return <XCircle className="w-4 h-4" />
-      default:
-        return <Activity className="w-4 h-4" />
-    }
-  }
+  // Reactor 4 - VPS y Bare Metal
+  {
+    id: "200001",
+    name: "VPS-CTRLONLINE-MinSalud",
+    ip: "20.246.48.58",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "200002",
+    name: "VPS-CTRLONLINE-Universidad-Militar",
+    ip: "20.49.8.45",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "200003",
+    name: "VPS-CTRLONLINE-Bomberos-Bogota",
+    ip: "172.206.18.16",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "200004",
+    name: "VPS-CTRLONLINE-Grupo-SUMMA",
+    ip: "40.67.136.56",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "200005",
+    name: "VPS-CTRLONLINE-ARGOS",
+    ip: "20.96.177.143",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "200006",
+    name: "VPS-CTRLONLINE-DESUR",
+    ip: "158.69.43.204",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "200007",
+    name: "VPS-CTRLONLINE-FORPO",
+    ip: "167.114.48.85",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "200008",
+    name: "VPS-CTRLONLINE-INS",
+    ip: "167.114.48.86",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "200009",
+    name: "VPS-CTRLONLINE-CANCILLERIA",
+    ip: "192.99.238.252",
+    type: "VPS",
+    reactor: 4,
+    company: "CTRLONLINE",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
 
-  const hostsByReactor = hosts.reduce(
-    (acc, host) => {
-      const reactor = host.reactor || 0
-      if (!acc[reactor]) acc[reactor] = []
-      acc[reactor].push(host)
-      return acc
-    },
-    {} as Record<number, typeof hosts>,
-  )
+  // Bare Metal PBS
+  {
+    id: "506748",
+    name: "BARE-IBG-ADVSTO-G2-PBS-01",
+    ip: "148.113.216.7",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "IBG.COM.CO",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "472841",
+    name: "BARE-ADVSTORE-G2-PBS-01",
+    ip: "148.113.169.29",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "COOTRARIS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "489836",
+    name: "BARE-IC-ADVSTOR-STOR-NG3-PBS-01",
+    ip: "148.113.193.2",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "ICONET.COM.MX",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "9002651",
+    name: "BARE-HBTC-ADV-G2-PBS-01",
+    ip: "158.69.168.64",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+  {
+    id: "446396",
+    name: "BARE-SYS-SYS-1-SAT-32-PBS-BAY-1",
+    ip: "192.99.36.34",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "SERVSOFT",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 18,
+  },
+  {
+    id: "506757",
+    name: "BARE-IN-ADVST1-G3-PBS-01",
+    ip: "148.113.216.8",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "IINUBE.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "600006",
+    name: "BARE-SKY-RISESTRO-G3-BAY-01-GMR",
+    ip: "141.95.85.145",
+    type: "BARE-PBS",
+    reactor: 4,
+    company: "SKY",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
 
-  const reactorNames: Record<number, string> = {
-    1: "Reactor 1 - CEPH Clusters",
-    2: "Reactor 2 - Correo",
-    3: "Reactor 3 - SPAM",
-    4: "Reactor 4 - VPS y Bare Metal",
-    5: "Reactor 5 - Websites",
-  }
+  // Bare Metal Regular
+  {
+    id: "473203",
+    name: "BARE-HBTC-ADVSTO-G2-PBS-01",
+    ip: "148.113.169.39",
+    type: "BARE",
+    reactor: 4,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 16,
+  },
+  {
+    id: "314722",
+    name: "BARE-HBTC-RISE1-LABHACK-HACKACADEMY",
+    ip: "54.39.105.106",
+    type: "BARE",
+    reactor: 4,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 13,
+  },
+  {
+    id: "378012",
+    name: "BARE-HBTC-INFRA-1-ZIMBRA-CORZO",
+    ip: "51.222.47.74",
+    type: "BARE",
+    reactor: 4,
+    company: "HBTC",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 15,
+  },
+  {
+    id: "482760",
+    name: "BARE-BT-HGR1-G1-MONGO-GATEWAY",
+    ip: "51.222.152.216",
+    type: "BARE",
+    reactor: 4,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.8%",
+    responseTime: 17,
+  },
+  {
+    id: "484061",
+    name: "BARE-BT-HGR3-G1-MONGO-GATEWAY",
+    ip: "148.113.187.42",
+    type: "BARE",
+    reactor: 4,
+    company: "BETCONNECTIONS.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 14,
+  },
+  {
+    id: "236186",
+    name: "BARE-panel",
+    ip: "192.99.33.217",
+    type: "BARE-PVE",
+    reactor: 4,
+    company: "TITANOCLOUD.COM",
+    status: "online",
+    uptime: "99.9%",
+    responseTime: 16,
+  },
+]
 
-  const generateUptimeData = () => {
-    return Array.from({ length: 24 }, (_, i) => ({
-      time: `${i}:00`,
-      uptime: 95 + Math.random() * 5,
-    }))
-  }
+export default function NOCDashboard() {
+  const [hosts, setHosts] = useState(ALL_HOSTS)
+  const [selectedReactor, setSelectedReactor] = useState<number | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [pingResults, setPingResults] = useState<Record<string, any>>({})
+  const [traceroute, setTraceroute] = useState<any>(null)
+  const [loadingPing, setLoadingPing] = useState<string | null>(null)
+  const [loadingTrace, setLoadingTrace] = useState<string | null>(null)
 
-  return (
-    <div className="p-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard NOC - Monitoreo en Tiempo Real</h1>
-        <p className="text-slate-400">Sistema de monitoreo con ping y traceroute en tiempo real</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-        <Card className="bg-slate-950 border-slate-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm mb-1">Total Hosts</p>
-                <p className="text-3xl font-bold text-white">{stats.total}</p>
-              </div>
-              <Server className="w-8 h-8 text-blue-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-slate-950 border-slate-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm mb-1">Operacionales</p>
-                <p className="text-3xl font-bold text-green-400">{stats.up}</p>
-              </div>
-              <CheckCircle2 className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-slate-950 border-slate-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm mb-1">Degradados</p>
-                <p className="text-3xl font-bold text-yellow-400">{stats.degraded}</p>
-              </div>
-              <AlertTriangle className="w-8 h-8 text-yellow-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-slate-950 border-slate-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm mb-1">Caídos</p>
-                <p className="text-3xl font-bold text-red-400">{stats.down}</p>
-              </div>
-              <XCircle className="w-8 h-8 text-red-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-slate-950 border-slate-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-400 text-sm mb-1">Uptime Promedio</p>
-                <p className="text-3xl font-bold text-cyan-400">{stats.avgUptime}%</p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-cyan-400" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Uptime Graph */}
-      <Card className="bg-slate-950 border-slate-800 mb-8">
-        <CardHeader>
-          <CardTitle className="text-white">Disponibilidad General (Últimas 24 horas)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={generateUptimeData()}>
-              <XAxis dataKey="time" stroke="#64748b" />
-              <YAxis stroke="#64748b" domain={[90, 100]} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#0f172a",
-                  border: "1px solid #334155",
-                  borderRadius: "8px",
-                }}
-              />
-              <Line type="monotone" dataKey="uptime" stroke="#06b6d4" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {selectedHost && (
-        <Card className="bg-slate-950 border-slate-800 mb-8">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-white flex items-center gap-2">
-              <Network className="w-5 h-5" />
-              Traceroute - {tracerouteData?.host || selectedHost}
-            </CardTitle>
-            <Button variant="outline" size="sm" onClick={() => setSelectedHost(null)}>
-              Cerrar
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {isTracingRoute ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                  <Activity className="w-12 h-12 text-cyan-400 animate-spin mx-auto mb-4" />
-                  <p className="text-slate-400">Trazando ruta...</p>
-                </div>
-              </div>
-            ) : tracerouteData ? (
-              <div className="space-y-4">
-                {/* Mapa visual de nodos */}
-                <div className="bg-slate-900 rounded-lg p-6 mb-6">
-                  <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-cyan-400" />
-                    Mapa de Red
-                  </h3>
-                  <div className="flex items-center gap-4 overflow-x-auto pb-4">
-                    <div className="flex items-center gap-2 bg-cyan-900/20 px-4 py-3 rounded-lg border border-cyan-800 flex-shrink-0">
-                      <Server className="w-5 h-5 text-cyan-400" />
-                      <span className="text-white font-medium text-sm">Origen</span>
-                    </div>
-                    {tracerouteData.hops.map((hop, idx) => (
-                      <div key={idx} className="flex items-center gap-2 flex-shrink-0">
-                        <div className="h-0.5 w-8 bg-cyan-600" />
-                        <div className="bg-slate-800 px-3 py-2 rounded-lg border border-slate-700">
-                          <div className="text-slate-400 text-xs mb-1">Hop {hop.hop}</div>
-                          <div className="text-white text-sm font-medium">{hop.hostname || hop.ip}</div>
-                          <div className="text-cyan-400 text-xs">{hop.rtt[0]?.toFixed(1)}ms</div>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <div className="h-0.5 w-8 bg-green-600" />
-                      <div className="bg-green-900/20 px-4 py-3 rounded-lg border border-green-800">
-                        <Server className="w-5 h-5 text-green-400" />
-                        <span className="text-white font-medium text-sm">Destino</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Lista detallada de hops */}
-                <div className="space-y-2">
-                  {tracerouteData.hops.map((hop, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="bg-cyan-900/20 px-3 py-1 rounded-full">
-                          <span className="text-cyan-400 font-mono text-sm">{hop.hop}</span>
-                        </div>
-                        <div>
-                          <p className="text-white font-medium">{hop.hostname || "Unknown"}</p>
-                          <p className="text-slate-400 text-sm">{hop.ip}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        {hop.rtt.map((time, timeIdx) => (
-                          <div key={timeIdx} className="text-right">
-                            <p className="text-slate-400 text-xs">RTT {timeIdx + 1}</p>
-                            <p className="text-white font-medium">{time.toFixed(1)}ms</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <XCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                <p className="text-slate-400">Error al trazar la ruta</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Hosts by Reactor */}
-      {Object.entries(hostsByReactor).map(([reactor, reactorHosts]) => (
-        <Card key={reactor} className="bg-slate-950 border-slate-800 mb-6">
-          <CardHeader>
-            <CardTitle className="text-white">{reactorNames[Number(reactor)]}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {reactorHosts.map((host, index) => {
-                const pingResult = activePings[host.ip]
-                return (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
-                      <div className="flex-1">
-                        <h3 className="text-white font-medium text-sm">{host.name}</h3>
-                        <p className="text-slate-500 text-xs">{host.ip}</p>
-                        {pingResult && (
-                          <p className="text-slate-600 text-xs">
-                            Último ping: {pingResult.timestamp.toLocaleTimeString()}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <p className="text-slate-400 text-xs">Uptime</p>
-                        <p className="text-white font-medium">{host.uptime}%</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-slate-400 text-xs">Response</p>
-                        <p className="text-white font-medium">{host.responseTime}ms</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => executePing(host)}
-                          className="text-xs"
-                          disabled={pingResult && Date.now() - pingResult.timestamp.getTime() < 5000}
-                        >
-                          Ping
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => executeTraceroute(host)}
-                          className="text-xs"
-                          disabled={isTracingRoute}
-                        >
-                          Trace
-                        </Button>
-                      </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
-                        {host.status.toUpperCase()}
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  )
+  console.log("[v0] NOC Dashboard - Total hosts:", hosts.length)
 }
