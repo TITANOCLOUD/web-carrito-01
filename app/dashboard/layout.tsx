@@ -316,189 +316,169 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
 
               {domainEmailOpen && (
-                <div className="ml-6 mt-2 space-y-3 border-l border-slate-700 pl-3">
-                  <div>
+                <div className="ml-6 mt-2 space-y-2 border-l-2 border-cyan-800 pl-3">
+                  {/* Dominio Web Section */}
+                  <div className="space-y-1">
+                    <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wider px-3 py-1">
+                      Dominio Web
+                    </p>
                     <button
-                      onClick={() => setDomainWebOpen(!domainWebOpen)}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white text-sm font-medium"
+                      onClick={() => router.push("/dashboard/domains/search")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/domains/search")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
                     >
-                      <ChevronRight className={`w-3 h-3 transition-transform ${domainWebOpen ? "rotate-90" : ""}`} />
-                      <span>Dominio Web</span>
+                      Busque su dominio
                     </button>
-                    {domainWebOpen && (
-                      <div className="ml-4 mt-1 space-y-1">
-                        <button
-                          onClick={() => router.push("/dashboard/domains/search")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/domains/search")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Busque su dominio
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/domains/renew")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/domains/renew")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Renueve su dominio
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/domains/aftermarket")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/domains/aftermarket")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Mercado secundario (aftermarket)
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => router.push("/dashboard/domains/renew")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/domains/renew")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Renueve su dominio
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/domains/aftermarket")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/domains/aftermarket")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Mercado secundario
+                    </button>
                   </div>
 
-                  <div>
+                  {/* Hosting Section */}
+                  <div className="space-y-1 pt-2">
+                    <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wider px-3 py-1">Hosting</p>
                     <button
-                      onClick={() => setHostingPacksOpen(!hostingPacksOpen)}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white text-sm font-medium"
+                      onClick={() => router.push("/dashboard/hosting/all-packs")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/hosting/all-packs")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
                     >
-                      <ChevronRight className={`w-3 h-3 transition-transform ${hostingPacksOpen ? "rotate-90" : ""}`} />
-                      <span>Hosting</span>
+                      Todos los packs Web
                     </button>
-                    {hostingPacksOpen && (
-                      <div className="ml-4 mt-1 space-y-1">
-                        <button
-                          onClick={() => router.push("/dashboard/hosting/all-packs")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/hosting/all-packs")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Todos los packs Web
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/hosting/databases")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/hosting/databases")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Bases de datos adicionales
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/hosting/ssl")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/hosting/ssl")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Opción SSL
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/hosting/cdn")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/hosting/cdn")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Opción CDN
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => router.push("/dashboard/hosting/databases")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/hosting/databases")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Bases de datos adicionales
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/hosting/ssl")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/hosting/ssl")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Opción SSL
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/hosting/cdn")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/hosting/cdn")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Opción CDN
+                    </button>
                   </div>
 
-                  <div>
+                  {/* Acceso Rápido Section */}
+                  <div className="space-y-1 pt-2">
+                    <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wider px-3 py-1">
+                      Acceso Rápido
+                    </p>
                     <button
-                      onClick={() => setQuickAccessOpen(!quickAccessOpen)}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white text-sm font-medium"
+                      onClick={() => router.push("/dashboard/domains/prices")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/domains/prices")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
                     >
-                      <ChevronRight className={`w-3 h-3 transition-transform ${quickAccessOpen ? "rotate-90" : ""}`} />
-                      <span>Acceso rápido</span>
+                      Precios de los dominios
                     </button>
-                    {quickAccessOpen && (
-                      <div className="ml-4 mt-1 space-y-1">
-                        <button
-                          onClick={() => router.push("/dashboard/domains/prices")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/domains/prices")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Precios de los dominios
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/domains/whois")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/domains/whois")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Whois: buscar información
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/domains/dns")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/domains/dns")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Servidor DNS
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/quick-access/create-website")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/quick-access/create-website")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          ¿Cómo crear un sitio web?
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/quick-access/wordpress-hosting")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/quick-access/wordpress-hosting")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Aloje su sitio WordPress
-                        </button>
-                        <button
-                          onClick={() => router.push("/dashboard/quick-access/one-click-website")}
-                          className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                            isActive("/dashboard/quick-access/one-click-website")
-                              ? "bg-cyan-600 text-white"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800"
-                          }`}
-                        >
-                          Cree su sitio web en un clic
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => router.push("/dashboard/domains/whois")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/domains/whois")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Whois: buscar información
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/domains/dns")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/domains/dns")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Servidor DNS
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/quick-access/create-website")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/quick-access/create-website")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      ¿Cómo crear un sitio web?
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/quick-access/wordpress-hosting")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/quick-access/wordpress-hosting")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Aloje su sitio WordPress
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/quick-access/one-click-website")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/quick-access/one-click-website")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      Cree su sitio web en un clic
+                    </button>
                   </div>
 
-                  <button
-                    onClick={() => router.push("/dashboard/email/management")}
-                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                      isActive("/dashboard/email/management")
-                        ? "bg-cyan-600 text-white"
-                        : "text-slate-300 hover:text-white hover:bg-slate-800"
-                    }`}
-                  >
-                    Email
-                  </button>
+                  {/* Email */}
+                  <div className="pt-2">
+                    <button
+                      onClick={() => router.push("/dashboard/email/management")}
+                      className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                        isActive("/dashboard/email/management")
+                          ? "bg-cyan-600 text-white"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      }`}
+                    >
+                      <span className="font-medium">Email</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
