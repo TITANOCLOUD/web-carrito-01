@@ -2,7 +2,7 @@
 
 # Script de instalación de archivos de monitoreo
 # Ruta base de la aplicación
-BASE_PATH="/home/saturno/nodeapp"
+BASE_PATH="/home/saturnoocloud/nodeapp"
 
 echo "======================================"
 echo "Instalando archivos de monitoreo"
@@ -271,9 +271,4 @@ echo "SIGUIENTES PASOS:"
 echo "1. Editar $BASE_PATH/.env.local con el password correcto"
 echo "2. Instalar dependencia: cd $BASE_PATH && npm install mysql2"
 echo "3. Reiniciar la aplicación Next.js"
-echo ""
-echo "Para instalar el agente en un servidor monitoreado:"
-echo "  export MONITOR_API_URL=https://saturn-o.cloud/api/monitoring"
-echo "  export MONITOR_TOKEN=tu_token_aqui"
-echo "  python3 $BASE_PATH/scripts/monitor-agent.py"
 echo ""
