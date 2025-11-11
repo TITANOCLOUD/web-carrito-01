@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Eye, EyeOff, Lock, Mail, Shield, AlertCircle } from "lucide-react"
+import { Eye, EyeOff, Lock, Mail, AlertCircle } from "lucide-react"
+import Image from "next/image"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -41,7 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-slate-950">
       {/* Efectos de fondo animados */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-cyan-500/5 rounded-full blur-3xl animate-pulse" />
@@ -52,15 +53,19 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Logo y título */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="relative w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/50">
-              <Shield className="w-10 h-10 text-white" />
-            </div>
+          <div className="flex items-center justify-center mb-6">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen15-7VMGrhIAzS9pTcKv1LuL64v1WAEQEk.png"
+              alt="Saturno Logo"
+              width={200}
+              height={50}
+              className="h-12 w-auto"
+              priority
+            />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Titano Cloud</h1>
-          <p className="text-slate-400">Panel de Administración NOC/SOC</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Acceso al Reactor</h1>
+          <p className="text-slate-400">de tu Infraestructura</p>
         </div>
 
         {/* Card de login */}

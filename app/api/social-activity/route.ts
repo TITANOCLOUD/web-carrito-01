@@ -1,98 +1,137 @@
 import { NextResponse } from "next/server"
 
 export const runtime = "edge"
-export const revalidate = 300 // Revalidar cada 5 minutos
+export const revalidate = 300
 
 interface SocialActivity {
   platform: string
   hasNewContent: boolean
   lastActivity?: string
   contentCount?: number
+  contentId?: string
 }
 
-async function checkInstagramActivity(username: string): Promise<boolean> {
+// En lugar de hacer fetch, retornamos configuración mock hasta que se implemente base de datos
+async function getConfig() {
   try {
-    // Instagram no tiene API pública gratuita, pero podemos usar web scraping básico
-    // o servicios de terceros. Por ahora simulamos la lógica
-    const response = await fetch(`https://www.instagram.com/${username}/?__a=1`, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-    })
+    // TODO: Implementar lectura desde base de datos (Supabase/KV)
+    // Por ahora retornamos null para usar datos simulados
+    return null
+  } catch (error) {
+    console.error("[v0] Error getting config:", error)
+    return null
+  }
+}
 
-    if (response.ok) {
-      // Si podemos acceder, asumimos que hay contenido reciente
-      return true
+function generateContentId(platform: string, timestamp: string): string {
+  return `${platform}-${new Date(timestamp).getTime()}`
+}
+
+async function checkFacebookActivity(config: any): Promise<SocialActivity> {
+  if (!config || !config.facebook?.enabled || !config.facebook?.accessToken) {
+    const mockDate = new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString()
+    return {
+      platform: "facebook",
+      hasNewContent: Math.random() > 0.5,
+      lastActivity: mockDate,
+      contentId: generateContentId("facebook", mockDate),
+    }
+  }
+
+  try {
+    const response = await fetch(
+      `https://graph.facebook.com/v18.0/${config.facebook.pageId}/posts?fields=created_time&limit=1&access_token=${config.facebook.accessToken}`,
+    )
+    const data = await response.json()
+
+    if (data.data && data.data.length > 0) {
+      const lastPost = data.data[0]
+      const postTime = new Date(lastPost.created_time)
+      const now = new Date()
+      const hoursDiff = (now.getTime() - postTime.getTime()) / (1000 * 60 * 60)
+
+      return {
+        platform: "facebook",
+        hasNewContent: hoursDiff < 48,
+        lastActivity: lastPost.created_time,
+        contentId: generateContentId("facebook", lastPost.created_time),
+      }
     }
   } catch (error) {
-    console.log("[v0] Error checking Instagram:", error)
+    console.error("[v0] Error checking Facebook:", error)
   }
-  return false
+
+  return { platform: "facebook", hasNewContent: false }
 }
 
-async function checkFacebookActivity(pageId: string): Promise<boolean> {
-  try {
-    // Facebook Graph API requiere token, por ahora usamos RSS si está disponible
-    // o lógica alternativa
-    return true // Placeholder
-  } catch (error) {
-    console.log("[v0] Error checking Facebook:", error)
+async function checkInstagramActivity(config: any): Promise<SocialActivity> {
+  if (!config || !config.instagram?.enabled || !config.instagram?.accessToken) {
+    const mockDate = new Date(Date.now() - Math.random() * 36 * 60 * 60 * 1000).toISOString()
+    return {
+      platform: "instagram",
+      hasNewContent: Math.random() > 0.6,
+      lastActivity: mockDate,
+      contentId: generateContentId("instagram", mockDate),
+    }
   }
-  return false
+
+  try {
+    const response = await fetch(
+      `https://graph.instagram.com/${config.instagram.userId}/media?fields=timestamp&limit=1&access_token=${config.instagram.accessToken}`,
+    )
+    const data = await response.json()
+
+    if (data.data && data.data.length > 0) {
+      const lastPost = data.data[0]
+      const postTime = new Date(lastPost.timestamp)
+      const now = new Date()
+      const hoursDiff = (now.getTime() - postTime.getTime()) / (1000 * 60 * 60)
+
+      return {
+        platform: "instagram",
+        hasNewContent: hoursDiff < 48,
+        lastActivity: lastPost.timestamp,
+        contentId: generateContentId("instagram", lastPost.timestamp),
+      }
+    }
+  } catch (error) {
+    console.error("[v0] Error checking Instagram:", error)
+  }
+
+  return { platform: "instagram", hasNewContent: false }
 }
 
-async function checkLinkedInActivity(companyName: string): Promise<boolean> {
-  try {
-    // LinkedIn no tiene API pública gratuita
-    // Usaremos RSS feeds si están disponibles
-    return true // Placeholder
-  } catch (error) {
-    console.log("[v0] Error checking LinkedIn:", error)
+async function checkLinkedInActivity(config: any): Promise<SocialActivity> {
+  const mockDate = new Date(Date.now() - Math.random() * 48 * 60 * 60 * 1000).toISOString()
+  return {
+    platform: "linkedin",
+    hasNewContent: Math.random() > 0.7,
+    lastActivity: mockDate,
+    contentId: generateContentId("linkedin", mockDate),
   }
-  return false
 }
 
-async function checkTikTokActivity(username: string): Promise<boolean> {
-  try {
-    // TikTok tiene APIs limitadas
-    return true // Placeholder
-  } catch (error) {
-    console.log("[v0] Error checking TikTok:", error)
+async function checkTikTokActivity(config: any): Promise<SocialActivity> {
+  const mockDate = new Date(Date.now() - Math.random() * 12 * 60 * 60 * 1000).toISOString()
+  return {
+    platform: "tiktok",
+    hasNewContent: Math.random() > 0.8,
+    lastActivity: mockDate,
+    contentId: generateContentId("tiktok", mockDate),
   }
-  return false
 }
 
 export async function GET() {
   try {
+    const config = await getConfig()
+
     const activities: SocialActivity[] = await Promise.all([
-      checkFacebookActivity("titanocloud").then((hasNew) => ({
-        platform: "facebook",
-        hasNewContent: hasNew,
-        lastActivity: hasNew ? new Date().toISOString() : undefined,
-      })),
-      checkLinkedInActivity("titano-cloud").then((hasNew) => ({
-        platform: "linkedin",
-        hasNewContent: hasNew,
-        lastActivity: hasNew ? new Date().toISOString() : undefined,
-      })),
-      checkInstagramActivity("titanocloudlatam").then((hasNew) => ({
-        platform: "instagram-latam",
-        hasNewContent: hasNew,
-        lastActivity: hasNew ? new Date().toISOString() : undefined,
-      })),
-      checkInstagramActivity("titanocloud").then((hasNew) => ({
-        platform: "instagram-global",
-        hasNewContent: hasNew,
-        lastActivity: hasNew ? new Date().toISOString() : undefined,
-      })),
-      checkTikTokActivity("titanocloud").then((hasNew) => ({
-        platform: "tiktok",
-        hasNewContent: hasNew,
-        lastActivity: hasNew ? new Date().toISOString() : undefined,
-      })),
+      checkFacebookActivity(config),
+      checkInstagramActivity(config),
+      checkLinkedInActivity(config),
+      checkTikTokActivity(config),
     ])
 
-    // Verificar si hay alguna actividad reciente
     const hasAnyActivity = activities.some((activity) => activity.hasNewContent)
 
     return NextResponse.json({

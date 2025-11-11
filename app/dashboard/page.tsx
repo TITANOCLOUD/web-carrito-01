@@ -367,6 +367,42 @@ export default function DashboardPage() {
       type: "Web Platform",
       uptime: "99.7%",
     },
+    {
+      id: "web-titanocloud",
+      name: "Titanocloud.com",
+      ip: "Detectando...",
+      status: "online",
+      reactor: 5,
+      type: "Website",
+      uptime: "99.9%",
+    },
+    {
+      id: "web-vimaferltda",
+      name: "Vimaferltda.com",
+      ip: "Detectando...",
+      status: "online",
+      reactor: 5,
+      type: "Website",
+      uptime: "99.8%",
+    },
+    {
+      id: "web-controlonline",
+      name: "controlonlineinternational.com",
+      ip: "Detectando...",
+      status: "online",
+      reactor: 5,
+      type: "Website",
+      uptime: "99.9%",
+    },
+    {
+      id: "web-gamechagers",
+      name: "gamechagers.com.co",
+      ip: "Detectando...",
+      status: "online",
+      reactor: 5,
+      type: "Website",
+      uptime: "99.7%",
+    },
   ])
 
   useEffect(() => {
@@ -379,7 +415,9 @@ export default function DashboardPage() {
 
     const interval = setInterval(() => {
       checkHostsStatus()
-    }, 30000)
+    }, 60000) // 60 segundos = 1 minuto
+
+    checkHostsStatus()
 
     return () => clearInterval(interval)
   }, [router])
@@ -417,6 +455,10 @@ export default function DashboardPage() {
     setIsRefreshing(true)
     await checkHostsStatus()
     setTimeout(() => setIsRefreshing(false), 1000)
+  }
+
+  const handleHostClick = (host: Host) => {
+    router.push(`/dashboard/host-monitor/${host.id}`)
   }
 
   if (!isAuthenticated) {
@@ -532,6 +574,7 @@ export default function DashboardPage() {
                           }`
                         : "none",
                     }}
+                    onClick={() => host && handleHostClick(host)}
                   />
                 </TooltipTrigger>
                 {host && (

@@ -7,12 +7,14 @@ interface SocialActivity {
   platform: string
   hasNewContent: boolean
   lastActivity?: string
+  contentId?: string // ID único del último contenido
 }
 
 export function SocialMediaWidget() {
   const [isHovered, setIsHovered] = useState(false)
   const [hasActivity, setHasActivity] = useState(false)
   const [activeNetworks, setActiveNetworks] = useState<string[]>([])
+  const [activities, setActivities] = useState<SocialActivity[]>([])
 
   useEffect(() => {
     const checkSocialActivity = async () => {
@@ -21,17 +23,34 @@ export function SocialMediaWidget() {
         const data = await response.json()
 
         if (data.success && data.hasActivity) {
-          setHasActivity(true)
-          const active = data.activities
-            .filter((activity: SocialActivity) => activity.hasNewContent)
-            .map((activity: SocialActivity) => activity.platform)
-          setActiveNetworks(active)
+          const viewedContent = JSON.parse(localStorage.getItem("viewed_social_content") || "{}")
+
+          const unseenActivities = data.activities.filter((activity: SocialActivity) => {
+            if (!activity.hasNewContent) return false
+
+            // Si el usuario ya vio este contentId específico, no mostrarlo
+            const lastViewedId = viewedContent[activity.platform]
+            return !lastViewedId || lastViewedId !== activity.contentId
+          })
+
+          setActivities(data.activities)
+
+          if (unseenActivities.length > 0) {
+            setHasActivity(true)
+            const active = unseenActivities.map((activity: SocialActivity) => activity.platform)
+            setActiveNetworks(active)
+          } else {
+            setHasActivity(false)
+            setActiveNetworks([])
+          }
         } else {
           setHasActivity(false)
+          setActiveNetworks([])
         }
       } catch (error) {
         console.error("Error fetching social activity:", error)
         setHasActivity(false)
+        setActiveNetworks([])
       }
     }
 
@@ -39,6 +58,34 @@ export function SocialMediaWidget() {
     const interval = setInterval(checkSocialActivity, 5 * 60 * 1000)
     return () => clearInterval(interval)
   }, [])
+
+  const handleSocialClick = (platform: string) => {
+    const activity = activities.find((a) => a.platform === platform)
+    if (activity && activity.contentId) {
+      const viewedContent = JSON.parse(localStorage.getItem("viewed_social_content") || "{}")
+      viewedContent[platform] = activity.contentId
+      localStorage.setItem("viewed_social_content", JSON.stringify(viewedContent))
+
+      // Remover de la lista de activos inmediatamente
+      setActiveNetworks((prev) => prev.filter((p) => p !== platform))
+
+      // Si no quedan redes activas, ocultar el widget
+      if (activeNetworks.length <= 1) {
+        setHasActivity(false)
+      }
+
+      fetch("/api/social-tracking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform,
+          contentId: activity.contentId,
+          timestamp: new Date().toISOString(),
+          action: "viewed",
+        }),
+      }).catch((error) => console.error("Error tracking view:", error))
+    }
+  }
 
   const isVisible = hasActivity || isHovered
 
@@ -91,7 +138,6 @@ export function SocialMediaWidget() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Widget visible */}
         <div
           className={`absolute left-4 top-1/2 -translate-y-1/2 flex flex-col gap-3 transition-all duration-300 ${
             isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-full pointer-events-none"
@@ -103,6 +149,7 @@ export function SocialMediaWidget() {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleSocialClick(social.platform)}
               className={`w-12 h-12 rounded-full bg-slate-800/90 backdrop-blur-sm border-2 border-slate-700 flex items-center justify-center transition-all duration-300 shadow-lg ${social.color} hover:scale-110 hover:border-cyan-400 group relative`}
               aria-label={social.name}
             >

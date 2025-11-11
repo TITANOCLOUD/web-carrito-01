@@ -4,8 +4,21 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronRight, Activity, Database, Server, Settings } from "lucide-react"
+import {
+  ChevronDown,
+  ChevronRight,
+  Activity,
+  Database,
+  Server,
+  Settings,
+  Users,
+  Building2,
+  Shield,
+  CreditCard,
+  Code,
+} from "lucide-react"
 import Image from "next/image"
+import { CasandraWidget } from "@/components/casandra-widget"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -13,6 +26,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [clustersOpen, setClustersOpen] = useState(true)
   const [monitoringOpen, setMonitoringOpen] = useState(true)
+  const [securityOpen, setSecurityOpen] = useState(false)
+  const [integrationsOpen, setIntegrationsOpen] = useState(false)
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -44,6 +59,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <nav className="flex-1 p-4 overflow-y-auto">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className={`w-full flex items-center gap-3 px-3 py-2 mb-6 rounded-lg transition-colors ${
+              isActive("/dashboard") ? "bg-cyan-600 text-white" : "bg-slate-800 text-slate-200 hover:bg-slate-700"
+            }`}
+          >
+            <Activity className="w-5 h-5" />
+            <span className="font-semibold">Bienvenido al Reactor</span>
+          </button>
+
           <p className="text-xs text-slate-500 uppercase tracking-wider mb-4">MENÚ PRINCIPAL</p>
 
           <div className="space-y-2">
@@ -83,6 +108,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
 
+            {/* Monitoreo NOC */}
             <div>
               <button
                 onClick={() => setMonitoringOpen(!monitoringOpen)}
@@ -99,16 +125,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               {monitoringOpen && (
                 <div className="ml-4 mt-2 space-y-1">
-                  <button
-                    onClick={() => router.push("/dashboard")}
-                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
-                      isActive("/dashboard")
-                        ? "bg-slate-800 text-slate-200"
-                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
-                    }`}
-                  >
-                    Bienvenido al Reactor
-                  </button>
                   <button
                     onClick={() => router.push("/dashboard/noc-dashboard")}
                     className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
@@ -156,6 +172,114 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
             </div>
 
+            {/* Seguridad y Usuarios */}
+            <div>
+              <button
+                onClick={() => setSecurityOpen(!securityOpen)}
+                className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                <Shield className="w-5 h-5" />
+                <span>Seguridad y Usuarios</span>
+                {securityOpen ? (
+                  <ChevronDown className="w-4 h-4 ml-auto" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                )}
+              </button>
+
+              {securityOpen && (
+                <div className="ml-4 mt-2 space-y-1">
+                  <button
+                    onClick={() => router.push("/dashboard/users")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/users")
+                        ? "bg-slate-800 text-slate-200"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      Gestión de Usuarios
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/clients")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/clients")
+                        ? "bg-slate-800 text-slate-200"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Clientes y Subclientes
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/2fa")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/2fa")
+                        ? "bg-slate-800 text-slate-200"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      Autenticación 2FA
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Integraciones */}
+            <div>
+              <button
+                onClick={() => setIntegrationsOpen(!integrationsOpen)}
+                className="w-full flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                <Code className="w-5 h-5" />
+                <span>Integraciones</span>
+                {integrationsOpen ? (
+                  <ChevronDown className="w-4 h-4 ml-auto" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                )}
+              </button>
+
+              {integrationsOpen && (
+                <div className="ml-4 mt-2 space-y-1">
+                  <button
+                    onClick={() => router.push("/dashboard/payment-gateways")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/payment-gateways")
+                        ? "bg-slate-800 text-slate-200"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" />
+                      Pasarelas de Pago
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/vercel-deploy")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${
+                      isActive("/dashboard/vercel-deploy")
+                        ? "bg-slate-800 text-slate-200"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Code className="w-4 h-4" />
+                      Despliegue Vercel
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Panel Interno Administración Página */}
             <button
               onClick={() => router.push("/dashboard/admin")}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
@@ -164,6 +288,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               <Settings className="w-5 h-5" />
               <span>Panel Interno Administración Página</span>
+            </button>
+
+            {/* Redes Sociales del Portal */}
+            <button
+              onClick={() => router.push("/dashboard/social-config")}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/dashboard/social-config")
+                  ? "bg-slate-800 text-slate-200"
+                  : "text-slate-300 hover:bg-slate-800"
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                />
+              </svg>
+              <span>Redes Sociales del Portal</span>
             </button>
           </div>
         </nav>
@@ -182,7 +326,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto bg-slate-900">{children}</main>
+      <main className="flex-1 overflow-y-auto bg-slate-900">
+        {children}
+        <CasandraWidget />
+      </main>
     </div>
   )
 }
