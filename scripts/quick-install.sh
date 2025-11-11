@@ -15,5 +15,9 @@ bash /tmp/install-monitoring.sh
 rm /tmp/install-monitoring.sh
 
 echo ""
-echo "Instalación completada. Recuerda editar:"
-echo "  /home/saturnoocloud/nodeapp/.env.local"
+echo "Instalación completada. Próximos pasos:"
+echo ""
+echo "1. Editar /home/saturnoocloud/nodeapp/.env.local con el password correcto de MySQL"
+echo "2. Instalar mysql2: cd /home/saturnoocloud/nodeapp && npm install mysql2 --legacy-peer-deps"
+echo "3. Reiniciar la aplicación Next.js: pm2 restart nodeapp (o el método que uses)"
+echo ""
