@@ -4,9 +4,10 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Database, Mail, Shield, Server, Globe, RefreshCw } from "lucide-react"
+import { Database, Mail, Shield, Server, Globe, RefreshCw, ExternalLink } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface Host {
   id: string
@@ -23,6 +24,8 @@ export default function DashboardPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [selectedHost, setSelectedHost] = useState<Host | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [hosts, setHosts] = useState<Host[]>([
     // Reactor 1 - Clusters (Ceph, Storage)
@@ -387,7 +390,6 @@ export default function DashboardPage() {
   const checkHostsStatus = async () => {
     setHosts((prev) =>
       prev.map((host) => {
-        // Simulación de ping - En producción esto debería llamar a un API endpoint
         const random = Math.random()
         let status: Host["status"]
         let uptime: string
@@ -419,8 +421,28 @@ export default function DashboardPage() {
     setTimeout(() => setIsRefreshing(false), 1000)
   }
 
-  if (!isAuthenticated) {
-    return null
+  const getHostAccessUrl = (host: Host) => {
+    const ip = host.ip
+    const type = host.type?.toLowerCase() || ""
+
+    if (type.includes("proxmox ve") || type.includes("proxmox") || type.includes("ceph")) {
+      return `https://${ip}:8006`
+    } else if (type.includes("proxmox backup") || type.includes("pbs")) {
+      return `https://${ip}:8007`
+    } else if (type.includes("spam")) {
+      return `https://${ip}:5000`
+    } else if (type.includes("zimbra")) {
+      return `https://${ip}:7071`
+    } else if (type.includes("cpanel") || type.includes("control panel")) {
+      return `https://${ip}:2087`
+    } else {
+      return `https://${ip}`
+    }
+  }
+
+  const handleHostClick = (host: Host) => {
+    setSelectedHost(host)
+    setIsModalOpen(true)
   }
 
   const getStatusColor = (status: Host["status"]) => {
@@ -439,7 +461,6 @@ export default function DashboardPage() {
   const ReactorCore = ({ reactorNumber }: { reactorNumber: number }) => {
     const reactorHosts = getReactorHosts(reactorNumber)
 
-    // Calcular anillos necesarios basado en cantidad de hosts
     const calculateRings = (hostCount: number) => {
       if (hostCount <= 1) return 1
       if (hostCount <= 7) return 2
@@ -451,12 +472,11 @@ export default function DashboardPage() {
 
     const rings = calculateRings(reactorHosts.length)
 
-    // Generar posiciones dinámicamente
     const generatePositions = () => {
-      const positions = [{ ring: 0, angle: 0, distance: 0 }] // Centro
+      const positions = [{ ring: 0, angle: 0, distance: 0 }]
 
-      const slotsPerRing = [0, 6, 12, 18, 24, 30] // Slots por cada anillo
-      const distances = [0, 50, 100, 150, 200, 250] // Distancias de cada anillo
+      const slotsPerRing = [0, 6, 12, 18, 24, 30]
+      const distances = [0, 50, 100, 150, 200, 250]
 
       for (let ring = 1; ring <= rings; ring++) {
         const slots = slotsPerRing[ring]
@@ -479,7 +499,6 @@ export default function DashboardPage() {
 
     return (
       <div className="relative w-full aspect-square max-w-2xl mx-auto">
-        {/* Círculos de fondo del reactor - dinámicos según anillos */}
         <div className="absolute inset-0 rounded-full border-4 border-purple-900/30 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
         {rings >= 2 && (
           <div className="absolute inset-[10%] rounded-full border-4 border-green-900/20 bg-slate-800/50" />
@@ -497,7 +516,6 @@ export default function DashboardPage() {
           <div className="absolute inset-[60%] rounded-full border-2 border-slate-700/10 bg-slate-800/50" />
         )}
 
-        {/* Slots del reactor */}
         <TooltipProvider>
           {positions.map((pos, index) => {
             const host = reactorHosts[index]
@@ -508,6 +526,7 @@ export default function DashboardPage() {
               <Tooltip key={index}>
                 <TooltipTrigger asChild>
                   <div
+                    onClick={() => host && handleHostClick(host)}
                     className="absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 transition-all duration-300 cursor-pointer hover:scale-125"
                     style={{
                       left: `${x}%`,
@@ -557,6 +576,7 @@ export default function DashboardPage() {
                             ? "Advertencia"
                             : "Fuera de Línea"}
                       </p>
+                      <p className="text-xs text-cyan-400 mt-2">Click para más detalles</p>
                     </div>
                   </TooltipContent>
                 )}
@@ -565,7 +585,6 @@ export default function DashboardPage() {
           })}
         </TooltipProvider>
 
-        {/* Etiquetas del reactor */}
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-sm text-slate-400 font-semibold">
           REACTOR {reactorNumber}
         </div>
@@ -683,6 +702,98 @@ export default function DashboardPage() {
           </TabsContent>
         ))}
       </Tabs>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center justify-between">
+              Detalles del Host
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  selectedHost?.status === "online"
+                    ? "bg-green-500"
+                    : selectedHost?.status === "warning"
+                      ? "bg-yellow-500"
+                      : "bg-red-500"
+                }`}
+              />
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">Información detallada y acceso al sistema</DialogDescription>
+          </DialogHeader>
+
+          {selectedHost && (
+            <div className="space-y-4">
+              <div className="bg-slate-800 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Nombre:</span>
+                  <span className="font-semibold text-white">{selectedHost.name}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Dirección IP:</span>
+                  <span className="font-mono text-cyan-400">{selectedHost.ip}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Tipo:</span>
+                  <span className="text-white">{selectedHost.type}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Reactor:</span>
+                  <span className="text-white">Reactor {selectedHost.reactor}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Uptime:</span>
+                  <span className="font-semibold text-green-400">{selectedHost.uptime}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Estado:</span>
+                  <span
+                    className={`font-semibold ${
+                      selectedHost.status === "online"
+                        ? "text-green-500"
+                        : selectedHost.status === "warning"
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                    }`}
+                  >
+                    {selectedHost.status === "online"
+                      ? "En Línea"
+                      : selectedHost.status === "warning"
+                        ? "Advertencia"
+                        : "Fuera de Línea"}
+                  </span>
+                </div>
+                {selectedHost.lastCheck && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Último Check:</span>
+                    <span className="text-slate-300 text-sm">{selectedHost.lastCheck}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Button
+                  onClick={() => {
+                    window.open(getHostAccessUrl(selectedHost), "_blank", "noopener,noreferrer")
+                  }}
+                  className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                  disabled={selectedHost.status === "offline"}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Acceder al Panel {selectedHost.type?.includes("Proxmox") ? "(Puerto 8006/8007)" : ""}
+                </Button>
+
+                <div className="text-xs text-slate-500 text-center">URL: {getHostAccessUrl(selectedHost)}</div>
+
+                {selectedHost.status === "offline" && (
+                  <div className="bg-red-900/20 border border-red-700 rounded p-3 text-sm text-red-300">
+                    ⚠️ El host está fuera de línea. No se puede acceder en este momento.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
