@@ -202,7 +202,7 @@ export function Header() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
               <span>Nube Privada Alojada</span>
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -242,6 +242,51 @@ export function Header() {
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 Logs Data Platform
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
+              <span>Connect+</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <Link
+                href="/connect/troncales"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+              >
+                Troncales SIP
+              </Link>
+              <Link
+                href="/connect/ivr"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                IVR (Sistema de Respuesta)
+              </Link>
+              <Link
+                href="/connect/callcenter"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Call Center
+              </Link>
+              <Link
+                href="/connect/pbx"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                PBX Virtual
+              </Link>
+              <Link
+                href="/connect/esim"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                eSIM Plataforma
+              </Link>
+              <Link
+                href="/connect/sms"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+              >
+                SMS & WhatsApp API
               </Link>
             </div>
           </div>
@@ -362,6 +407,13 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Nube Privada Alojada
+            </Link>
+            <Link
+              href="/connect"
+              className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Connect+
             </Link>
             <Button
               asChild

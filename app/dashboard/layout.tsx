@@ -33,6 +33,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [domainWebOpen, setDomainWebOpen] = useState(false)
   const [hostingPacksOpen, setHostingPacksOpen] = useState(false)
   const [quickAccessOpen, setQuickAccessOpen] = useState(false)
+  const [connectOpen, setConnectOpen] = useState(false)
+  const [ticketsOpen, setTicketsOpen] = useState(false)
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -479,6 +481,128 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <span className="font-medium">Email</span>
                     </button>
                   </div>
+                </div>
+              )}
+            </div>
+
+            {/* Connect+ */}
+            <div>
+              <button
+                onClick={() => setConnectOpen(!connectOpen)}
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  />
+                </svg>
+                <span className="font-medium">Connect+</span>
+                {connectOpen ? (
+                  <ChevronDown className="w-4 h-4 ml-auto" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                )}
+              </button>
+
+              {connectOpen && (
+                <div className="ml-6 mt-2 space-y-1 border-l border-slate-700 pl-3">
+                  <button
+                    onClick={() => router.push("/dashboard/connect/troncales")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/connect/troncales") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Troncales SIP
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/connect/ivr")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/connect/ivr") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    IVR
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/connect/callcenter")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/connect/callcenter") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Call Center
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/connect/pbx")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/connect/pbx") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    PBX Virtual
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/connect/esim")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/connect/esim") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    eSIM
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/connect/sms")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/connect/sms") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    SMS/WhatsApp API
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Sistema de Tickets (GLPI) */}
+            <div>
+              <button
+                onClick={() => setTicketsOpen(!ticketsOpen)}
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                  />
+                </svg>
+                <span className="font-medium">Sistema de Tickets</span>
+                {ticketsOpen ? (
+                  <ChevronDown className="w-4 h-4 ml-auto" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                )}
+              </button>
+
+              {ticketsOpen && (
+                <div className="ml-6 mt-2 space-y-1 border-l border-slate-700 pl-3">
+                  <button
+                    onClick={() => router.push("/dashboard/tickets")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/tickets") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Gestión de Tickets
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/tickets/calendar")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/tickets/calendar") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Calendario
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/tickets/email")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/tickets/email") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Gestión de Correos
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/tickets/knowledge-base")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/tickets/knowledge-base") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Base de Conocimientos
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/tickets/reports")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/tickets/reports") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Reportes y Estadísticas
+                  </button>
                 </div>
               )}
             </div>
