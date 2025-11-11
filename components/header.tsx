@@ -89,144 +89,57 @@ export function Header() {
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap">
-              <span>Public Cloud</span>
+              <span>Nube Pública</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-            <div className="absolute left-0 mt-2 w-80 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-h-[80vh] overflow-y-auto">
-              {/* Información General */}
-              <Link
-                href="/public-cloud"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm font-medium first:rounded-t-lg border-b border-cyan-500/30"
-              >
-                Descubrir Public Cloud
-              </Link>
-              <Link
-                href="/public-cloud/pricing"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Tarificación
-              </Link>
-              <Link
-                href="/public-cloud/free-trial"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Prueba gratuita de Public Cloud
-              </Link>
-              <Link
-                href="/public-cloud/savings-plans"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm flex items-center justify-between"
-              >
-                <span>Savings Plans</span>
-                <span className="text-xs bg-cyan-500 text-white px-2 py-0.5 rounded">Nuevo</span>
-              </Link>
-              <Link
-                href="/public-cloud/advantages"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Ventajas de la solución Public Cloud
-              </Link>
-              <Link
-                href="/public-cloud/cloud-computing"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Cloud Computing
-              </Link>
-              <Link
-                href="/public-cloud/compliance"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Conformidad y certificaciones
-              </Link>
-              <Link
-                href="/public-cloud/trust-zones"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Zonas de confianza
-              </Link>
-              <Link
-                href="/public-cloud/regional-availability"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Disponibilidad por regiones
-              </Link>
-              <Link
-                href="/public-cloud/local-zones"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm flex items-center justify-between"
-              >
-                <span>Local Zones</span>
-                <span className="text-xs bg-cyan-500 text-white px-2 py-0.5 rounded">Nuevo</span>
-              </Link>
-              <Link
-                href="/public-cloud/documentation"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm border-b border-cyan-500/30"
-              >
-                Documentación
-              </Link>
-
-              {/* Servicios */}
-              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30">
-                <p className="text-cyan-400 font-bold text-sm">Servicios</p>
-              </div>
+            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/public-cloud/compute"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
                 Compute
               </Link>
               <Link
                 href="/public-cloud/storage"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Storage
               </Link>
               <Link
                 href="/public-cloud/network"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Network
               </Link>
               <Link
                 href="/public-cloud/containers"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Containers & Orchestration
+                Containers
               </Link>
               <Link
                 href="/public-cloud/databases"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Databases
               </Link>
               <Link
-                href="/public-cloud/analytics"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Analytics
-              </Link>
-              <Link
-                href="/public-cloud/data-platform"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm flex items-center justify-between"
-              >
-                <span>Data Platform</span>
-                <span className="text-xs bg-cyan-500 text-white px-2 py-0.5 rounded">Nuevo</span>
-              </Link>
-              <Link
                 href="/public-cloud/ai-ml"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 AI & Machine Learning
               </Link>
               <Link
-                href="/public-cloud/quantum"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                href="/public-cloud/analytics"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Quantum Computing
+                Analytics
               </Link>
               <Link
                 href="/public-cloud/security"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm last:rounded-b-lg"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                Identity, Security & Operations
+                Security
               </Link>
             </div>
           </div>
@@ -236,115 +149,102 @@ export function Header() {
               <span>Dominios, Hosting y Email</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-            <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-h-[80vh] overflow-y-auto">
-              {/* Dominio Web */}
-              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30">
-                <p className="text-cyan-400 font-bold text-sm">Dominio Web</p>
-              </div>
+            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/domains/search"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
-                Busque su dominio
+                Buscar Dominio
               </Link>
               <Link
                 href="/domains/renew"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Renueve su dominio
+                Renovar Dominio
               </Link>
               <Link
                 href="/domains/aftermarket"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Mercado secundario (aftermarket)
+                Mercado Secundario
               </Link>
-
-              {/* Hosting */}
-              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30 border-t border-cyan-500/30 mt-1">
-                <p className="text-cyan-400 font-bold text-sm">Hosting</p>
-              </div>
               <Link
                 href="/hosting/packages"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Todos los packs Web
-              </Link>
-              <Link
-                href="/hosting/databases"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Bases de datos adicionales
+                Packs de Hosting
               </Link>
               <Link
                 href="/hosting/ssl"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Opción SSL
+                Certificados SSL
               </Link>
               <Link
                 href="/hosting/cdn"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Opción CDN
-              </Link>
-
-              {/* Acceso rápido */}
-              <div className="px-4 py-2 bg-cyan-950/30 border-b border-cyan-500/30 border-t border-cyan-500/30 mt-1">
-                <p className="text-cyan-400 font-bold text-sm">Acceso rápido</p>
-              </div>
-              <Link
-                href="/domains/pricing"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Precios de los dominios
-              </Link>
-              <Link
-                href="/domains/whois"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Whois: buscar información de un dominio
-              </Link>
-              <Link
-                href="/domains/dns"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                Servidor DNS
-              </Link>
-              <Link
-                href="/hosting/how-to-create"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
-              >
-                ¿Cómo crear un sitio web?
+                CDN
               </Link>
               <Link
                 href="/hosting/wordpress"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Aloje su sitio web WordPress
+                WordPress Hosting
               </Link>
               <Link
-                href="/hosting/one-click"
-                className="block px-4 py-2.5 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors text-sm last:rounded-b-lg"
+                href="/domains/whois"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                Cree su sitio web en un clic
+                Whois
               </Link>
             </div>
           </div>
 
-          <Link
-            href="/nube-publica"
-            className="text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap"
-          >
-            Nube Pública
-          </Link>
-
-          <Link
-            href="/nube-privada"
-            className="text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap"
-          >
-            Nube Privada Alojada
-          </Link>
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap">
+              <span>Nube Privada Alojada</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <Link
+                href="/nube-privada"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+              >
+                Descripción General
+              </Link>
+              <Link
+                href="/nube-privada/nutanix"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Nutanix
+              </Link>
+              <Link
+                href="/nube-privada/sap-hana"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                SAP HANA
+              </Link>
+              <Link
+                href="/nube-privada/almacenamiento"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Almacenamiento y Backup
+              </Link>
+              <Link
+                href="/nube-privada/iam"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+              >
+                Identity & Access Management
+              </Link>
+              <Link
+                href="/nube-privada/logs-platform"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+              >
+                Logs Data Platform
+              </Link>
+            </div>
+          </div>
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
@@ -455,13 +355,6 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Dominios, Hosting y Email
-            </Link>
-            <Link
-              href="/nube-publica"
-              className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Nube Pública
             </Link>
             <Link
               href="/nube-privada"
