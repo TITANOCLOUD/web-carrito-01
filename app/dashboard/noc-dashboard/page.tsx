@@ -31,6 +31,20 @@ interface TracerouteResult {
   complete: boolean
 }
 
+interface PortScanResult {
+  host: string
+  openPorts: Array<{
+    port: number
+    protocol: string
+    service: string
+    version: string
+  }>
+  os: string
+  latency: number
+  rawOutput: string
+  scannedAt: string
+}
+
 const INITIAL_HOSTS = [
   // Reactor 1 - CEPH Clusters (130+ hosts)
   // CEPH - IBG.COM.CO
@@ -959,6 +973,35 @@ const INITIAL_HOSTS = [
     company: "SKY",
   },
 
+  // ADDED UBIQUANDO CEPH CLUSTERS
+  {
+    name: "700001-CEPH-UB-HGR3-G2-BAY-01",
+    ip: "72.251.3.243",
+    status: "up",
+    uptime: 99.98,
+    responseTime: 12,
+    reactor: 1,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700002-CEPH-UB-HGR3-G2-BAY-02",
+    ip: "72.251.3.246",
+    status: "up",
+    uptime: 99.95,
+    responseTime: 14,
+    reactor: 1,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700003-CEPH-UB-HGR3-G2-BAY-03",
+    ip: "72.251.3.247",
+    status: "up",
+    uptime: 99.97,
+    responseTime: 13,
+    reactor: 1,
+    company: "UBIQUANDO",
+  },
+
   // Reactor 2 - Servidores SPAM (3 hosts)
   {
     name: "100001-SPAM-HBTC-VM-2001",
@@ -1335,6 +1378,143 @@ const INITIAL_HOSTS = [
     company: "OAKSYSTEM",
   },
 
+  // ADDED UBIQUANDO VPS
+  {
+    name: "700100-VPS-UB-FWCLUSTER-APP-PPR-V01",
+    ip: "144.217.112.91",
+    status: "up",
+    uptime: 99.95,
+    responseTime: 15,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700101-VPS-UB-FWCLUSTER-APP-BKPV-V01",
+    ip: "144.217.112.77",
+    status: "up",
+    uptime: 99.92,
+    responseTime: 16,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700201-VPS-UB-PRD-03",
+    ip: "144.217.112.88",
+    status: "up",
+    uptime: 99.98,
+    responseTime: 12,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700202-VPS-UB-TST-01",
+    ip: "144.217.112.82",
+    status: "up",
+    uptime: 99.94,
+    responseTime: 14,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700204-VPS-UB-TST-02",
+    ip: "144.217.112.83",
+    status: "up",
+    uptime: 99.96,
+    responseTime: 13,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700205-VPS-UB-DEV-01",
+    ip: "144.217.112.79",
+    status: "up",
+    uptime: 99.91,
+    responseTime: 17,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700206-VPS-UB-DEV-02",
+    ip: "144.217.112.80",
+    status: "up",
+    uptime: 99.93,
+    responseTime: 15,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700207-VPS-UB-DEV-03",
+    ip: "144.217.112.81",
+    status: "up",
+    uptime: 99.95,
+    responseTime: 14,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700208-VPS-UB-PRD-01",
+    ip: "144.217.112.84",
+    status: "up",
+    uptime: 99.97,
+    responseTime: 13,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700209-VPS-UB-PRD-02",
+    ip: "144.217.112.85",
+    status: "up",
+    uptime: 99.98,
+    responseTime: 12,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700210-VPS-UB-PRD-04",
+    ip: "144.217.112.87",
+    status: "up",
+    uptime: 99.96,
+    responseTime: 13,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700212-VPS-UB-PRD-06",
+    ip: "144.217.112.90",
+    status: "up",
+    uptime: 99.94,
+    responseTime: 15,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700213-VPS-UB-UBS-01",
+    ip: "144.217.112.78",
+    status: "up",
+    uptime: 99.92,
+    responseTime: 16,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "700214-VPS-UB-PRD-05",
+    ip: "144.217.112.86",
+    status: "up",
+    uptime: 99.95,
+    responseTime: 14,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+  {
+    name: "702000-VPS-UB-SVRNAS-APP-PPR-V01",
+    ip: "144.217.112.89",
+    status: "up",
+    uptime: 99.97,
+    responseTime: 13,
+    reactor: 3,
+    company: "UBIQUANDO",
+  },
+
   // Reactor 4 - Bare Metal (37 hosts)
   // PBS Servers
   {
@@ -1507,6 +1687,17 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 4,
     company: "SKY",
+  },
+
+  // ADDED UBIQUANDO BARE METAL PBS
+  {
+    name: "700500-BARE-UB-HGRSTO-G2-PBS-BAY-01",
+    ip: "144.217.112.91",
+    status: "up",
+    uptime: 99.98,
+    responseTime: 12,
+    reactor: 4,
+    company: "UBIQUANDO",
   },
 
   // Dedicated Servers
@@ -2029,10 +2220,14 @@ const INITIAL_HOSTS = [
 
 export default function NOCDashboardPage() {
   const [hosts, setHosts] = useState(INITIAL_HOSTS)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedReactor, setSelectedReactor] = useState<number | null>(null)
   const [activePings, setActivePings] = useState<Record<string, PingResult>>({})
   const [selectedHost, setSelectedHost] = useState<string | null>(null)
-  const [tracerouteData, setTracerouteData] = useState<TracerouteResult | null>(null)
   const [isTracingRoute, setIsTracingRoute] = useState(false)
+  const [tracerouteData, setTracerouteData] = useState<TracerouteResult | null>(null)
+  const [isScanning, setIsScanning] = useState(false)
+  const [portScanData, setPortScanData] = useState<PortScanResult | null>(null)
 
   const executePing = async (host: { name: string; ip: string }) => {
     console.log("[v0] Ejecutando ping real a:", host.ip)
@@ -2121,6 +2316,40 @@ export default function NOCDashboardPage() {
     }
   }
 
+  const executePortScan = async (host: { name: string; ip: string }) => {
+    console.log("[v0] Ejecutando escaneo de puertos en:", host.ip)
+    setIsScanning(true)
+    setSelectedHost(host.ip)
+    setPortScanData(null)
+
+    try {
+      const response = await fetch(`/api/network/portscan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.JSON.stringify({ host: host.ip }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setPortScanData({
+          host: host.name,
+          openPorts: data.openPorts || [],
+          os: data.os || "Unknown",
+          latency: data.latency || 0,
+          rawOutput: data.rawOutput || "",
+          scannedAt: data.scannedAt,
+        })
+      } else {
+        console.error("[v0] Error en escaneo de puertos:", data.error)
+      }
+    } catch (error) {
+      console.error("[v0] Error en escaneo de puertos:", error)
+    } finally {
+      setIsScanning(false)
+    }
+  }
+
   useEffect(() => {
     console.log("[v0] NOC Dashboard montado, iniciando pings automáticos")
     console.log("[v0] Total de hosts a monitorear:", INITIAL_HOSTS.length)
@@ -2202,7 +2431,7 @@ export default function NOCDashboardPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Dashboard NOC - Monitoreo en Tiempo Real</h1>
         <p className="text-slate-400">
@@ -2406,6 +2635,85 @@ export default function NOCDashboardPage() {
         </Card>
       )}
 
+      {portScanData && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-900 rounded-lg border border-cyan-500/30 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-slate-900 border-b border-cyan-500/20 p-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold text-cyan-400">Escaneo de Puertos - {portScanData.host}</h3>
+                <p className="text-sm text-slate-400 mt-1">
+                  Escaneado el {new Date(portScanData.scannedAt).toLocaleString()}
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => setPortScanData(null)} className="border-cyan-500/30">
+                Cerrar
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Información del sistema */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-800/50 rounded-lg p-4 border border-cyan-500/20">
+                  <div className="text-sm text-slate-400">Sistema Operativo</div>
+                  <div className="text-lg font-semibold text-white mt-1">{portScanData.os}</div>
+                </div>
+                <div className="bg-slate-800/50 rounded-lg p-4 border border-cyan-500/20">
+                  <div className="text-sm text-slate-400">Latencia</div>
+                  <div className="text-lg font-semibold text-white mt-1">{portScanData.latency.toFixed(2)} ms</div>
+                </div>
+              </div>
+
+              {/* Puertos abiertos */}
+              <div>
+                <h4 className="text-lg font-semibold text-cyan-400 mb-4">
+                  Puertos Abiertos ({portScanData.openPorts.length})
+                </h4>
+
+                {portScanData.openPorts.length > 0 ? (
+                  <div className="bg-slate-800/50 rounded-lg border border-cyan-500/20 overflow-hidden">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-cyan-500/20 bg-slate-800">
+                          <th className="text-left p-3 text-sm font-medium text-slate-400">Puerto</th>
+                          <th className="text-left p-3 text-sm font-medium text-slate-400">Protocolo</th>
+                          <th className="text-left p-3 text-sm font-medium text-slate-400">Servicio</th>
+                          <th className="text-left p-3 text-sm font-medium text-slate-400">Versión</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {portScanData.openPorts.map((port, index) => (
+                          <tr
+                            key={index}
+                            className="border-b border-cyan-500/10 hover:bg-slate-700/30 transition-colors"
+                          >
+                            <td className="p-3 font-mono text-cyan-400">{port.port}</td>
+                            <td className="p-3 text-slate-300">{port.protocol}</td>
+                            <td className="p-3 text-white">{port.service}</td>
+                            <td className="p-3 text-slate-400 text-sm">{port.version}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="bg-slate-800/50 rounded-lg p-8 border border-cyan-500/20 text-center">
+                    <p className="text-slate-400">No se encontraron puertos abiertos</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Salida completa de nmap */}
+              <div>
+                <h4 className="text-lg font-semibold text-cyan-400 mb-4">Salida Completa de Nmap</h4>
+                <div className="bg-slate-950 rounded-lg p-4 border border-cyan-500/20 overflow-x-auto">
+                  <pre className="text-xs text-slate-300 font-mono whitespace-pre-wrap">{portScanData.rawOutput}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hosts by Reactor */}
       {Object.entries(hostsByReactor).map(([reactor, reactorHosts]) => (
         <Card key={reactor} className="bg-slate-950 border-slate-800 mb-6">
@@ -2460,6 +2768,15 @@ export default function NOCDashboardPage() {
                           disabled={isTracingRoute}
                         >
                           Trace
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => executePortScan(host)}
+                          className="text-xs"
+                          disabled={isScanning}
+                        >
+                          {isScanning && selectedHost === host.ip ? "Escaneando..." : "Puertos"}
                         </Button>
                       </div>
                       <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
