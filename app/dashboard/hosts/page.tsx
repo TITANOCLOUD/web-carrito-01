@@ -11,7 +11,7 @@ interface Host {
   id: number
   name: string
   ip: string
-  type: "CEPH Cluster" | "VPS" | "Bare Metal" | "SPAM" | "Website" | "Infrastructure"
+  type: "CEPH Cluster" | "VPS" | "Bare Metal" | "SPAM" | "Website" | "Infrastructure" | "Proxmox Backup"
   reactor: number
   company: string
   status: "online" | "offline" | "warning"
@@ -1815,31 +1815,103 @@ const INITIAL_HOSTS: Host[] = [
     reactor: 4,
     company: "SKY",
     status: "online",
-    specs: "Proxmox Backup Server",
+    specs: "Storage Server",
   },
   // PBS Servers - UBIQUANDO
   {
     id: 700500,
     name: "700500-BARE-UB-HGRSTO-G2-PBS-BAY-01",
-    ip: "144.217.112.91",
+    ip: "142.44.163.20",
     type: "Bare Metal",
     reactor: 4,
     company: "UBIQUANDO",
     status: "online",
-    specs: "Proxmox Backup Server - High Storage",
+    specs: "High Storage",
   },
 
   // Dedicated Bare Metal Servers
   {
     id: 473203,
     name: "473203-BARE-HBTC-ADVSTO-G2-PBS-01",
-    ip: "148.113.169.39",
+    ip: "148.113.169.61",
     type: "Bare Metal",
     reactor: 4,
     company: "HBTC",
     status: "online",
-    specs: "Dedicated Server",
+    specs: "Advanced Storage",
   },
+  {
+    id: 494710,
+    name: "494710-BARE-HBTC-BAY-01",
+    ip: "148.113.208.40",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "HBTC",
+    status: "online",
+    specs: "Bare Metal Server",
+  },
+  {
+    id: 485520,
+    name: "485520-BARE-TP-RISE-G3-BAY-01",
+    ip: "148.113.185.34",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "TEMPORIS.MX",
+    status: "online",
+    specs: "Bare Metal Server",
+  },
+  {
+    id: 496833,
+    name: "496833-BARE-BT-HGR-STOR-1-PBS-01",
+    ip: "148.113.211.163",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "BOOKTAM.COM",
+    status: "online",
+    specs: "High Storage",
+  },
+  {
+    id: 494700,
+    name: "494700-BARE-UBIQ-ADVS1-G2-BAY-01",
+    ip: "148.113.208.30",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "UBIQUANDO",
+    status: "online",
+    specs: "Advanced Storage",
+  },
+  {
+    id: 506756,
+    name: "506756-BARE-UBIQ-ADVSTO-G3-BAY-01",
+    ip: "148.113.216.7",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "UBIQUANDO",
+    status: "online",
+    specs: "Advanced Storage",
+  },
+  {
+    id: 481339,
+    name: "481339-BARE-OGS-RISE-G3-BAY-01",
+    ip: "148.113.170.81",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "OLDGREYSTONE.COM",
+    status: "online",
+    specs: "Bare Metal Server",
+  },
+  {
+    id: 494422,
+    name: "494422-BARE-RYN-ADVSTO-G2-PBS-01",
+    ip: "148.113.207.162",
+    type: "Bare Metal",
+    reactor: 4,
+    company: "REYNAR.COM.CO",
+    status: "online",
+    specs: "Advanced Storage",
+  },
+
+  // Dedicated Bare Metal Servers
   {
     id: 314722,
     name: "314722-BARE-HBTC-RISE1-LABHACK-HACKACADEMY",
@@ -2512,6 +2584,7 @@ export default function HostsPage() {
               <option value="Bare Metal">Bare Metal</option>
               <option value="SPAM">SPAM</option>
               <option value="Infrastructure">Infrastructure</option>
+              <option value="Proxmox Backup">Proxmox Backup</option>
             </select>
             <select
               value={selectedReactor}
@@ -2531,6 +2604,58 @@ export default function HostsPage() {
             </Button>
           </div>
         </Card>
+
+        {/* Reactor Filter Buttons */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setSelectedReactor("all")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              selectedReactor === "all" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            }`}
+          >
+            Todos ({hosts.length})
+          </button>
+          <button
+            onClick={() => setSelectedReactor("1")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              selectedReactor === "1" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            }`}
+          >
+            Reactor 1: CEPH ({hosts.filter((h) => h.reactor === 1).length})
+          </button>
+          <button
+            onClick={() => setSelectedReactor("2")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              selectedReactor === "2" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            }`}
+          >
+            Reactor 2: SPAM ({hosts.filter((h) => h.reactor === 2).length})
+          </button>
+          <button
+            onClick={() => setSelectedReactor("3")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              selectedReactor === "3" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            }`}
+          >
+            Reactor 3: VPS ({hosts.filter((h) => h.reactor === 3).length})
+          </button>
+          <button
+            onClick={() => setSelectedReactor("4")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              selectedReactor === "4" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            }`}
+          >
+            Reactor 4: Bare Metal ({hosts.filter((h) => h.reactor === 4).length})
+          </button>
+          <button
+            onClick={() => setSelectedReactor("5")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              selectedReactor === "5" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            }`}
+          >
+            Reactor 5: PBS ({hosts.filter((h) => h.reactor === 5).length})
+          </button>
+        </div>
 
         {/* Hosts Table */}
         <Card className="bg-slate-900 border-slate-800">

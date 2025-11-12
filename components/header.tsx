@@ -206,31 +206,33 @@ export function Header() {
               <span>Nube Privada Alojada</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <Link
                 href="/nube-privada"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg font-semibold"
               >
                 Descripción General
               </Link>
+              <div className="border-t border-slate-700 my-1"></div>
               <Link
                 href="/nube-privada/nutanix"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Nutanix
+                Nutanix Cloud Platform
               </Link>
               <Link
                 href="/nube-privada/sap-hana"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                SAP HANA
+                SAP HANA on Cloud
               </Link>
               <Link
                 href="/nube-privada/almacenamiento"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                Almacenamiento y Backup
+                Almacenamiento Enterprise
               </Link>
+              <div className="border-t border-slate-700 my-1"></div>
               <Link
                 href="/nube-privada/iam"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
