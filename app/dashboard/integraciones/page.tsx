@@ -7,6 +7,7 @@ import { CheckCircle, XCircle, Settings, RefreshCw } from "lucide-react"
 
 export default function IntegracionesPage() {
   const integraciones = [
+    { id: "ovhcloud", nombre: "OVHcloud", logo: "🌐", estado: "conectado", lastSync: "2 min ago" },
     { id: "cloudflare", nombre: "Cloudflare", logo: "☁️", estado: "conectado", lastSync: "5 min ago" },
     { id: "acronis", nombre: "Acronis", logo: "🔒", estado: "desconectado", lastSync: "N/A" },
     { id: "azure", nombre: "Microsoft Azure", logo: "⚡", estado: "conectado", lastSync: "1 min ago" },
