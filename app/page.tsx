@@ -602,6 +602,8 @@ export default function Home() {
                     alt="Loise - Arquitecta Cloud"
                     fill
                     className="object-cover"
+                    priority
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 right-6">
@@ -883,6 +885,7 @@ export default function Home() {
               alt="Eficiencia energética"
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-300"
+              unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -992,6 +995,7 @@ export default function Home() {
                   alt="AWS Partner"
                   fill
                   className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                  unoptimized
                 />
               </div>
               <div className="mt-6 text-center">
@@ -1008,6 +1012,7 @@ export default function Home() {
                   alt="Microsoft Azure Partner"
                   fill
                   className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                  unoptimized
                 />
               </div>
               <div className="mt-6 text-center">

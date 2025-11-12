@@ -366,6 +366,7 @@ export default function OVHCloudIntegrationPage() {
                         allowedActions: { ...securitySettings.allowedActions, delete: checked },
                       })
                     }
+                    disabled
                   />
                 </div>
               </div>

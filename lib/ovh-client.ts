@@ -1,5 +1,6 @@
 import OVH from "ovh"
 
+// OVH API Client Configuration
 export const ovhClient = OVH({
   endpoint: "ovh-eu",
   appKey: process.env.OVH_APP_KEY || "052737af6236a51c2a8c729e5d7424d6",
@@ -7,6 +8,9 @@ export const ovhClient = OVH({
   consumerKey: process.env.OVH_CONSUMER_KEY || "4561ecddab9b4726",
 })
 
+export default ovhClient
+
+// Logging interfaces
 export interface OVHLog {
   id: string
   timestamp: Date
@@ -36,6 +40,7 @@ export function getOVHLogs(limit = 100) {
   return logs.slice(-limit).reverse()
 }
 
+// Helper functions with logging
 async function requestWithLogging(method: string, endpoint: string, data?: any, user?: string): Promise<any> {
   try {
     const result = await ovhClient.requestPromised(method, endpoint, data)

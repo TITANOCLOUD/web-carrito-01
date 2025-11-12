@@ -2228,6 +2228,77 @@ export default function NOCDashboardPage() {
   const [tracerouteData, setTracerouteData] = useState<TracerouteResult | null>(null)
   const [isScanning, setIsScanning] = useState(false)
   const [portScanData, setPortScanData] = useState<PortScanResult | null>(null)
+  const [ipmiLoading, setIpmiLoading] = useState<Record<string, boolean>>({})
+
+  const connectIPMI = async (
+    host: { name: string; ip: string },
+    type: "kvmipHtml5URL" | "kvmipJnlp" | "serialOverLanURL" = "kvmipHtml5URL",
+  ) => {
+    const serviceName = host.name.toLowerCase().replace(/\./g, "")
+
+    setIpmiLoading((prev) => ({ ...prev, [serviceName]: true }))
+
+    try {
+      console.log("[v0] Requesting IPMI access for:", serviceName)
+
+      const requestResponse = await fetch("/api/ovh/ipmi/access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceName,
+          type,
+          ttl: 120,
+        }),
+      })
+
+      const requestData = await requestResponse.json()
+
+      if (!requestData.success) {
+        throw new Error(requestData.error || "Failed to request IPMI access")
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+
+      const accessResponse = await fetch(`/api/ovh/ipmi/access?serviceName=${serviceName}&type=${type}`)
+      const accessData = await accessResponse.json()
+
+      if (accessData.success && accessData.access.value) {
+        window.open(accessData.access.value, "_blank", "width=1024,height=768")
+        alert(`IPMI conectado exitosamente a ${host.name}`)
+      } else {
+        throw new Error("No IPMI access URL available")
+      }
+    } catch (error: any) {
+      console.error("[v0] IPMI connection error:", error)
+      alert(`Error conectando IPMI: ${error.message}`)
+    } finally {
+      setIpmiLoading((prev) => ({ ...prev, [serviceName]: false }))
+    }
+  }
+
+  const resetIPMISessions = async (host: { name: string }) => {
+    const serviceName = host.name.toLowerCase().replace(/\./g, "")
+
+    try {
+      const response = await fetch("/api/ovh/ipmi/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceName,
+          action: "resetSessions",
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        alert(`Sesiones IPMI de ${host.name} reseteadas exitosamente`)
+      }
+    } catch (error: any) {
+      console.error("[v0] IPMI reset error:", error)
+      alert(`Error reseteando sesiones: ${error.message}`)
+    }
+  }
 
   const executePing = async (host: { name: string; ip: string }) => {
     console.log("[v0] Ejecutando ping real a:", host.ip)
@@ -2724,6 +2795,7 @@ export default function NOCDashboardPage() {
             <div className="space-y-3">
               {reactorHosts.map((host, index) => {
                 const pingResult = activePings[host.ip]
+                const serviceName = host.name.toLowerCase().replace(/\./g, "")
                 return (
                   <div
                     key={index}
@@ -2751,6 +2823,24 @@ export default function NOCDashboardPage() {
                         <p className="text-white font-medium">{host.responseTime}ms</p>
                       </div>
                       <div className="flex gap-2">
+                        <select
+                          className="px-2 py-1 text-xs bg-slate-800 border border-slate-700 rounded text-white"
+                          onChange={(e) => {
+                            if (e.target.value === "html5") connectIPMI(host, "kvmipHtml5URL")
+                            else if (e.target.value === "jnlp") connectIPMI(host, "kvmipJnlp")
+                            else if (e.target.value === "sol") connectIPMI(host, "serialOverLanURL")
+                            else if (e.target.value === "reset") resetIPMISessions(host)
+                            e.target.value = "" // Reset dropdown to default
+                          }}
+                          disabled={ipmiLoading[serviceName]}
+                        >
+                          <option value="">IPMI</option>
+                          <option value="html5">HTML5 Console</option>
+                          <option value="jnlp">JNLP Console</option>
+                          <option value="sol">Serial Over LAN</option>
+                          <option value="reset">Reset Sessions</option>
+                        </select>
+
                         <Button
                           size="sm"
                           variant="outline"

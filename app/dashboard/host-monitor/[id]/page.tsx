@@ -347,6 +347,15 @@ export default function HostMonitorPage() {
     )
   }
 
+  const pingData = hostData.ping || {
+    current: 0,
+    average: 0,
+    min: 0,
+    max: 0,
+    packetLoss: 0,
+    history: Array(20).fill(0),
+  }
+
   const isPhysicalServer = [
     "Ceph Storage",
     "Cluster",
@@ -408,36 +417,39 @@ export default function HostMonitorPage() {
         <CardContent>
           <div className="grid grid-cols-5 gap-4">
             <div>
-              <div className="text-2xl font-bold text-green-400">{hostData.ping.current}ms</div>
+              <div className="text-2xl font-bold text-green-400">{pingData.current}ms</div>
               <div className="text-sm text-slate-400">Actual</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{hostData.ping.average}ms</div>
+              <div className="text-2xl font-bold text-white">{pingData.average}ms</div>
               <div className="text-sm text-slate-400">Promedio</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-blue-400">{hostData.ping.min}ms</div>
+              <div className="text-2xl font-bold text-blue-400">{pingData.min}ms</div>
               <div className="text-sm text-slate-400">Mínimo</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-orange-400">{hostData.ping.max}ms</div>
+              <div className="text-2xl font-bold text-orange-400">{pingData.max}ms</div>
               <div className="text-sm text-slate-400">Máximo</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-400">{hostData.ping.packetLoss}%</div>
+              <div className="text-2xl font-bold text-red-400">{pingData.packetLoss}%</div>
               <div className="text-sm text-slate-400">Pérdida de Paquetes</div>
             </div>
           </div>
 
           {/* Gráfico de ping histórico */}
           <div className="mt-4 h-20 flex items-end gap-1">
-            {hostData.ping.history.map((value, index) => (
-              <div
-                key={index}
-                className="flex-1 bg-green-500 rounded-t"
-                style={{ height: `${(value / Math.max(...hostData.ping.history)) * 100}%` }}
-              />
-            ))}
+            {pingData.history.map((value, index) => {
+              const maxValue = Math.max(...pingData.history, 1)
+              return (
+                <div
+                  key={index}
+                  className="flex-1 bg-green-500 rounded-t"
+                  style={{ height: `${(value / maxValue) * 100}%` }}
+                />
+              )
+            })}
           </div>
         </CardContent>
       </Card>
