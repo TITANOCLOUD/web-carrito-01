@@ -200,7 +200,7 @@ export default function IntegracionesPage() {
     <div className="min-h-screen bg-slate-950 text-white p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-3 text-white">Integraciones API</h1>
+          <h1 className="text-3xl font-bold mb-3 text-white">API de OVHcloud, Cloudflare, Acronis, AWS y Azure</h1>
           <p className="text-slate-400 text-lg">Conecta y administra proveedores cloud desde un solo lugar</p>
         </div>
 

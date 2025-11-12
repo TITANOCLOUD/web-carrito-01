@@ -5,17 +5,36 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, Server, Plus, Download, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, Server, Download, ChevronLeft, ChevronRight, Link } from "lucide-react" // Added Link
 
 interface Host {
   id: number
   name: string
   ip: string
-  type: "CEPH Cluster" | "VPS" | "Bare Metal" | "SPAM" | "Website" | "Infrastructure" | "Proxmox Backup"
+  type:
+    | "CEPH Cluster"
+    | "VPS"
+    | "Bare Metal"
+    | "SPAM"
+    | "Website"
+    | "Infrastructure"
+    | "Proxmox Backup"
+    | "Proxmox VE"
+    | "cPanel"
+    | "WHM"
+    | "Proxmox Cluster"
   reactor: number
   company: string
   status: "online" | "offline" | "warning"
   specs?: string
+  uptime?: number
+  lastSNMPConnection?: string
+  agentVersion?: string
+  hardwareSpecs?: {
+    cpu: string
+    memory: string
+    storage: string
+  }
 }
 
 const INITIAL_HOSTS: Host[] = [
@@ -1086,6 +1105,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Anti-SPAM Filter",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1 min",
+    agentVersion: "1.2.0",
+    hardwareSpecs: { cpu: "2 cores", memory: "4 GB RAM", storage: "100 GB SSD" },
   },
   {
     id: 100002,
@@ -1096,6 +1119,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Anti-SPAM Filter",
+    uptime: 99.8,
+    lastSNMPConnection: "Hace 5 min",
+    agentVersion: "1.2.0",
+    hardwareSpecs: { cpu: "2 cores", memory: "4 GB RAM", storage: "100 GB SSD" },
   },
   {
     id: 100003,
@@ -1104,8 +1131,12 @@ const INITIAL_HOSTS: Host[] = [
     type: "SPAM",
     reactor: 2,
     company: "HBTC",
-    status: "online",
+    status: "warning",
     specs: "Anti-SPAM Filter",
+    uptime: 98.5,
+    lastSNMPConnection: "Hace 15 min",
+    agentVersion: "1.1.9",
+    hardwareSpecs: { cpu: "4 cores", memory: "8 GB RAM", storage: "200 GB SSD" },
   },
 
   // ========== REACTOR 3: VPS - CTRLONLINE & OAKSYSTEM ==========
@@ -1119,6 +1150,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "MinSalud VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 30 sec",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 200002,
@@ -1129,6 +1164,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "Universidad Militar",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB NVMe" },
   },
   {
     id: 200003,
@@ -1139,6 +1178,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "Bomberos Bogota",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 2 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 200004,
@@ -1149,6 +1192,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "Grupo SUMMA",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 3 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 200005,
@@ -1159,6 +1206,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "ARGOS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 4 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB NVMe" },
   },
   {
     id: 200006,
@@ -1169,6 +1220,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "DESUR",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 5 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 200007,
@@ -1179,6 +1234,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "FORPO",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 6 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB NVMe" },
   },
   {
     id: 200008,
@@ -1189,6 +1248,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "INS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 7 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 200009,
@@ -1199,6 +1262,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CTRLONLINE",
     status: "online",
     specs: "CANCILLERIA",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 8 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB NVMe" },
   },
 
   // VPS - OAKSYSTEM
@@ -1211,6 +1278,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 9 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400002,
@@ -1221,6 +1292,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 10 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400003,
@@ -1231,6 +1306,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 11 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400004,
@@ -1241,6 +1320,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 12 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB SSD" },
   },
   {
     id: 400005,
@@ -1251,6 +1334,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 13 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400006,
@@ -1261,6 +1348,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 14 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400007,
@@ -1271,6 +1362,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 15 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400008,
@@ -1281,6 +1376,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VPS Node",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 16 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB SSD" },
   },
   {
     id: 400009,
@@ -1291,6 +1390,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Contabilidad VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 17 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400010,
@@ -1301,6 +1404,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Encoder VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 18 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "4 GB RAM", storage: "100 GB SSD" },
   },
   {
     id: 400011,
@@ -1311,6 +1418,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Encoder VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 19 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "4 GB RAM", storage: "100 GB SSD" },
   },
   {
     id: 400012,
@@ -1321,6 +1432,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "App Pagos VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 20 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400013,
@@ -1331,6 +1446,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Panel VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 21 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400014,
@@ -1341,6 +1460,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Estadisticas VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 22 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB SSD" },
   },
   {
     id: 400015,
@@ -1351,6 +1474,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Ubuntu 24 VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 23 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400016,
@@ -1361,6 +1488,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Main VPS 1",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 24 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB SSD" },
   },
   {
     id: 400017,
@@ -1371,6 +1502,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "TV VPS 1",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 25 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400018,
@@ -1381,6 +1516,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VLP VPS 1",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 26 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400019,
@@ -1391,6 +1530,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Main VPS 2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 27 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB SSD" },
   },
   {
     id: 400020,
@@ -1401,6 +1544,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "TV VPS 2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 28 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400021,
@@ -1411,6 +1558,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VLP VPS 2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 29 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400022,
@@ -1421,6 +1572,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Main VPS 3",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 30 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB SSD" },
   },
   {
     id: 400023,
@@ -1431,6 +1586,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "TV VPS 3",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 31 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400024,
@@ -1441,6 +1600,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "TV VPS 4",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 32 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
   {
     id: 400025,
@@ -1451,6 +1614,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Firewall VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 33 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB SSD" },
   },
   {
     id: 400026,
@@ -1461,6 +1628,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Management VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 34 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "2 cores", memory: "8 GB RAM", storage: "250 GB SSD" },
   },
   {
     id: 400029,
@@ -1471,6 +1642,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Meta VPS",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 35 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB SSD" },
   },
 
   // VPS - UBIQUANDO
@@ -1483,6 +1658,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Firewall Cluster Production",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 36 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB NVMe" },
   },
   {
     id: 700101,
@@ -1493,6 +1672,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Firewall Cluster Backup",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 37 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB NVMe" },
   },
   {
     id: 700201,
@@ -1503,6 +1686,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Production Server 03",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 38 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "16 cores", memory: "64 GB RAM", storage: "2 TB NVMe" },
   },
   {
     id: 700202,
@@ -1513,6 +1700,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Test Server 01",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 39 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB NVMe" },
   },
   {
     id: 700204,
@@ -1523,6 +1714,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Test Server 02",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 40 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB NVMe" },
   },
   {
     id: 700205,
@@ -1533,6 +1728,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Development Server 01",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 41 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 700206,
@@ -1543,6 +1742,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Development Server 02",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 42 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 700207,
@@ -1553,6 +1756,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Development Server 03",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 43 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "4 cores", memory: "16 GB RAM", storage: "500 GB NVMe" },
   },
   {
     id: 700208,
@@ -1563,6 +1770,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Production Server 01",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 44 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "16 cores", memory: "64 GB RAM", storage: "2 TB NVMe" },
   },
   {
     id: 700209,
@@ -1573,6 +1784,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Production Server 02",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 45 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "16 cores", memory: "64 GB RAM", storage: "2 TB NVMe" },
   },
   {
     id: 700210,
@@ -1583,6 +1798,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Production Server 04",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 46 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "16 cores", memory: "64 GB RAM", storage: "2 TB NVMe" },
   },
   {
     id: 700212,
@@ -1593,6 +1812,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Production Server 06",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 47 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "16 cores", memory: "64 GB RAM", storage: "2 TB NVMe" },
   },
   {
     id: 700213,
@@ -1603,6 +1826,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "UBS Server 01",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 48 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB NVMe" },
   },
   {
     id: 700214,
@@ -1613,6 +1840,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Production Server 05",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 49 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "16 cores", memory: "64 GB RAM", storage: "2 TB NVMe" },
   },
   {
     id: 702000,
@@ -1623,6 +1854,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "NAS Server Production",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 50 min",
+    agentVersion: "1.2.1",
+    hardwareSpecs: { cpu: "8 cores", memory: "32 GB RAM", storage: "1 TB NVMe" },
   },
 
   // ========== REACTOR 4: BARE METAL SERVERS ==========
@@ -1636,6 +1871,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "IBG.COM.CO",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 51 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 472841,
@@ -1646,6 +1885,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "COOTRARIS.COM",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 52 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 489836,
@@ -1656,6 +1899,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "ICONET.COM.MX",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 53 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 9002651,
@@ -1666,6 +1913,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 54 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 446396,
@@ -1676,6 +1927,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "Infrastructure",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 55 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 414182,
@@ -1686,6 +1941,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "PREVISALUD.COM.CO",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 56 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 506757,
@@ -1696,6 +1955,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "IINUBE.COM",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 57 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 502741,
@@ -1706,6 +1969,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "SERVERPY.COM",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 58 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 415417,
@@ -1716,6 +1983,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CENTRALTELEFONICA.COM.AR",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 59 min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 9002646,
@@ -1726,6 +1997,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "DG",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 9002650,
@@ -1736,6 +2011,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "GP",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 1min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 481396,
@@ -1746,6 +2025,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "XPERSOFT.NET",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 2min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 506750,
@@ -1756,6 +2039,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "CEIBA.COM.CO",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 3min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 422858,
@@ -1766,6 +2053,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "ABPROSYSTEMS.COM",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 4min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 437541,
@@ -1776,6 +2067,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "KDUCEO.NET",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 5min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 472844,
@@ -1786,6 +2081,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "KDUCEO.NET",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 6min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 490047,
@@ -1796,6 +2095,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "PCCORP.COM.AR",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 7min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 494697,
@@ -1806,6 +2109,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "AGSAMERICAS.COM.CO",
     status: "online",
     specs: "Proxmox Backup Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 8min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 600006,
@@ -1816,6 +2123,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "SKY",
     status: "online",
     specs: "Storage Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 9min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   // PBS Servers - UBIQUANDO
   {
@@ -1827,6 +2138,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "High Storage",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 10min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
 
   // Dedicated Bare Metal Servers
@@ -1839,6 +2154,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Advanced Storage",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 11min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 494710,
@@ -1849,6 +2168,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Bare Metal Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 12min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 485520,
@@ -1859,6 +2182,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "TEMPORIS.MX",
     status: "online",
     specs: "Bare Metal Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 13min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 496833,
@@ -1869,6 +2196,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "BOOKTAM.COM",
     status: "online",
     specs: "High Storage",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 14min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 494700,
@@ -1879,6 +2210,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Advanced Storage",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 15min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 506756,
@@ -1889,6 +2224,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "UBIQUANDO",
     status: "online",
     specs: "Advanced Storage",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 16min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 481339,
@@ -1899,6 +2238,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OLDGREYSTONE.COM",
     status: "online",
     specs: "Bare Metal Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 17min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 494422,
@@ -1909,6 +2252,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "REYNAR.COM.CO",
     status: "online",
     specs: "Advanced Storage",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 18min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
 
   // Dedicated Bare Metal Servers
@@ -1921,6 +2268,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Lab Hack Academy",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 19min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 378012,
@@ -1931,6 +2282,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "HBTC",
     status: "online",
     specs: "Zimbra Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 20min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 482760,
@@ -1941,6 +2296,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "BETCONNECTIONS.COM",
     status: "online",
     specs: "MongoDB Gateway",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 21min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 484061,
@@ -1951,6 +2310,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "BETCONNECTIONS.COM",
     status: "online",
     specs: "MongoDB Gateway",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 22min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 496833,
@@ -1961,6 +2324,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "BETCONNECTIONS.COM",
     status: "online",
     specs: "Storage Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 23min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 500013,
@@ -1971,6 +2338,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "10GB Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 24min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 425017,
@@ -1981,6 +2352,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Advanced Server G2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 25min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 453197,
@@ -1991,6 +2366,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Storage Server G2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 26min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 236186,
@@ -2001,6 +2380,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "TITANO CLOUD",
     status: "online",
     specs: "Control Panel Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 27min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 493203,
@@ -2011,6 +2394,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "SERVSOFT.COM",
     status: "online",
     specs: "Bare Metal Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 28min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 494422,
@@ -2021,6 +2408,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "RYNDEM.MX",
     status: "online",
     specs: "Storage Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 29min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 401453,
@@ -2031,6 +2422,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "PREVISALUD.COM.CO",
     status: "online",
     specs: "Bare Metal Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 30min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 453090,
@@ -2041,6 +2436,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "VALORX.NET",
     status: "online",
     specs: "Advanced Server G2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 31min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 451816,
@@ -2051,6 +2450,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "ZETAMSELECTRIC.COM",
     status: "online",
     specs: "Proxmox VE Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 32min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 422719,
@@ -2061,6 +2464,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKTVPRO.CLUB",
     status: "online",
     specs: "Storage Server G2",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 33min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 462754,
@@ -2071,6 +2478,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "PLATAFORMAINTEGRA.NET",
     status: "online",
     specs: "Delta Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 34min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 497296,
@@ -2081,6 +2492,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "PROSOFT.CO",
     status: "online",
     specs: "Advanced Server G3",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 35min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
   {
     id: 412703,
@@ -2091,6 +2506,10 @@ const INITIAL_HOSTS: Host[] = [
     company: "INTELLPLAT.COM",
     status: "online",
     specs: "Cluster Server",
+    uptime: 99.9,
+    lastSNMPConnection: "Hace 1h 36min",
+    agentVersion: "1.1.8",
+    hardwareSpecs: { cpu: "32 cores", memory: "256 GB RAM", storage: "50 TB SAS" },
   },
 
   // ========== REACTOR 5: OAKSYSTEM INFRASTRUCTURE ==========
@@ -2103,6 +2522,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 5 min",
+    agentVersion: "N/A",
   },
   {
     id: 500015,
@@ -2113,6 +2535,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 6 min",
+    agentVersion: "N/A",
   },
   {
     id: 500016,
@@ -2123,6 +2548,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 7 min",
+    agentVersion: "N/A",
   },
   {
     id: 500017,
@@ -2133,6 +2561,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 8 min",
+    agentVersion: "N/A",
   },
   {
     id: 500018,
@@ -2143,6 +2574,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 9 min",
+    agentVersion: "N/A",
   },
   {
     id: 500019,
@@ -2153,6 +2587,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 10 min",
+    agentVersion: "N/A",
   },
   {
     id: 500020,
@@ -2163,6 +2600,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 11 min",
+    agentVersion: "N/A",
   },
   {
     id: 500021,
@@ -2173,6 +2613,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "VRACK Connection",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 12 min",
+    agentVersion: "N/A",
   },
   {
     id: 500022,
@@ -2183,6 +2626,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 13 min",
+    agentVersion: "N/A",
   },
   {
     id: 500023,
@@ -2193,6 +2639,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 14 min",
+    agentVersion: "N/A",
   },
   {
     id: 500024,
@@ -2203,6 +2652,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 15 min",
+    agentVersion: "N/A",
   },
   {
     id: 500025,
@@ -2213,6 +2665,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 16 min",
+    agentVersion: "N/A",
   },
   {
     id: 500026,
@@ -2223,6 +2678,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 17 min",
+    agentVersion: "N/A",
   },
   {
     id: 500027,
@@ -2233,6 +2691,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 18 min",
+    agentVersion: "N/A",
   },
   {
     id: 500028,
@@ -2243,6 +2704,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 19 min",
+    agentVersion: "N/A",
   },
   {
     id: 500029,
@@ -2253,6 +2717,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 146",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 20 min",
+    agentVersion: "N/A",
   },
   {
     id: 500030,
@@ -2263,6 +2730,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 21 min",
+    agentVersion: "N/A",
   },
   {
     id: 500031,
@@ -2273,6 +2743,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 22 min",
+    agentVersion: "N/A",
   },
   {
     id: 500032,
@@ -2283,6 +2756,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 23 min",
+    agentVersion: "N/A",
   },
   {
     id: 500033,
@@ -2293,6 +2769,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 24 min",
+    agentVersion: "N/A",
   },
   {
     id: 500034,
@@ -2303,6 +2782,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 25 min",
+    agentVersion: "N/A",
   },
   {
     id: 500035,
@@ -2313,6 +2795,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 26 min",
+    agentVersion: "N/A",
   },
   {
     id: 500036,
@@ -2323,6 +2808,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 27 min",
+    agentVersion: "N/A",
   },
   {
     id: 500037,
@@ -2333,6 +2821,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Block 150",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 28 min",
+    agentVersion: "N/A",
   },
   {
     id: 500038,
@@ -2343,6 +2834,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Node",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 29 min",
+    agentVersion: "N/A",
   },
   {
     id: 500039,
@@ -2353,6 +2847,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Network Node",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 30 min",
+    agentVersion: "N/A",
   },
   {
     id: 500040,
@@ -2363,6 +2860,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 31 min",
+    agentVersion: "N/A",
   },
   {
     id: 500041,
@@ -2373,6 +2873,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 32 min",
+    agentVersion: "N/A",
   },
   {
     id: 500042,
@@ -2383,6 +2886,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 33 min",
+    agentVersion: "N/A",
   },
   {
     id: 500043,
@@ -2393,6 +2899,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 34 min",
+    agentVersion: "N/A",
   },
   {
     id: 500044,
@@ -2403,6 +2912,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 35 min",
+    agentVersion: "N/A",
   },
   {
     id: 500045,
@@ -2413,6 +2925,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 36 min",
+    agentVersion: "N/A",
   },
   {
     id: 500046,
@@ -2423,6 +2938,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 37 min",
+    agentVersion: "N/A",
   },
   {
     id: 500047,
@@ -2433,6 +2951,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 38 min",
+    agentVersion: "N/A",
   },
   {
     id: 500048,
@@ -2443,6 +2964,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 39 min",
+    agentVersion: "N/A",
   },
   {
     id: 500049,
@@ -2453,6 +2977,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 40 min",
+    agentVersion: "N/A",
   },
   {
     id: 500050,
@@ -2463,6 +2990,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 41 min",
+    agentVersion: "N/A",
   },
   {
     id: 500051,
@@ -2473,6 +3003,9 @@ const INITIAL_HOSTS: Host[] = [
     company: "OAKSYSTEM",
     status: "online",
     specs: "Toronto Block",
+    uptime: 100.0,
+    lastSNMPConnection: "Hace 42 min",
+    agentVersion: "N/A",
   },
 ]
 
@@ -2508,21 +3041,15 @@ export default function HostsPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Gestión de Hosts</h1>
-            <p className="text-slate-400 mt-1">Administra todos los servidores y equipos de la infraestructura</p>
-          </div>
-          <Button className="bg-cyan-600 hover:bg-cyan-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Agregar Host
-          </Button>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Hosts y Servidores</h1>
+          <p className="text-slate-400">Gestión completa de servidores clasificados por reactor y tipo</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card className="bg-slate-900 border-slate-800 p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -2562,7 +3089,7 @@ export default function HostsPage() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-slate-900 border-slate-800 p-4">
+        <Card className="bg-slate-900 border-slate-800 p-4 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -2583,8 +3110,13 @@ export default function HostsPage() {
               <option value="VPS">VPS</option>
               <option value="Bare Metal">Bare Metal</option>
               <option value="SPAM">SPAM</option>
+              <option value="Website">Website</option>
               <option value="Infrastructure">Infrastructure</option>
               <option value="Proxmox Backup">Proxmox Backup</option>
+              <option value="Proxmox VE">Proxmox VE</option>
+              <option value="cPanel">cPanel</option>
+              <option value="WHM">WHM</option>
+              <option value="Proxmox Cluster">Proxmox Cluster</option>
             </select>
             <select
               value={selectedReactor}
@@ -2604,6 +3136,51 @@ export default function HostsPage() {
             </Button>
           </div>
         </Card>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setSelectedType("all")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "all" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            Todos
+          </button>
+          <button
+            onClick={() => setSelectedType("VPS")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "VPS" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            VPS
+          </button>
+          <button
+            onClick={() => setSelectedType("Proxmox Backup")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "Proxmox Backup" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            Proxmox Backup (PBS)
+          </button>
+          <button
+            onClick={() => setSelectedType("cPanel")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "cPanel" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            cPanel/WHM
+          </button>
+          <button
+            onClick={() => setSelectedType("Proxmox VE")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "Proxmox VE" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            Proxmox VE
+          </button>
+          <button
+            onClick={() => setSelectedType("Proxmox Cluster")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "Proxmox Cluster" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            Clusters Proxmox
+          </button>
+          <button
+            onClick={() => setSelectedType("CEPH Cluster")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedType === "CEPH Cluster" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
+          >
+            CEPH Clusters
+          </button>
+        </div>
 
         {/* Reactor Filter Buttons */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -2653,11 +3230,12 @@ export default function HostsPage() {
               selectedReactor === "5" ? "bg-cyan-500 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
             }`}
           >
-            Reactor 5: PBS ({hosts.filter((h) => h.reactor === 5).length})
+            Reactor 5: Infrastructure ({hosts.filter((h) => h.reactor === 5).length})
           </button>
         </div>
 
         {/* Hosts Table */}
+        {/* Tabla de hosts con datos de monitoreo */}
         <Card className="bg-slate-900 border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -2667,15 +3245,21 @@ export default function HostsPage() {
                   <th className="text-left p-4 text-slate-400 font-medium">IP</th>
                   <th className="text-left p-4 text-slate-400 font-medium">Tipo</th>
                   <th className="text-left p-4 text-slate-400 font-medium">Reactor</th>
-                  <th className="text-left p-4 text-slate-400 font-medium">Empresa</th>
                   <th className="text-left p-4 text-slate-400 font-medium">Estado</th>
                   <th className="text-left p-4 text-slate-400 font-medium">Specs</th>
+                  <th className="text-left p-4 text-slate-400 font-medium">Uptime</th>
+                  <th className="text-left p-4 text-slate-400 font-medium">Última Conexión SNMP</th>
+                  <th className="text-left p-4 text-slate-400 font-medium">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedHosts.map((host) => (
                   <tr key={host.id} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4 text-white font-medium">{host.name}</td>
+                    <td className="p-4 text-white font-medium">
+                      <Link href={`/dashboard/host-monitor/${host.id}`} className="text-cyan-400 hover:underline">
+                        {host.name}
+                      </Link>
+                    </td>
                     <td className="p-4 text-slate-300 font-mono text-sm">{host.ip}</td>
                     <td className="p-4">
                       <Badge variant="outline" className="border-cyan-600 text-cyan-400">
@@ -2683,7 +3267,6 @@ export default function HostsPage() {
                       </Badge>
                     </td>
                     <td className="p-4 text-slate-300">Reactor {host.reactor}</td>
-                    <td className="p-4 text-slate-300">{host.company}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         <div
@@ -2709,6 +3292,13 @@ export default function HostsPage() {
                       </div>
                     </td>
                     <td className="p-4 text-slate-400 text-sm">{host.specs || "-"}</td>
+                    <td className="p-4 text-slate-300">{host.uptime?.toFixed(1) || "N/A"}%</td>
+                    <td className="p-4 text-slate-300 text-sm">{host.lastSNMPConnection || "N/A"}</td>
+                    <td className="p-4">
+                      <Button size="sm" variant="outline" className="border-slate-700 bg-transparent">
+                        Ver Detalles
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -2716,7 +3306,7 @@ export default function HostsPage() {
           </div>
         </Card>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-6">
           <div className="text-slate-400 text-sm">
             Mostrando {startIndex + 1} - {Math.min(endIndex, filteredHosts.length)} de {filteredHosts.length} hosts
             filtrados ({stats.total} totales)

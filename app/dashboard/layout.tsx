@@ -38,6 +38,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [connectOpen, setConnectOpen] = useState(false)
   const [ticketsOpen, setTicketsOpen] = useState(false)
   const [herramientasOpen, setHerramientasOpen] = useState(false)
+  const [cotizadorOpen, setCotizadorOpen] = useState(true)
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -553,7 +554,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5a2 2 0 00-2 2v3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                   />
                 </svg>
                 <span className="font-medium">Sistema de Tickets</span>
@@ -631,10 +632,67 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {herramientasOpen && (
                 <div className="ml-6 mt-2 space-y-1 border-l border-slate-700 pl-3">
                   <button
+                    onClick={() => router.push("/dashboard/productos")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/productos") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Gestión de Productos
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/financiero")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/financiero") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Centro Financiero
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/plantillas")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/plantillas") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Generador de Plantillas
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/integraciones")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/integraciones") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Integraciones Cloud
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <button
+                onClick={() => setCotizadorOpen(!cotizadorOpen)}
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                <span className="font-medium">Sistema de Cotizaciones</span>
+                {cotizadorOpen ? (
+                  <ChevronDown className="w-4 h-4 ml-auto" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                )}
+              </button>
+
+              {cotizadorOpen && (
+                <div className="ml-6 mt-2 space-y-1 border-l border-slate-700 pl-3">
+                  <button
                     onClick={() => router.push("/dashboard/cotizador")}
                     className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/cotizador") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
                   >
-                    Sistema de Cotizaciones
+                    Dashboard Cotizaciones
+                  </button>
+                  <button
+                    onClick={() => router.push("/dashboard/cotizador/nueva")}
+                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/cotizador/nueva") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
+                  >
+                    Nueva Cotización
                   </button>
                   <button
                     onClick={() => router.push("/dashboard/cotizador/listas-precios")}
@@ -665,30 +723,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/cotizador/seguimiento") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
                   >
                     Seguimiento CRM
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/productos")}
-                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/productos") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
-                  >
-                    Gestión de Productos
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/financiero")}
-                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/financiero") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
-                  >
-                    Centro Financiero
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/plantillas")}
-                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/plantillas") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
-                  >
-                    Generador de Plantillas
-                  </button>
-                  <button
-                    onClick={() => router.push("/dashboard/integraciones")}
-                    className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${isActive("/dashboard/integraciones") ? "bg-cyan-600 text-white" : "text-slate-300 hover:text-white hover:bg-slate-800"}`}
-                  >
-                    Integraciones Cloud
                   </button>
                 </div>
               )}

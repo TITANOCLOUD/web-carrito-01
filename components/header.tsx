@@ -31,56 +31,56 @@ export function Header() {
 
         <div className="hidden lg:flex items-center gap-8">
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
               <span>Bare Metal & VPS</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/vps"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
                 VPS
               </Link>
               <Link
                 href="/bare-metal"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Bare Metal
               </Link>
               <Link
                 href="/servidores-dedicados"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Servidores Dedicados
               </Link>
               <Link
                 href="/clusters"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Clusters de Servidores
               </Link>
               <Link
                 href="/gpu-servers"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Servidores GPU
               </Link>
               <Link
                 href="/storage-servers"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Servidores de Almacenamiento
               </Link>
               <Link
                 href="/calculadora"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Calculadora de Configuración
               </Link>
               <Link
                 href="/comparador-servidores"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 Comparador de Servidores
               </Link>
@@ -88,56 +88,56 @@ export function Header() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium whitespace-nowrap">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium whitespace-nowrap">
               <span>Nube Pública</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/public-cloud/compute"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
                 Compute
               </Link>
               <Link
                 href="/public-cloud/storage"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Storage
               </Link>
               <Link
                 href="/public-cloud/network"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Network
               </Link>
               <Link
                 href="/public-cloud/containers"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Containers
               </Link>
               <Link
                 href="/public-cloud/databases"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Databases
               </Link>
               <Link
                 href="/public-cloud/ai-ml"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 AI & Machine Learning
               </Link>
               <Link
                 href="/public-cloud/analytics"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Analytics
               </Link>
               <Link
                 href="/public-cloud/security"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 Security
               </Link>
@@ -145,56 +145,56 @@ export function Header() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
               <span>Dominios, Hosting y Email</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/domains/search"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
                 Buscar Dominio
               </Link>
               <Link
                 href="/domains/renew"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Renovar Dominio
               </Link>
               <Link
                 href="/domains/aftermarket"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Mercado Secundario
               </Link>
               <Link
                 href="/hosting/packages"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Packs de Hosting
               </Link>
               <Link
                 href="/hosting/ssl"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Certificados SSL
               </Link>
               <Link
                 href="/hosting/cdn"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 CDN
               </Link>
               <Link
                 href="/hosting/wordpress"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 WordPress Hosting
               </Link>
               <Link
                 href="/domains/whois"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 Whois
               </Link>
@@ -202,46 +202,46 @@ export function Header() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
               <span>Nube Privada Alojada</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <Link
                 href="/nube-privada"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg font-semibold"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg font-semibold"
               >
                 Descripción General
               </Link>
               <div className="border-t border-slate-700 my-1"></div>
               <Link
                 href="/nube-privada/nutanix"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Nutanix Cloud Platform
               </Link>
               <Link
                 href="/nube-privada/sap-hana"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 SAP HANA on Cloud
               </Link>
               <Link
                 href="/nube-privada/almacenamiento"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Almacenamiento Enterprise
               </Link>
               <div className="border-t border-slate-700 my-1"></div>
               <Link
                 href="/nube-privada/iam"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Identity & Access Management
               </Link>
               <Link
                 href="/nube-privada/logs-platform"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 Logs Data Platform
               </Link>
@@ -249,44 +249,44 @@ export function Header() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
               <span>Connect+</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-64 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <Link
                 href="/connect/troncales"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
                 Troncales SIP
               </Link>
               <Link
                 href="/connect/ivr"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 IVR (Sistema de Respuesta)
               </Link>
               <Link
                 href="/connect/callcenter"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 Call Center
               </Link>
               <Link
                 href="/connect/pbx"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 PBX Virtual
               </Link>
               <Link
                 href="/connect/esim"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 eSIM Plataforma
               </Link>
               <Link
                 href="/connect/sms"
-                className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+                className="block px-4 py-3 text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 SMS & WhatsApp API
               </Link>
@@ -294,26 +294,26 @@ export function Header() {
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-base font-medium">
+            <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm">
               <span>{currency}</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute right-0 mt-2 w-32 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <button
                 onClick={() => setCurrency("USD")}
-                className="w-full px-4 py-2 text-left text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
+                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
                 USD $
               </button>
               <button
                 onClick={() => setCurrency("EUR")}
-                className="w-full px-4 py-2 text-left text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
+                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
                 EUR €
               </button>
               <button
                 onClick={() => setCurrency("MXN")}
-                className="w-full px-4 py-2 text-left text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
+                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
                 MXN $
               </button>
@@ -323,36 +323,28 @@ export function Header() {
           <div className="relative group">
             <button className="flex items-center gap-2 text-slate-300 hover:text-cyan-400 transition-colors">
               <Globe className="w-4 h-4" />
-              <span className="text-lg">{language === "ES" ? "🇪🇸" : "🇺🇸"}</span>
+              <span className="text-base">{language === "ES" ? "🇪🇸" : "🇺🇸"}</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute right-0 mt-2 w-40 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <button
                 onClick={() => setLanguage("ES")}
-                className="w-full px-4 py-2 text-left text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 first:rounded-t-lg"
+                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 first:rounded-t-lg"
               >
-                <span className="text-lg">🇪🇸</span>
+                <span className="text-base">🇪🇸</span>
                 <span>Español</span>
               </button>
               <button
                 onClick={() => setLanguage("EN")}
-                className="w-full px-4 py-2 text-left text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 last:rounded-b-lg"
+                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 last:rounded-b-lg"
               >
-                <span className="text-lg">🇺🇸</span>
+                <span className="text-base">🇺🇸</span>
                 <span>English</span>
               </button>
             </div>
           </div>
 
-          <Button
-            asChild
-            variant="outline"
-            className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent"
-          >
-            <a href="/contacto">REGISTRAR</a>
-          </Button>
-
-          <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white ml-2">
+          <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white text-sm ml-2">
             <Link href="/login">INGRESAR</Link>
           </Button>
         </div>
@@ -417,15 +409,6 @@ export function Header() {
             >
               Connect+
             </Link>
-            <Button
-              asChild
-              variant="outline"
-              className="border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-white bg-transparent w-full"
-            >
-              <a href="/contacto" onClick={() => setIsMobileMenuOpen(false)}>
-                REGISTRAR
-              </a>
-            </Button>
             <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white w-full mt-2">
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 INGRESAR

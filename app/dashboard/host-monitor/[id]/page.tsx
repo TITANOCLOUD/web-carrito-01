@@ -3,7 +3,8 @@
 import { CardDescription } from "@/components/ui/card"
 
 import { useEffect, useState } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { use } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -113,9 +114,9 @@ interface MetricData {
   timestamps: string[]
 }
 
-export default function HostMonitorPage() {
+export default function HostMonitorPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const params = useParams()
+  const resolvedParams = use(params)
   const [hostData, setHostData] = useState<HostDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [pingInterval, setPingInterval] = useState<NodeJS.Timeout | null>(null)
@@ -123,11 +124,12 @@ export default function HostMonitorPage() {
   const [metrics, setMetrics] = useState<MetricData | null>(null)
 
   useEffect(() => {
+    console.log("[v0] Cargando datos del host:", resolvedParams.id)
     loadHostData()
     loadMetrics(timeRange)
 
-    const isWebsite = params.id.toString().startsWith("web-")
-    const pingIntervalTime = isWebsite ? 60000 : 2000
+    const isWebsite = resolvedParams.id.toString().startsWith("web-")
+    const pingIntervalTime = isWebsite ? 60000 : 10000
 
     const interval = setInterval(() => {
       updatePing()
@@ -137,105 +139,27 @@ export default function HostMonitorPage() {
     return () => {
       if (interval) clearInterval(interval)
     }
-  }, [params.id])
+  }, [resolvedParams.id])
 
   const loadHostData = async () => {
     try {
-      const isWebsite = params.id.toString().startsWith("web-")
+      console.log("[v0] Fetching host data from API...")
+      const response = await fetch(`/api/host-monitor/${resolvedParams.id}`)
 
-      if (isWebsite) {
-        const response = await fetch(`/api/website-monitor/${params.id}`)
-
-        if (!response.ok) {
-          console.error("[v0] Error al cargar datos del sitio web:", response.status)
-          setHostData({
-            id: params.id.toString(),
-            name: `Sitio Web (${params.id})`,
-            ip: "No disponible",
-            status: "offline",
-            type: "Website",
-            reactor: 5,
-            ping: {
-              current: 0,
-              average: 0,
-              min: 0,
-              max: 0,
-              packetLoss: 100,
-              history: Array(20).fill(0),
-            },
-            web: {
-              lastCheck: new Date().toLocaleString(),
-              responseTime: 0,
-              statusCode: response.status,
-              sslCert: {
-                valid: false,
-                issuer: "No disponible",
-                expiryDate: "No disponible",
-                daysRemaining: 0,
-              },
-              blacklistStatus: {
-                isListed: false,
-                lists: [],
-              },
-              openSpeed: 0,
-              closeSpeed: 0,
-            },
-          })
-          setLoading(false)
-          return
-        }
-
-        const data = await response.json()
-
-        setHostData({
-          id: data.id,
-          name: data.name,
-          ip: data.ip,
-          status: data.status,
-          type: "Website",
-          reactor: 5,
-          ping: {
-            current: data.loadTime,
-            average: data.loadTime,
-            min: Math.max(0, data.loadTime - 50),
-            max: data.loadTime + 100,
-            packetLoss: 0,
-            history: Array(20)
-              .fill(0)
-              .map(() => data.loadTime + (Math.random() - 0.5) * 100),
-          },
-          web: {
-            lastCheck: data.lastCheck,
-            responseTime: data.loadTime,
-            statusCode: data.statusCode,
-            sslCert: data.ssl
-              ? {
-                  valid: data.ssl.valid,
-                  issuer: data.ssl.issuer,
-                  expiryDate: data.ssl.expiryDate,
-                  daysRemaining: data.ssl.daysUntilExpiry,
-                }
-              : undefined,
-            blacklistStatus: {
-              isListed: data.blacklist?.listed || false,
-              lists: data.blacklist?.lists || [],
-            },
-            openSpeed: data.loadTime,
-            closeSpeed: Math.floor(data.loadTime * 0.3),
-          },
-        })
-      } else {
-        const response = await fetch(`/api/host-monitor/${params.id}`)
-        const data = await response.json()
-        setHostData(data)
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
       }
+
+      const data = await response.json()
+      console.log("[v0] Host data loaded:", data)
+      setHostData(data)
       setLoading(false)
     } catch (error) {
       console.error("[v0] Error loading host data:", error)
       setHostData({
-        id: params.id.toString(),
-        name: `Host (${params.id})`,
-        ip: "Error al cargar",
+        id: resolvedParams.id,
+        name: `Host ${resolvedParams.id}`,
+        ip: "Cargando...",
         status: "offline",
         type: "Desconocido",
         reactor: 0,
@@ -256,35 +180,11 @@ export default function HostMonitorPage() {
     if (!hostData) return
 
     try {
-      const isWebsite = params.id.toString().startsWith("web-")
-      const endpoint = isWebsite ? `/api/website-ping/${params.id}` : `/api/ping/${params.id}`
-
-      const response = await fetch(endpoint)
+      const response = await fetch(`/api/ping/${resolvedParams.id}`)
       const data = await response.json()
 
       setHostData((prev) => {
         if (!prev) return prev
-
-        if (isWebsite) {
-          return {
-            ...prev,
-            ping: {
-              ...prev.ping,
-              current: data.responseTime,
-              history: [...prev.ping.history.slice(1), data.responseTime],
-            },
-            status: data.status,
-            web: prev.web
-              ? {
-                  ...prev.web,
-                  lastCheck: data.timestamp,
-                  responseTime: data.responseTime,
-                  statusCode: data.statusCode,
-                }
-              : undefined,
-          }
-        }
-
         return {
           ...prev,
           ping: data.ping,
@@ -298,7 +198,7 @@ export default function HostMonitorPage() {
 
   const runTraceroute = async () => {
     try {
-      const response = await fetch(`/api/traceroute/${params.id}`)
+      const response = await fetch(`/api/traceroute/${resolvedParams.id}`)
       const data = await response.json()
 
       setHostData((prev) => {
@@ -315,7 +215,7 @@ export default function HostMonitorPage() {
 
   const loadMetrics = async (range: TimeRange) => {
     try {
-      const response = await fetch(`/api/host-metrics/${params.id}?range=${range}`)
+      const response = await fetch(`/api/host-metrics/${resolvedParams.id}?range=${range}`)
       const data = await response.json()
       setMetrics(data)
     } catch (error) {
@@ -326,6 +226,15 @@ export default function HostMonitorPage() {
   const handleTimeRangeChange = (range: TimeRange) => {
     setTimeRange(range)
     loadMetrics(range)
+  }
+
+  const pingData = hostData?.ping || {
+    current: 0,
+    average: 0,
+    min: 0,
+    max: 0,
+    packetLoss: 0,
+    history: Array(20).fill(0),
   }
 
   if (loading) {
@@ -347,15 +256,6 @@ export default function HostMonitorPage() {
     )
   }
 
-  const pingData = hostData.ping || {
-    current: 0,
-    average: 0,
-    min: 0,
-    max: 0,
-    packetLoss: 0,
-    history: Array(20).fill(0),
-  }
-
   const isPhysicalServer = [
     "Ceph Storage",
     "Cluster",
@@ -370,7 +270,7 @@ export default function HostMonitorPage() {
   const isAMDCPU = hostData.snmp?.cpu.model.toLowerCase().includes("amd")
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-slate-950 min-h-screen">
       <div className="mb-6">
         <Button onClick={() => router.back()} variant="ghost" className="text-slate-400 hover:text-white mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -406,47 +306,48 @@ export default function HostMonitorPage() {
         </div>
       </div>
 
-      {/* Ping en tiempo real */}
-      <Card className="bg-slate-800/50 border-slate-700 mb-6">
+      <Card className="bg-slate-900 border-slate-800 mb-6">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <Activity className="w-5 h-5 text-green-500" />
-            Ping Continuo
+            Ping Continuo (actualización cada 10 segundos)
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-5 gap-4">
             <div>
-              <div className="text-2xl font-bold text-green-400">{pingData.current}ms</div>
+              <div className="text-3xl font-bold text-green-400">{pingData.current}ms</div>
               <div className="text-sm text-slate-400">Actual</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">{pingData.average}ms</div>
+              <div className="text-3xl font-bold text-white">{pingData.average}ms</div>
               <div className="text-sm text-slate-400">Promedio</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-blue-400">{pingData.min}ms</div>
+              <div className="text-3xl font-bold text-blue-400">{pingData.min}ms</div>
               <div className="text-sm text-slate-400">Mínimo</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-orange-400">{pingData.max}ms</div>
+              <div className="text-3xl font-bold text-orange-400">{pingData.max}ms</div>
               <div className="text-sm text-slate-400">Máximo</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-400">{pingData.packetLoss}%</div>
-              <div className="text-sm text-slate-400">Pérdida de Paquetes</div>
+              <div className="text-3xl font-bold text-red-400">{pingData.packetLoss}%</div>
+              <div className="text-sm text-slate-400">Pérdida</div>
             </div>
           </div>
 
-          {/* Gráfico de ping histórico */}
-          <div className="mt-4 h-20 flex items-end gap-1">
+          {/* Gráfico de histórico */}
+          <div className="mt-6 h-32 flex items-end gap-1">
             {pingData.history.map((value, index) => {
               const maxValue = Math.max(...pingData.history, 1)
+              const height = (value / maxValue) * 100
               return (
                 <div
                   key={index}
-                  className="flex-1 bg-green-500 rounded-t"
-                  style={{ height: `${(value / maxValue) * 100}%` }}
+                  className="flex-1 bg-gradient-to-t from-green-500 to-green-300 rounded-t transition-all"
+                  style={{ height: `${height}%` }}
+                  title={`${value}ms`}
                 />
               )
             })}

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Activity, AlertTriangle, CheckCircle2, Server, XCircle, Network, MapPin } from "lucide-react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import Link from "next/link"
 
 interface PingResult {
   host: string
@@ -56,6 +57,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "IBG.COM.CO",
+    id: "483431-ceph-ibg-sca3-g2-bay-01",
   },
   {
     name: "501691-CEPH-IBG-SCA3-G2-BAY-02",
@@ -65,6 +67,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "IBG.COM.CO",
+    id: "501691-ceph-ibg-sca3-g2-bay-02",
   },
   {
     name: "493196-CEPH-IBG-SCA3-G2-BAY-03",
@@ -74,6 +77,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 1,
     company: "IBG.COM.CO",
+    id: "493196-ceph-ibg-sca3-g2-bay-03",
   },
 
   // CEPH - COOTRARIS.COM
@@ -85,6 +89,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 1,
     company: "COOTRARIS.COM",
+    id: "469453-ceph-sca1-bay-01",
   },
   {
     name: "469864-CEPH-SCA1-BAY-02",
@@ -94,6 +99,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "COOTRARIS.COM",
+    id: "469864-ceph-sca1-bay-02",
   },
   {
     name: "469855-CEPH-SCA1-BAY-03",
@@ -103,6 +109,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "COOTRARIS.COM",
+    id: "469855-ceph-sca1-bay-03",
   },
 
   // CEPH - ICONET.COM.MX
@@ -114,6 +121,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "ICONET.COM.MX",
+    id: "408163-ceph-ic-hgr3-01",
   },
   {
     name: "422255-CEPH-IC-HGR3-02",
@@ -123,6 +131,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "ICONET.COM.MX",
+    id: "422255-ceph-ic-hgr3-02",
   },
   {
     name: "449125-CEPH-IC-HGR3-03",
@@ -132,6 +141,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "ICONET.COM.MX",
+    id: "449125-ceph-ic-hgr3-03",
   },
 
   // CEPH - BETCONNECTIONS.COM (16 nodos)
@@ -143,6 +153,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "482770-ceph-bt-hgr4-g2-bay-01",
   },
   {
     name: "490629-CEPH-BT-HGR4-G2-BAY-02",
@@ -152,6 +163,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "490629-ceph-bt-hgr4-g2-bay-02",
   },
   {
     name: "482769-CEPH-BT-HGR4-G2-BAY-03",
@@ -161,6 +173,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "482769-ceph-bt-hgr4-g2-bay-03",
   },
   {
     name: "499053-CEPH-BT-HGR4-G2-BAY-05",
@@ -170,6 +183,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499053-ceph-bt-hgr4-g2-bay-05",
   },
   {
     name: "499056-CEPH-BT-HGR4-G2-BAY-06",
@@ -179,6 +193,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499056-ceph-bt-hgr4-g2-bay-06",
   },
   {
     name: "499054-CEPH-BT-HGR4-G2-BAY-07",
@@ -188,6 +203,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499054-ceph-bt-hgr4-g2-bay-07",
   },
   {
     name: "499059-CEPH-BT-HGR4-G2-BAY-08",
@@ -197,6 +213,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499059-ceph-bt-hgr4-g2-bay-08",
   },
   {
     name: "499055-CEPH-BT-HGR4-G2-BAY-09",
@@ -206,6 +223,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499055-ceph-bt-hgr4-g2-bay-09",
   },
   {
     name: "499057-CEPH-BT-HGR4-G2-BAY-10",
@@ -215,6 +233,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499057-ceph-bt-hgr4-g2-bay-10",
   },
   {
     name: "499058-CEPH-BT-HGR4-G2-BAY-11",
@@ -224,6 +243,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "499058-ceph-bt-hgr4-g2-bay-11",
   },
   {
     name: "505062-CEPH-BT-HGR4-G2-BAY-12",
@@ -233,6 +253,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "505062-ceph-bt-hgr4-g2-bay-12",
   },
   {
     name: "510531-CEPH-BT-HGR4-G2-BAY-13",
@@ -242,6 +263,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "510531-ceph-bt-hgr4-g2-bay-13",
   },
   {
     name: "510532-CEPH-BT-HGR4-G2-BAY-14",
@@ -251,6 +273,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "510532-ceph-bt-hgr4-g2-bay-14",
   },
   {
     name: "510533-CEPH-BT-HGR4-G2-BAY-15",
@@ -260,6 +283,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "510533-ceph-bt-hgr4-g2-bay-15",
   },
   {
     name: "510534-CEPH-BT-HGR4-G2-BAY-16",
@@ -269,6 +293,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "510534-ceph-bt-hgr4-g2-bay-16",
   },
   {
     name: "510535-CEPH-BT-HGR4-G2-BAY-17",
@@ -278,6 +303,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "BETCONNECTIONS.COM",
+    id: "510535-ceph-bt-hgr4-g2-bay-17",
   },
 
   // CEPH - HBTC
@@ -289,6 +315,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "HBTC",
+    id: "484063-ceph-hbtc-hgr3-g2-bay-01",
   },
   {
     name: "490630-CEPH-HBTC-HGR3-G2-BAY-02",
@@ -298,6 +325,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "HBTC",
+    id: "490630-ceph-hbtc-hgr3-g2-bay-02",
   },
   {
     name: "484062-CEPH-HBTC-HGR3-G2-BAY-03",
@@ -307,6 +335,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "HBTC",
+    id: "484062-ceph-hbtc-hgr3-g2-bay-03",
   },
 
   // CEPH - PROCOM-INC.NET
@@ -318,6 +347,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "PROCOM-INC.NET",
+    id: "476771-ceph-po-scai3-01",
   },
   {
     name: "476772-CEPH-PO-SCAI3-02",
@@ -327,6 +357,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "PROCOM-INC.NET",
+    id: "476772-ceph-po-scai3-02",
   },
   {
     name: "476784-CEPH-PO-SCAI3-03",
@@ -336,6 +367,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "PROCOM-INC.NET",
+    id: "476784-ceph-po-scai3-03",
   },
 
   // CEPH - PCCORP.COM.AR
@@ -347,6 +379,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "PCCORP.COM.AR",
+    id: "491554-ceph-pc-sca1-g2-bay-1",
   },
   {
     name: "491555-CEPH-PC-SCA1-G2-BAY-2",
@@ -356,6 +389,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "PCCORP.COM.AR",
+    id: "491555-ceph-pc-sca1-g2-bay-2",
   },
   {
     name: "491553-CEPH-PC-SCA1-G2-BAY-3",
@@ -365,6 +399,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "PCCORP.COM.AR",
+    id: "491553-ceph-pc-sca1-g2-bay-3",
   },
 
   // CEPH - RYNDEM.MX
@@ -376,6 +411,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "RYNDEM.MX",
+    id: "483445-ceph-ryn-sca3-g2-bay-01",
   },
   {
     name: "483442-CEPH-RYN-SCA3-G2-BAY-02",
@@ -385,6 +421,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "RYNDEM.MX",
+    id: "483442-ceph-ryn-sca3-g2-bay-02",
   },
   {
     name: "486095-CEPH-RYN-SCA3-G2-BAY-03",
@@ -394,6 +431,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "RYNDEM.MX",
+    id: "486095-ceph-ryn-sca3-g2-bay-03",
   },
 
   // CEPH - IINUBE.COM
@@ -405,6 +443,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "IINUBE.COM",
+    id: "482995-ceph-in-hgr3-g2-01",
   },
   {
     name: "498611-CEPH-IN-HGR3-G2-02",
@@ -414,6 +453,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "IINUBE.COM",
+    id: "498611-ceph-in-hgr3-g2-02",
   },
   {
     name: "503809-CEPH-IN-HGR3-G2-03",
@@ -423,6 +463,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "IINUBE.COM",
+    id: "503809-ceph-in-hgr3-g2-03",
   },
   {
     name: "510878-CEPH-IN-HGR3-G2-04",
@@ -432,6 +473,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "IINUBE.COM",
+    id: "510878-ceph-in-hgr3-g2-04",
   },
 
   // CEPH - SERVERPY.COM
@@ -443,6 +485,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "SERVERPY.COM",
+    id: "511678-ceph-stk-hgr-i1-g3-bay-01",
   },
   {
     name: "500759-CEPH-STK-HGR-I1-G3-BAY-02",
@@ -452,6 +495,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "SERVERPY.COM",
+    id: "500759-ceph-stk-hgr-i1-g3-bay-02",
   },
   {
     name: "506218-CEPH-STK-HGR-I1-G3-BAY-03",
@@ -461,6 +505,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "SERVERPY.COM",
+    id: "506218-ceph-stk-hgr-i1-g3-bay-03",
   },
 
   // CEPH - CENTRALTELEFONICA.COM.AR
@@ -472,6 +517,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "CENTRALTELEFONICA.COM.AR",
+    id: "469461-ceph-scale-i1-01",
   },
   {
     name: "469870-CEPH-scale-i1-02",
@@ -481,6 +527,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "CENTRALTELEFONICA.COM.AR",
+    id: "469870-ceph-scale-i1-02",
   },
   {
     name: "466298-CEPH-scale-i1-03",
@@ -490,6 +537,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "CENTRALTELEFONICA.COM.AR",
+    id: "466298-ceph-scale-i1-03",
   },
 
   // CEPH - AVANTIKA.MX
@@ -501,6 +549,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "AVANTIKA.MX",
+    id: "475799-ceph-a-hgr3-bay-01",
   },
   {
     name: "475798-CEPH-A-HGR3-BAY-02",
@@ -510,6 +559,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "AVANTIKA.MX",
+    id: "475798-ceph-a-hgr3-bay-02",
   },
   {
     name: "475797-CEPH-A-HGR3-BAY-03",
@@ -519,6 +569,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "AVANTIKA.MX",
+    id: "475797-ceph-a-hgr3-bay-03",
   },
 
   // CEPH - HPSERVIDOR.COM
@@ -530,6 +581,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "HPSERVIDOR.COM",
+    id: "444276-ceph-x-hgr3-01",
   },
   {
     name: "447438-CEPH-X-HGR3-02",
@@ -539,6 +591,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "HPSERVIDOR.COM",
+    id: "447438-ceph-x-hgr3-02",
   },
   {
     name: "447437-CEPH-X-HGR3-03",
@@ -548,6 +601,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "HPSERVIDOR.COM",
+    id: "447437-ceph-x-hgr3-03",
   },
 
   // CEPH - AGSAMERICAS.COM.CO
@@ -559,6 +613,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "AGSAMERICAS.COM.CO",
+    id: "494339-ceph-ag-scai1-g2-bay-01",
   },
   {
     name: "494350-CEPH-AG-SCAI1-G2-BAY-02",
@@ -568,6 +623,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "AGSAMERICAS.COM.CO",
+    id: "494350-ceph-ag-scai1-g2-bay-02",
   },
   {
     name: "494351-CEPH-AG-SCAI1-G2-BAY-03",
@@ -577,6 +633,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "AGSAMERICAS.COM.CO",
+    id: "494351-ceph-ag-scai1-g2-bay-03",
   },
 
   // CEPH - XPERSOFT.NET
@@ -588,6 +645,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "XPERSOFT.NET",
+    id: "483332-ceph-ex-hgr3-3",
   },
   {
     name: "483333-CEPH-EX-HGR3-1",
@@ -597,6 +655,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "XPERSOFT.NET",
+    id: "483333-ceph-ex-hgr3-1",
   },
   {
     name: "483334-CEPH-EX-HGR3-2",
@@ -606,6 +665,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "XPERSOFT.NET",
+    id: "483334-ceph-ex-hgr3-2",
   },
 
   // CEPH - CEIBA.COM.CO
@@ -617,6 +677,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "CEIBA.COM.CO",
+    id: "496225-ceph-csh-sca-i3-g2-bay-01",
   },
   {
     name: "493198-CEPH-CSH-SCA-I3-G2-BAY-03",
@@ -626,6 +687,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "CEIBA.COM.CO",
+    id: "493198-ceph-csh-sca-i3-g2-bay-03",
   },
   {
     name: "493199-CEPH-CSH-SCA-I3-G2-BAY-02",
@@ -635,6 +697,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "CEIBA.COM.CO",
+    id: "493199-ceph-csh-sca-i3-g2-bay-02",
   },
 
   // CEPH - ABPROSYSTEMS.COM
@@ -646,6 +709,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "ABPROSYSTEMS.COM",
+    id: "486569-ceph-tab-sca3-bay-01",
   },
   {
     name: "486568-CEPH-TAB-SCA3-BAY-02",
@@ -655,6 +719,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "ABPROSYSTEMS.COM",
+    id: "486568-ceph-tab-sca3-bay-02",
   },
   {
     name: "483529-CEPH-TAB-SCA3-BAY-03",
@@ -664,6 +729,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "ABPROSYSTEMS.COM",
+    id: "483529-ceph-tab-sca3-bay-03",
   },
 
   // CEPH - KDUCEO.NET
@@ -675,6 +741,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "KDUCEO.NET",
+    id: "501686-ceph-mrk-hgr4-g2-01",
   },
   {
     name: "501685-CEPH-MRK-HGR4-G2-02",
@@ -684,6 +751,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "KDUCEO.NET",
+    id: "501685-ceph-mrk-hgr4-g2-02",
   },
   {
     name: "501684-CEPH-MRK-HGR4-G2-03",
@@ -693,6 +761,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "KDUCEO.NET",
+    id: "501684-ceph-mrk-hgr4-g2-03",
   },
   {
     name: "501683-CEPH-MRK-HGR4-G2-04",
@@ -702,6 +771,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "KDUCEO.NET",
+    id: "501683-ceph-mrk-hgr4-g2-04",
   },
 
   // CEPH - DG
@@ -713,6 +783,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "DG",
+    id: "9002640-ceph-dg-hgr4-bay-01",
   },
   {
     name: "9002641-CEPH-DG-HGR4-BAY-02",
@@ -722,6 +793,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "DG",
+    id: "9002641-ceph-dg-hgr4-bay-02",
   },
   {
     name: "9002642-CEPH-DG-HGR4-BAY-03",
@@ -731,6 +803,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "DG",
+    id: "9002642-ceph-dg-hgr4-bay-03",
   },
   {
     name: "9002643-CEPH-DG-HGR4-BAY-04",
@@ -740,6 +813,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "DG",
+    id: "9002643-ceph-dg-hgr4-bay-04",
   },
   {
     name: "9002644-CEPH-DG-HGR4-BAY-05",
@@ -749,6 +823,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "DG",
+    id: "9002644-ceph-dg-hgr4-bay-05",
   },
   {
     name: "9002645-CEPH-DG-HGR4-BAY-05-B",
@@ -758,6 +833,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "DG",
+    id: "9002645-ceph-dg-hgr4-bay-05-b",
   },
 
   // CEPH - GP
@@ -769,6 +845,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "GP",
+    id: "9002647-ceph-gp-hgr4-g2-01",
   },
   {
     name: "9002648-CEPH-GP-HGR4-G2-02",
@@ -778,6 +855,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "GP",
+    id: "9002648-ceph-gp-hgr4-g2-02",
   },
   {
     name: "9002649-CEPH-GP-HGR4-G2-03",
@@ -787,6 +865,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "GP",
+    id: "9002649-ceph-gp-hgr4-g2-03",
   },
 
   // CEPH - OAKSYSTEM (15 hosts)
@@ -798,6 +877,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "300001-ceph-oak-hgr3-g3-bay-01",
   },
   {
     name: "300002-CEPH-OAK-HGR3-G3-BAY-02",
@@ -807,6 +887,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "300002-ceph-oak-hgr3-g3-bay-02",
   },
   {
     name: "300003-CEPH-OAK-HGR3-G3-BAY-03",
@@ -816,6 +897,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "300003-ceph-oak-hgr3-g3-bay-03",
   },
   {
     name: "500001-CEPH-OAK-S-SCA1-ip132",
@@ -825,6 +907,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500001-ceph-oak-s-sca1-ip132",
   },
   {
     name: "500002-CEPH-OAK-S-SCA1-ip133",
@@ -834,6 +917,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500002-ceph-oak-s-sca1-ip133",
   },
   {
     name: "500003-CEPH-OAK-S-SCA1-ip134",
@@ -843,6 +927,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500003-ceph-oak-s-sca1-ip134",
   },
   {
     name: "500004-CEPH-OAK-S-SCA1-ip135",
@@ -852,6 +937,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500004-ceph-oak-s-sca1-ip135",
   },
   {
     name: "500005-CEPH-OAK-HGR-3-ip48",
@@ -861,6 +947,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500005-ceph-oak-hgr-3-ip48",
   },
   {
     name: "500006-CEPH-OAK-HGR-3-ip49",
@@ -870,6 +957,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500006-ceph-oak-hgr-3-ip49",
   },
   {
     name: "500007-CEPH-OAK-HGR-3-ip50",
@@ -879,6 +967,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500007-ceph-oak-hgr-3-ip50",
   },
   {
     name: "500008-CEPH-OAK-HGR-3-ip51",
@@ -888,6 +977,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500008-ceph-oak-hgr-3-ip51",
   },
   {
     name: "500009-CEPH-OAK-HGR-3-ip52",
@@ -897,6 +987,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500009-ceph-oak-hgr-3-ip52",
   },
   {
     name: "500010-CEPH-OAK-HGR-3-ip53",
@@ -906,6 +997,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500010-ceph-oak-hgr-3-ip53",
   },
   {
     name: "500011-CEPH-OAK-HGR-3-ip54",
@@ -915,6 +1007,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500011-ceph-oak-hgr-3-ip54",
   },
   {
     name: "500012-CEPH-OAK-HGR-3-ip55",
@@ -924,6 +1017,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "OAKSYSTEM",
+    id: "500012-ceph-oak-hgr-3-ip55",
   },
 
   // CEPH - SKY
@@ -935,6 +1029,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "SKY",
+    id: "600001-ceph-sky-hgr-i4-g3-bay-01",
   },
   {
     name: "600002-CEPH-SKY-HGR-I4-G3-BAY-02",
@@ -944,6 +1039,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 1,
     company: "SKY",
+    id: "600002-ceph-sky-hgr-i4-g3-bay-02",
   },
   {
     name: "600003-CEPH-SKY-HGR-I4-G3-BAY-03",
@@ -953,6 +1049,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "SKY",
+    id: "600003-ceph-sky-hgr-i4-g3-bay-03",
   },
   {
     name: "600004-CEPH-SKY-HGR-I4-G3-BAY-04",
@@ -962,6 +1059,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 1,
     company: "SKY",
+    id: "600004-ceph-sky-hgr-i4-g3-bay-04",
   },
   {
     name: "600005-CEPH-SKY-HGR-I4-G3-BAY-05",
@@ -971,6 +1069,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 1,
     company: "SKY",
+    id: "600005-ceph-sky-hgr-i4-g3-bay-05",
   },
 
   // ADDED UBIQUANDO CEPH CLUSTERS
@@ -982,6 +1081,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 1,
     company: "UBIQUANDO",
+    id: "700001-ceph-ub-hgr3-g2-bay-01",
   },
   {
     name: "700002-CEPH-UB-HGR3-G2-BAY-02",
@@ -991,6 +1091,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 1,
     company: "UBIQUANDO",
+    id: "700002-ceph-ub-hgr3-g2-bay-02",
   },
   {
     name: "700003-CEPH-UB-HGR3-G2-BAY-03",
@@ -1000,6 +1101,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 1,
     company: "UBIQUANDO",
+    id: "700003-ceph-ub-hgr3-g2-bay-03",
   },
 
   // Reactor 2 - Servidores SPAM (3 hosts)
@@ -1011,6 +1113,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 2,
     company: "HBTC",
+    id: "100001-spam-hbtc-vm-2001",
   },
   {
     name: "100002-SPAM-HBTC-VM-2002",
@@ -1020,6 +1123,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 2,
     company: "HBTC",
+    id: "100002-spam-hbtc-vm-2002",
   },
   {
     name: "100003-SPAM-HBTC-VM-2003",
@@ -1029,6 +1133,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 2,
     company: "HBTC",
+    id: "100003-spam-hbtc-vm-2003",
   },
 
   // Reactor 3 - VPS (38 hosts)
@@ -1041,6 +1146,7 @@ const INITIAL_HOSTS = [
     responseTime: 22,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200001-vps-ctrlonline-minsalud",
   },
   {
     name: "200002-VPS-CTRLONLINE-Universidad-Militar",
@@ -1050,6 +1156,7 @@ const INITIAL_HOSTS = [
     responseTime: 23,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200002-vps-ctrlonline-universidad-militar",
   },
   {
     name: "200003-VPS-CTRLONLINE-Bomberos-Bogota",
@@ -1059,6 +1166,7 @@ const INITIAL_HOSTS = [
     responseTime: 21,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200003-vps-ctrlonline-bomberos-bogota",
   },
   {
     name: "200004-VPS-CTRLONLINE-Grupo-SUMMA",
@@ -1068,6 +1176,7 @@ const INITIAL_HOSTS = [
     responseTime: 24,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200004-vps-ctrlonline-grupo-summa",
   },
   {
     name: "200005-VPS-CTRLONLINE-ARGOS",
@@ -1077,6 +1186,7 @@ const INITIAL_HOSTS = [
     responseTime: 22,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200005-vps-ctrlonline-argos",
   },
   {
     name: "200006-VPS-CTRLONLINE-DESUR",
@@ -1086,6 +1196,7 @@ const INITIAL_HOSTS = [
     responseTime: 20,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200006-vps-ctrlonline-desur",
   },
   {
     name: "200007-VPS-CTRLONLINE-FORPO",
@@ -1095,6 +1206,7 @@ const INITIAL_HOSTS = [
     responseTime: 21,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200007-vps-ctrlonline-forpo",
   },
   {
     name: "200008-VPS-CTRLONLINE-INS",
@@ -1104,6 +1216,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200008-vps-ctrlonline-ins",
   },
   {
     name: "200009-VPS-CTRLONLINE-CANCILLERIA",
@@ -1113,6 +1226,7 @@ const INITIAL_HOSTS = [
     responseTime: 23,
     reactor: 3,
     company: "CTRLONLINE",
+    id: "200009-vps-ctrlonline-cancilleria",
   },
 
   // VPS - OAKSYSTEM (29 hosts)
@@ -1124,6 +1238,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400001-vps-oak-ip144",
   },
   {
     name: "400002-VPS-OAK-ip145",
@@ -1133,6 +1248,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400002-vps-oak-ip145",
   },
   {
     name: "400003-VPS-OAK-ip146",
@@ -1142,6 +1258,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400003-vps-oak-ip146",
   },
   {
     name: "400004-VPS-OAK-ip147",
@@ -1151,6 +1268,7 @@ const INITIAL_HOSTS = [
     responseTime: 20,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400004-vps-oak-ip147",
   },
   {
     name: "400005-VPS-OAK-ip148",
@@ -1160,6 +1278,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400005-vps-oak-ip148",
   },
   {
     name: "400006-VPS-OAK-ip149",
@@ -1169,6 +1288,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400006-vps-oak-ip149",
   },
   {
     name: "400007-VPS-OAK-ip150",
@@ -1178,6 +1298,7 @@ const INITIAL_HOSTS = [
     responseTime: 21,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400007-vps-oak-ip150",
   },
   {
     name: "400008-VPS-OAK-ip151",
@@ -1187,6 +1308,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400008-vps-oak-ip151",
   },
   {
     name: "400009-VPS-OAK-SVRCONTAB1",
@@ -1196,6 +1318,7 @@ const INITIAL_HOSTS = [
     responseTime: 22,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400009-vps-oak-svrcontab1",
   },
   {
     name: "400010-VPS-OAK-SRVENCODER1",
@@ -1205,6 +1328,7 @@ const INITIAL_HOSTS = [
     responseTime: 20,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400010-vps-oak-srvencoder1",
   },
   {
     name: "400011-VPS-OAK-SRVENCODER2",
@@ -1214,6 +1338,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400011-vps-oak-srvencoder2",
   },
   {
     name: "400012-VPS-OAK-SVR-APPPAGOS",
@@ -1223,6 +1348,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400012-vps-oak-svr-apppagos",
   },
   {
     name: "400013-VPS-OAK-SVRPANEL",
@@ -1232,6 +1358,7 @@ const INITIAL_HOSTS = [
     responseTime: 21,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400013-vps-oak-svrpanel",
   },
   {
     name: "400014-VPS-OAK-SVRSTADISTICAS",
@@ -1241,6 +1368,7 @@ const INITIAL_HOSTS = [
     responseTime: 23,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400014-vps-oak-svrstadisticas",
   },
   {
     name: "400015-VPS-OAK-ubuntu24",
@@ -1250,6 +1378,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400015-vps-oak-ubuntu24",
   },
   {
     name: "400016-VPS-OAK-MAIN1",
@@ -1259,6 +1388,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400016-vps-oak-main1",
   },
   {
     name: "400017-VPS-OAK-TV1-PPR",
@@ -1268,6 +1398,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400017-vps-oak-tv1-ppr",
   },
   {
     name: "400018-VPS-OAK-VLP1-PPR",
@@ -1277,6 +1408,7 @@ const INITIAL_HOSTS = [
     responseTime: 20,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400018-vps-oak-vlp1-ppr",
   },
   {
     name: "400019-VPS-OAK-MAIN2",
@@ -1286,6 +1418,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400019-vps-oak-main2",
   },
   {
     name: "400020-VPS-OAK-TV2-PPR",
@@ -1295,6 +1428,7 @@ const INITIAL_HOSTS = [
     responseTime: 21,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400020-vps-oak-tv2-ppr",
   },
   {
     name: "400021-VPS-OAK-VLP2-PPR",
@@ -1304,6 +1438,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400021-vps-oak-vlp2-ppr",
   },
   {
     name: "400022-VPS-OAK-MAIN3",
@@ -1313,6 +1448,7 @@ const INITIAL_HOSTS = [
     responseTime: 22,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400022-vps-oak-main3",
   },
   {
     name: "400023-VPS-OAK-TV3-PPR",
@@ -1322,6 +1458,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400023-vps-oak-tv3-ppr",
   },
   {
     name: "400024-VPS-OAK-TV4-PPR",
@@ -1331,6 +1468,7 @@ const INITIAL_HOSTS = [
     responseTime: 24,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400024-vps-oak-tv4-ppr",
   },
   {
     name: "400025-VPS-OAK-FIREWALL-VRACK",
@@ -1340,6 +1478,7 @@ const INITIAL_HOSTS = [
     responseTime: 20,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400025-vps-oak-firewall-vrack",
   },
   {
     name: "400026-VPS-OAK-MGMERICK",
@@ -1349,6 +1488,7 @@ const INITIAL_HOSTS = [
     responseTime: 5,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400026-vps-oak-mgmerick",
   },
   {
     name: "400027-VPS-OAK-MGMERICK-Copy",
@@ -1358,6 +1498,7 @@ const INITIAL_HOSTS = [
     responseTime: 5,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400027-vps-oak-mgmerick-copy",
   },
   {
     name: "400028-VPS-OAK-Template-Win2019",
@@ -1367,6 +1508,7 @@ const INITIAL_HOSTS = [
     responseTime: 5,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400028-vps-oak-template-win2019",
   },
   {
     name: "400029-VPS-OAK-META",
@@ -1376,6 +1518,7 @@ const INITIAL_HOSTS = [
     responseTime: 23,
     reactor: 3,
     company: "OAKSYSTEM",
+    id: "400029-vps-oak-meta",
   },
 
   // ADDED UBIQUANDO VPS
@@ -1387,6 +1530,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700100-vps-ub-fwcluster-app-ppr-v01",
   },
   {
     name: "700101-VPS-UB-FWCLUSTER-APP-BKPV-V01",
@@ -1396,6 +1540,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700101-vps-ub-fwcluster-app-bkpv-v01",
   },
   {
     name: "700201-VPS-UB-PRD-03",
@@ -1405,6 +1550,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700201-vps-ub-prd-03",
   },
   {
     name: "700202-VPS-UB-TST-01",
@@ -1414,6 +1560,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700202-vps-ub-tst-01",
   },
   {
     name: "700204-VPS-UB-TST-02",
@@ -1423,6 +1570,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700204-vps-ub-tst-02",
   },
   {
     name: "700205-VPS-UB-DEV-01",
@@ -1432,6 +1580,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700205-vps-ub-dev-01",
   },
   {
     name: "700206-VPS-UB-DEV-02",
@@ -1441,6 +1590,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700206-vps-ub-dev-02",
   },
   {
     name: "700207-VPS-UB-DEV-03",
@@ -1450,6 +1600,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700207-vps-ub-dev-03",
   },
   {
     name: "700208-VPS-UB-PRD-01",
@@ -1459,6 +1610,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700208-vps-ub-prd-01",
   },
   {
     name: "700209-VPS-UB-PRD-02",
@@ -1468,6 +1620,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700209-vps-ub-prd-02",
   },
   {
     name: "700210-VPS-UB-PRD-04",
@@ -1477,6 +1630,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700210-vps-ub-prd-04",
   },
   {
     name: "700212-VPS-UB-PRD-06",
@@ -1486,6 +1640,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700212-vps-ub-prd-06",
   },
   {
     name: "700213-VPS-UB-UBS-01",
@@ -1495,6 +1650,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700213-vps-ub-ubs-01",
   },
   {
     name: "700214-VPS-UB-PRD-05",
@@ -1504,6 +1660,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "700214-vps-ub-prd-05",
   },
   {
     name: "702000-VPS-UB-SVRNAS-APP-PPR-V01",
@@ -1513,6 +1670,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 3,
     company: "UBIQUANDO",
+    id: "702000-vps-ub-svrnas-app-ppr-v01",
   },
 
   // Reactor 4 - Bare Metal (37 hosts)
@@ -1525,6 +1683,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "IBG.COM.CO",
+    id: "506748-bare-ibg-advsto-g2-pbs-01",
   },
   {
     name: "472841-BARE-ADVSTORE-G2-PBS-01",
@@ -1534,6 +1693,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "COOTRARIS.COM",
+    id: "472841-bare-advstore-g2-pbs-01",
   },
   {
     name: "489836-BARE-IC-ADVSTOR-STOR-NG3-PBS-01",
@@ -1543,6 +1703,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "ICONET.COM.MX",
+    id: "489836-bare-ic-advstor-stor-ng3-pbs-01",
   },
   {
     name: "9002651-BARE-HBTC-ADV-G2-PBS-01",
@@ -1552,6 +1713,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 4,
     company: "HBTC",
+    id: "9002651-bare-hbtc-adv-g2-pbs-01",
   },
   {
     name: "446396-BARE-SYS-SYS-1-SAT-32-PBS-BAY-1",
@@ -1561,6 +1723,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "SERVSOFT.COM",
+    id: "446396-bare-sys-sys-1-sat-32-pbs-bay-1",
   },
   {
     name: "414182-BARE-PR-PBS-BAY-01",
@@ -1570,6 +1733,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "PREVISALUD.COM.CO",
+    id: "414182-bare-pr-pbs-bay-01",
   },
   {
     name: "506757-BARE-IN-ADVST1-G3-PBS-01",
@@ -1579,6 +1743,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "IINUBE.COM",
+    id: "506757-bare-in-advst1-g3-pbs-01",
   },
   {
     name: "502741-BARE-STK-ADVSTOR-G1-PBS-BAY-01",
@@ -1588,6 +1753,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 4,
     company: "SERVERPY.COM",
+    id: "502741-bare-stk-advstor-g1-pbs-bay-01",
   },
   {
     name: "415417-BARE-ADVSTORE-G2-PBS-01",
@@ -1597,6 +1763,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "CENTRALTELEFONICA.COM.AR",
+    id: "415417-bare-advstore-g2-pbs-01",
   },
   {
     name: "9002646-BARE-DG-HGRSTO-G2-PBS-01",
@@ -1606,6 +1773,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "DG",
+    id: "9002646-bare-dg-hgrsto-g2-pbs-01",
   },
   {
     name: "9002650-BARE-GP-ADVSTO-G2-PBS-01",
@@ -1615,6 +1783,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 4,
     company: "GP",
+    id: "9002650-bare-gp-advsto-g2-pbs-01",
   },
   {
     name: "481396-BARE-EX-ADVG2-G2-PBS-01",
@@ -1624,6 +1793,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 4,
     company: "XPERSOFT.NET",
+    id: "481396-bare-ex-advg2-g2-pbs-01",
   },
   {
     name: "506750-BARE-CSH-ADVSTO-G3-PBS-BAY-01",
@@ -1633,6 +1803,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "CEIBA.COM.CO",
+    id: "506750-bare-csh-advsto-g3-pbs-bay-01",
   },
   {
     name: "422858-BARE-T-ADVSTOR1-G2-PBS-01",
@@ -1642,6 +1813,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "ABPROSYSTEMS.COM",
+    id: "422858-bare-t-advstor1-g2-pbs-01",
   },
   {
     name: "437541-BARE-ADVS1-PBS-01",
@@ -1651,6 +1823,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "KDUCEO.NET",
+    id: "437541-bare-advs1-pbs-01",
   },
   {
     name: "472844-BARE-ADVS1-PBS-02",
@@ -1660,6 +1833,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 4,
     company: "KDUCEO.NET",
+    id: "472844-bare-advs1-pbs-02",
   },
   {
     name: "490047-BARE-PC-ADVSTOR2-G2-PBS-01",
@@ -1669,6 +1843,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "PCCORP.COM.AR",
+    id: "490047-bare-pc-advstor2-g2-pbs-01",
   },
   {
     name: "494697-BARE-AG-ADVSTOR1-G2-PBS-01",
@@ -1678,6 +1853,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "AGSAMERICAS.COM.CO",
+    id: "494697-bare-ag-advstor1-g2-pbs-01",
   },
   {
     name: "600006-BARE-SKY-RISESTRO-G3-BAY-01-GMR",
@@ -1687,6 +1863,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 4,
     company: "SKY",
+    id: "600006-bare-sky-risestro-g3-bay-01-gmr",
   },
 
   // ADDED UBIQUANDO BARE METAL PBS
@@ -1698,6 +1875,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 4,
     company: "UBIQUANDO",
+    id: "700500-bare-ub-hgrsto-g2-pbs-bay-01",
   },
 
   // Dedicated Servers
@@ -1709,6 +1887,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "HBTC",
+    id: "473203-bare-hbtc-advsto-g2-pbs-01",
   },
   {
     name: "314722-BARE-HBTC-RISE1-LABHACK",
@@ -1718,6 +1897,7 @@ const INITIAL_HOSTS = [
     responseTime: 21,
     reactor: 4,
     company: "HBTC",
+    id: "314722-bare-hbtc-rise1-labhack",
   },
   {
     name: "378012-BARE-HBTC-INFRA-1-ZIMBRA",
@@ -1727,6 +1907,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 4,
     company: "HBTC",
+    id: "378012-bare-hbtc-infra-1-zimbra",
   },
   {
     name: "482760-BARE-BT-HGR1-G1-MONGO-GATEWAY",
@@ -1736,6 +1917,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 4,
     company: "BETCONNECTIONS.COM",
+    id: "482760-bare-bt-hgr1-g1-mongo-gateway",
   },
   {
     name: "484061-BARE-BT-HGR3-G1-MONGO-GATEWAY",
@@ -1745,6 +1927,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "BETCONNECTIONS.COM",
+    id: "484061-bare-bt-hgr3-g1-mongo-gateway",
   },
   {
     name: "496833-BARE-BT-HGR-STOR-1-PBS-01",
@@ -1754,6 +1937,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "BETCONNECTIONS.COM",
+    id: "496833-bare-bt-hgr-stor-1-pbs-01",
   },
   {
     name: "500013-BARE-OAK-SRVLP-4-LNX-10GB-ip25",
@@ -1763,6 +1947,7 @@ const INITIAL_HOSTS = [
     responseTime: 20,
     reactor: 4,
     company: "OAKSYSTEM",
+    id: "500013-bare-oak-srvlp-4-lnx-10gb-ip25",
   },
   {
     name: "425017-BARE-OAK-TM-ADV2-G2",
@@ -1772,6 +1957,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "OAKSYSTEM",
+    id: "425017-bare-oak-tm-adv2-g2",
   },
   {
     name: "453197-BARE-OAK-TM-ADVSTOR1-G2",
@@ -1781,6 +1967,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 4,
     company: "OAKSYSTEM",
+    id: "453197-bare-oak-tm-advstor1-g2",
   },
   {
     name: "236186-BARE-panel",
@@ -1790,6 +1977,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 4,
     company: "TITANO CLOUD",
+    id: "236186-bare-panel",
   },
   {
     name: "493203-BARE-SYS-SCA-I3-G3-BAY-1",
@@ -1799,6 +1987,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "SERVSOFT.COM",
+    id: "493203-bare-sys-sca-i3-g3-bay-1",
   },
   {
     name: "494422-BARE-RYN-ADVSTO-G2-PBS-01",
@@ -1808,6 +1997,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "RYNDEM.MX",
+    id: "494422-bare-ryn-advsto-g2-pbs-01",
   },
   {
     name: "401453-BARE-PR-HGR3-BAY-01",
@@ -1817,6 +2007,7 @@ const INITIAL_HOSTS = [
     responseTime: 18,
     reactor: 4,
     company: "PREVISALUD.COM.CO",
+    id: "401453-bare-pr-hgr3-bay-01",
   },
   {
     name: "453090-BARE-ADV5-G2-1",
@@ -1826,6 +2017,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "VALORX.NET",
+    id: "453090-bare-adv5-g2-1",
   },
   {
     name: "451816-BARE-ZE-RISE1-G2-PVE",
@@ -1835,6 +2027,7 @@ const INITIAL_HOSTS = [
     responseTime: 17,
     reactor: 4,
     company: "ZETAMSELECTRIC.COM",
+    id: "451816-bare-ze-rise1-g2-pve",
   },
   {
     name: "422719-BARE-S-ADVST1-G2",
@@ -1844,6 +2037,7 @@ const INITIAL_HOSTS = [
     responseTime: 16,
     reactor: 4,
     company: "OAKTVPRO.CLUB",
+    id: "422719-bare-s-advst1-g2",
   },
   {
     name: "462754-BARE-Delta",
@@ -1853,6 +2047,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 4,
     company: "PLATAFORMAINTEGRA.NET",
+    id: "462754-bare-delta",
   },
   {
     name: "497296-BARE-PRS-ADV5-G3-BAY-01",
@@ -1862,6 +2057,7 @@ const INITIAL_HOSTS = [
     responseTime: 15,
     reactor: 4,
     company: "PROSOFT.CO",
+    id: "497296-bare-prs-adv5-g3-bay-01",
   },
   {
     name: "412703-BARE-ADV-4-CLU",
@@ -1871,6 +2067,7 @@ const INITIAL_HOSTS = [
     responseTime: 19,
     reactor: 4,
     company: "INTELLPLAT.COM",
+    id: "412703-bare-adv-4-clu",
   },
 
   // Reactor 5 - Infraestructura de Red OAKSYSTEM (38 hosts)
@@ -1882,6 +2079,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500014-oak-vrack-ip224",
   },
   {
     name: "500015-OAK-VRACK-ip225",
@@ -1891,6 +2089,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500015-oak-vrack-ip225",
   },
   {
     name: "500016-OAK-VRACK-ip226",
@@ -1900,6 +2099,7 @@ const INITIAL_HOSTS = [
     responseTime: 7,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500016-oak-vrack-ip226",
   },
   {
     name: "500017-OAK-VRACK-ip227",
@@ -1909,6 +2109,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500017-oak-vrack-ip227",
   },
   {
     name: "500018-OAK-VRACK-ip228",
@@ -1918,6 +2119,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500018-oak-vrack-ip228",
   },
   {
     name: "500019-OAK-VRACK-ip229",
@@ -1927,6 +2129,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500019-oak-vrack-ip229",
   },
   {
     name: "500020-OAK-VRACK-ip230",
@@ -1936,6 +2139,7 @@ const INITIAL_HOSTS = [
     responseTime: 7,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500020-oak-vrack-ip230",
   },
   {
     name: "500021-OAK-VRACK-ip231",
@@ -1945,6 +2149,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500021-oak-vrack-ip231",
   },
   {
     name: "500022-OAK-BLK146-ip128",
@@ -1954,6 +2159,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500022-oak-blk146-ip128",
   },
   {
     name: "500023-OAK-BLK146-ip129",
@@ -1963,6 +2169,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500023-oak-blk146-ip129",
   },
   {
     name: "500024-OAK-BLK146-ip130",
@@ -1972,6 +2179,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500024-oak-blk146-ip130",
   },
   {
     name: "500025-OAK-BLK146-ip131",
@@ -1981,6 +2189,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500025-oak-blk146-ip131",
   },
   {
     name: "500026-OAK-BLK146-ip132",
@@ -1990,6 +2199,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500026-oak-blk146-ip132",
   },
   {
     name: "500027-OAK-BLK146-ip133",
@@ -1999,6 +2209,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500027-oak-blk146-ip133",
   },
   {
     name: "500028-OAK-BLK146-ip134",
@@ -2008,6 +2219,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500028-oak-blk146-ip134",
   },
   {
     name: "500029-OAK-BLK146-ip135",
@@ -2017,6 +2229,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500029-oak-blk146-ip135",
   },
   {
     name: "500030-OAK-BLK150-ip0",
@@ -2026,6 +2239,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500030-oak-blk150-ip0",
   },
   {
     name: "500031-OAK-BLK150-ip1",
@@ -2035,6 +2249,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500031-oak-blk150-ip1",
   },
   {
     name: "500032-OAK-BLK150-ip2",
@@ -2044,6 +2259,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500032-oak-blk150-ip2",
   },
   {
     name: "500033-OAK-BLK150-ip3",
@@ -2053,6 +2269,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500033-oak-blk150-ip3",
   },
   {
     name: "500034-OAK-BLK150-ip4",
@@ -2062,6 +2279,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500034-oak-blk150-ip4",
   },
   {
     name: "500035-OAK-BLK150-ip5",
@@ -2071,6 +2289,7 @@ const INITIAL_HOSTS = [
     responseTime: 7,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500035-oak-blk150-ip5",
   },
   {
     name: "500036-OAK-BLK150-ip6",
@@ -2080,6 +2299,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500036-oak-blk150-ip6",
   },
   {
     name: "500037-OAK-BLK150-ip7",
@@ -2089,6 +2309,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500037-oak-blk150-ip7",
   },
   {
     name: "500038-OAK-ip140",
@@ -2098,6 +2319,7 @@ const INITIAL_HOSTS = [
     responseTime: 14,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500038-oak-ip140",
   },
   {
     name: "500039-OAK-ip112",
@@ -2107,6 +2329,7 @@ const INITIAL_HOSTS = [
     responseTime: 13,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500039-oak-ip112",
   },
   {
     name: "500040-OAK-TOR-ip244",
@@ -2116,6 +2339,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500040-oak-tor-ip244",
   },
   {
     name: "500041-OAK-TOR-ip245",
@@ -2125,6 +2349,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500041-oak-tor-ip245",
   },
   {
     name: "500042-OAK-TOR-ip246",
@@ -2134,6 +2359,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500042-oak-tor-ip246",
   },
   {
     name: "500043-OAK-TOR-ip247",
@@ -2143,6 +2369,7 @@ const INITIAL_HOSTS = [
     responseTime: 7,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500043-oak-tor-ip247",
   },
   {
     name: "500044-OAK-TOR-ip248",
@@ -2152,6 +2379,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500044-oak-tor-ip248",
   },
   {
     name: "500045-OAK-TOR-ip249",
@@ -2161,6 +2389,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500045-oak-tor-ip249",
   },
   {
     name: "500046-OAK-TOR-ip250",
@@ -2170,6 +2399,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500046-oak-tor-ip250",
   },
   {
     name: "500047-OAK-TOR-ip251",
@@ -2179,6 +2409,7 @@ const INITIAL_HOSTS = [
     responseTime: 12,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500047-oak-tor-ip251",
   },
   {
     name: "500048-OAK-TOR-ip252",
@@ -2188,6 +2419,7 @@ const INITIAL_HOSTS = [
     responseTime: 10,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500048-oak-tor-ip252",
   },
   {
     name: "500049-OAK-TOR-ip253",
@@ -2197,6 +2429,7 @@ const INITIAL_HOSTS = [
     responseTime: 8,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500049-oak-tor-ip253",
   },
   {
     name: "500050-OAK-TOR-ip254",
@@ -2206,6 +2439,7 @@ const INITIAL_HOSTS = [
     responseTime: 11,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500050-oak-tor-ip254",
   },
   {
     name: "500051-OAK-TOR-ip255",
@@ -2215,6 +2449,7 @@ const INITIAL_HOSTS = [
     responseTime: 9,
     reactor: 5,
     company: "OAKSYSTEM",
+    id: "500051-oak-tor-ip255",
   },
 ]
 
@@ -2797,83 +3032,91 @@ export default function NOCDashboardPage() {
                 const pingResult = activePings[host.ip]
                 const serviceName = host.name.toLowerCase().replace(/\./g, "")
                 return (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
-                      <div className="flex-1">
-                        <h3 className="text-white font-medium text-sm">{host.name}</h3>
-                        <p className="text-slate-500 text-xs">{host.ip}</p>
-                        {pingResult && (
-                          <p className="text-slate-600 text-xs">
-                            Último ping: {pingResult.timestamp.toLocaleTimeString()}
-                          </p>
-                        )}
+                  <Link href={`/dashboard/host-monitor/${host.id}`} key={index}>
+                    <div className="flex items-center justify-between p-4 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className={getStatusColor(host.status)}>{getStatusIcon(host.status)}</div>
+                        <div className="flex-1">
+                          <h3 className="text-white font-medium text-sm">{host.name}</h3>
+                          <p className="text-slate-500 text-xs">{host.ip}</p>
+                          {pingResult && (
+                            <p className="text-slate-600 text-xs">
+                              Último ping: {pingResult.timestamp.toLocaleTimeString()}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <p className="text-slate-400 text-xs">Uptime</p>
-                        <p className="text-white font-medium">{host.uptime}%</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-slate-400 text-xs">Response</p>
-                        <p className="text-white font-medium">{host.responseTime}ms</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <select
-                          className="px-2 py-1 text-xs bg-slate-800 border border-slate-700 rounded text-white"
-                          onChange={(e) => {
-                            if (e.target.value === "html5") connectIPMI(host, "kvmipHtml5URL")
-                            else if (e.target.value === "jnlp") connectIPMI(host, "kvmipJnlp")
-                            else if (e.target.value === "sol") connectIPMI(host, "serialOverLanURL")
-                            else if (e.target.value === "reset") resetIPMISessions(host)
-                            e.target.value = "" // Reset dropdown to default
-                          }}
-                          disabled={ipmiLoading[serviceName]}
-                        >
-                          <option value="">IPMI</option>
-                          <option value="html5">HTML5 Console</option>
-                          <option value="jnlp">JNLP Console</option>
-                          <option value="sol">Serial Over LAN</option>
-                          <option value="reset">Reset Sessions</option>
-                        </select>
+                      <div className="flex items-center gap-6">
+                        <div className="text-right">
+                          <p className="text-slate-400 text-xs">Uptime</p>
+                          <p className="text-white font-medium">{host.uptime}%</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-slate-400 text-xs">Response</p>
+                          <p className="text-white font-medium">{host.responseTime}ms</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <select
+                            className="px-2 py-1 text-xs bg-slate-800 border border-slate-700 rounded text-white"
+                            onChange={(e) => {
+                              if (e.target.value === "html5") connectIPMI(host, "kvmipHtml5URL")
+                              else if (e.target.value === "jnlp") connectIPMI(host, "kvmipJnlp")
+                              else if (e.target.value === "sol") connectIPMI(host, "serialOverLanURL")
+                              else if (e.target.value === "reset") resetIPMISessions(host)
+                              e.target.value = "" // Reset dropdown to default
+                            }}
+                            disabled={ipmiLoading[serviceName]}
+                          >
+                            <option value="">IPMI</option>
+                            <option value="html5">HTML5 Console</option>
+                            <option value="jnlp">JNLP Console</option>
+                            <option value="sol">Serial Over LAN</option>
+                            <option value="reset">Reset Sessions</option>
+                          </select>
 
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => executePing(host)}
-                          className="text-xs"
-                          disabled={pingResult && Date.now() - pingResult.timestamp.getTime() < 5000}
-                        >
-                          Ping
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => executeTraceroute(host)}
-                          className="text-xs"
-                          disabled={isTracingRoute}
-                        >
-                          Trace
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => executePortScan(host)}
-                          className="text-xs"
-                          disabled={isScanning}
-                        >
-                          {isScanning && selectedHost === host.ip ? "Escaneando..." : "Puertos"}
-                        </Button>
-                      </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
-                        {host.status.toUpperCase()}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.preventDefault() // Prevent link navigation
+                              executePing(host)
+                            }}
+                            className="text-xs"
+                            disabled={pingResult && Date.now() - pingResult.timestamp.getTime() < 5000}
+                          >
+                            Ping
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.preventDefault() // Prevent link navigation
+                              executeTraceroute(host)
+                            }}
+                            className="text-xs"
+                            disabled={isTracingRoute}
+                          >
+                            Trace
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.preventDefault() // Prevent link navigation
+                              executePortScan(host)
+                            }}
+                            className="text-xs"
+                            disabled={isScanning}
+                          >
+                            {isScanning && selectedHost === host.ip ? "Escaneando..." : "Puertos"}
+                          </Button>
+                        </div>
+                        <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(host.status)}`}>
+                          {host.status.toUpperCase()}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 )
               })}
             </div>
