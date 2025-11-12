@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { CasandraWidget } from "@/components/casandra-widget"
+import { UserMenu } from "@/components/user-menu"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -911,6 +912,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       <main className="flex-1 overflow-y-auto bg-slate-900">
+        <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-8 py-4 flex justify-end">
+          <UserMenu />
+        </div>
         {children}
         <CasandraWidget />
       </main>
