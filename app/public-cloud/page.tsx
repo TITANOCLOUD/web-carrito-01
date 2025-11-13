@@ -376,7 +376,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/compute">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Cpu className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Compute</CardTitle>
@@ -397,7 +397,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/storage">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <HardDrive className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Storage</CardTitle>
@@ -418,7 +418,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/network">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Network className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Network</CardTitle>
@@ -438,7 +438,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/containers">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Container className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Containers & Orchestration</CardTitle>
@@ -459,7 +459,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/ai-ml">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Brain className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">AI & Machine Learning</CardTitle>
@@ -480,7 +480,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/databases">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Database className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Bases de datos</CardTitle>
@@ -501,7 +501,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/analytics">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <BarChart3 className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Analytics</CardTitle>
@@ -522,7 +522,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/data-platform">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Layers className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Data Platform</CardTitle>
@@ -543,7 +543,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/quantum">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Zap className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Computación cuántica</CardTitle>
@@ -564,7 +564,7 @@ export default function PublicCloudPage() {
               <Link href="/public-cloud/security">
                 <Card className="bg-slate-900/70 border-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer h-full group">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 to-blue-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <Lock className="w-9 h-9 text-white" />
                     </div>
                     <CardTitle className="text-white text-2xl">Identidad, seguridad y operaciones</CardTitle>

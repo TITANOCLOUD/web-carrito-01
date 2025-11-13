@@ -5,13 +5,12 @@ import Link from "next/link"
 import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, Globe, Menu, X } from "lucide-react"
-import { useI18n } from "@/lib/i18n/context"
 
 export function Header() {
   const [currency, setCurrency] = useState("USD")
+  const [language, setLanguage] = useState("ES")
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { language, setLanguage, t } = useI18n()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,9 +19,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  const languageFlag = language === "es" ? "🇪🇸" : language === "en" ? "🇺🇸" : "🇫🇷"
-  const languageName = language === "es" ? "Español" : language === "en" ? "English" : "Français"
 
   return (
     <nav
@@ -36,7 +32,7 @@ export function Header() {
         <div className="hidden lg:flex items-center gap-8">
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
-              <span>{t("header.bareMetal")}</span>
+              <span>Bare Metal & VPS</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -44,64 +40,64 @@ export function Header() {
                 href="/vps"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
-                <div className="font-medium text-sm">{t("header.vps")}</div>
-                <div className="text-xs text-slate-500">{t("header.vpsDesc")}</div>
+                <div className="font-medium text-sm">VPS</div>
+                <div className="text-xs text-slate-500">Servidores virtuales flexibles</div>
               </Link>
               <Link
                 href="/bare-metal"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.bareMetal")}</div>
-                <div className="text-xs text-slate-500">{t("header.bareMetalDesc")}</div>
+                <div className="font-medium text-sm">Bare Metal</div>
+                <div className="text-xs text-slate-500">Servidores físicos dedicados</div>
               </Link>
               <Link
                 href="/servidores-dedicados"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.dedicated")}</div>
-                <div className="text-xs text-slate-500">{t("header.dedicatedDesc")}</div>
+                <div className="font-medium text-sm">Servidores Dedicados</div>
+                <div className="text-xs text-slate-500">Máxima potencia y control</div>
               </Link>
               <Link
                 href="/clusters"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.clusters")}</div>
-                <div className="text-xs text-slate-500">{t("header.clustersDesc")}</div>
+                <div className="font-medium text-sm">Clusters de Servidores</div>
+                <div className="text-xs text-slate-500">Alta disponibilidad garantizada</div>
               </Link>
               <Link
                 href="/gpu-servers"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.gpuServers")}</div>
-                <div className="text-xs text-slate-500">{t("header.gpuServersDesc")}</div>
+                <div className="font-medium text-sm">Servidores GPU</div>
+                <div className="text-xs text-slate-500">Potencia para AI y rendering</div>
               </Link>
               <Link
                 href="/storage-servers"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.storageServers")}</div>
-                <div className="text-xs text-slate-500">{t("header.storageServersDesc")}</div>
+                <div className="font-medium text-sm">Servidores de Almacenamiento</div>
+                <div className="text-xs text-slate-500">Capacidad masiva de datos</div>
               </Link>
               <Link
                 href="/calculadora"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.calculator")}</div>
-                <div className="text-xs text-slate-500">{t("header.calculatorDesc")}</div>
+                <div className="font-medium text-sm">Calculadora de Configuración</div>
+                <div className="text-xs text-slate-500">Estima costos y especificaciones</div>
               </Link>
               <Link
                 href="/comparador-servidores"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                <div className="font-medium text-sm">{t("header.comparator")}</div>
-                <div className="text-xs text-slate-500">{t("header.comparatorDesc")}</div>
+                <div className="font-medium text-sm">Comparador de Servidores</div>
+                <div className="text-xs text-slate-500">Encuentra tu mejor opción</div>
               </Link>
             </div>
           </div>
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium whitespace-nowrap">
-              <span>{t("header.publicCloud")}</span>
+              <span>Nube Pública</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -109,71 +105,71 @@ export function Header() {
                 href="/public-cloud"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg font-semibold border-b border-slate-700"
               >
-                <div className="font-medium text-sm">{t("header.firstSteps")}</div>
-                <div className="text-xs text-slate-500">{t("header.firstStepsDesc")}</div>
+                <div className="font-medium text-sm">Primeros Pasos Nube Pública</div>
+                <div className="text-xs text-slate-500">Comienza tu viaje en la nube</div>
               </Link>
               <Link
                 href="/public-cloud/compute"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.compute")}</div>
-                <div className="text-xs text-slate-500">{t("header.computeDesc")}</div>
+                <div className="font-medium text-sm">Compute</div>
+                <div className="text-xs text-slate-500">Instancias y procesamiento</div>
               </Link>
               <Link
                 href="/public-cloud/storage"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.storage")}</div>
-                <div className="text-xs text-slate-500">{t("header.storageDesc")}</div>
+                <div className="font-medium text-sm">Storage</div>
+                <div className="text-xs text-slate-500">Almacenamiento escalable</div>
               </Link>
               <Link
                 href="/public-cloud/network"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.network")}</div>
-                <div className="text-xs text-slate-500">{t("header.networkDesc")}</div>
+                <div className="font-medium text-sm">Network</div>
+                <div className="text-xs text-slate-500">Redes privadas y balanceo</div>
               </Link>
               <Link
                 href="/public-cloud/containers"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.containers")}</div>
-                <div className="text-xs text-slate-500">{t("header.containersDesc")}</div>
+                <div className="font-medium text-sm">Containers</div>
+                <div className="text-xs text-slate-500">Kubernetes y Docker</div>
               </Link>
               <Link
                 href="/public-cloud/databases"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.databases")}</div>
-                <div className="text-xs text-slate-500">{t("header.databasesDesc")}</div>
+                <div className="font-medium text-sm">Databases</div>
+                <div className="text-xs text-slate-500">Bases de datos gestionadas</div>
               </Link>
               <Link
                 href="/public-cloud/ai-ml"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.aiMl")}</div>
-                <div className="text-xs text-slate-500">{t("header.aiMlDesc")}</div>
+                <div className="font-medium text-sm">AI & Machine Learning</div>
+                <div className="text-xs text-slate-500">Entrenamiento de modelos IA</div>
               </Link>
               <Link
                 href="/public-cloud/analytics"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.analytics")}</div>
-                <div className="text-xs text-slate-500">{t("header.analyticsDesc")}</div>
+                <div className="font-medium text-sm">Analytics</div>
+                <div className="text-xs text-slate-500">Big Data y análisis</div>
               </Link>
               <Link
                 href="/public-cloud/security"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                <div className="font-medium text-sm">{t("header.security")}</div>
-                <div className="text-xs text-slate-500">{t("header.securityDesc")}</div>
+                <div className="font-medium text-sm">Security</div>
+                <div className="text-xs text-slate-500">Protección y cumplimiento</div>
               </Link>
             </div>
           </div>
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
-              <span>{t("header.domainsHostingEmail")}</span>
+              <span>Dominios, Hosting y Email</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -181,64 +177,64 @@ export function Header() {
                 href="/domains/search"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
-                <div className="font-medium text-sm">{t("header.searchDomain")}</div>
-                <div className="text-xs text-slate-500">{t("header.searchDomainDesc")}</div>
+                <div className="font-medium text-sm">Buscar Dominio</div>
+                <div className="text-xs text-slate-500">Registra tu dominio ideal</div>
               </Link>
               <Link
                 href="/domains/renew"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.renewDomain")}</div>
-                <div className="text-xs text-slate-500">{t("header.renewDomainDesc")}</div>
+                <div className="font-medium text-sm">Renovar Dominio</div>
+                <div className="text-xs text-slate-500">Mantén tu dominio activo</div>
               </Link>
               <Link
                 href="/domains/aftermarket"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.aftermarket")}</div>
-                <div className="text-xs text-slate-500">{t("header.aftermarketDesc")}</div>
+                <div className="font-medium text-sm">Mercado Secundario</div>
+                <div className="text-xs text-slate-500">Compra dominios premium</div>
               </Link>
               <Link
                 href="/hosting/packages"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.hostingPackages")}</div>
-                <div className="text-xs text-slate-500">{t("header.hostingPackagesDesc")}</div>
+                <div className="font-medium text-sm">Packs de Hosting</div>
+                <div className="text-xs text-slate-500">Alojamiento web compartido</div>
               </Link>
               <Link
                 href="/hosting/ssl"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.sslCertificates")}</div>
-                <div className="text-xs text-slate-500">{t("header.sslCertificatesDesc")}</div>
+                <div className="font-medium text-sm">Certificados SSL</div>
+                <div className="text-xs text-slate-500">Seguridad HTTPS garantizada</div>
               </Link>
               <Link
                 href="/hosting/cdn"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.cdn")}</div>
-                <div className="text-xs text-slate-500">{t("header.cdnDesc")}</div>
+                <div className="font-medium text-sm">CDN</div>
+                <div className="text-xs text-slate-500">Acelera tu sitio web</div>
               </Link>
               <Link
                 href="/hosting/wordpress"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.wordpressHosting")}</div>
-                <div className="text-xs text-slate-500">{t("header.wordpressHostingDesc")}</div>
+                <div className="font-medium text-sm">WordPress Hosting</div>
+                <div className="text-xs text-slate-500">Optimizado para WordPress</div>
               </Link>
               <Link
                 href="/domains/whois"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                <div className="font-medium text-sm">{t("header.whois")}</div>
-                <div className="text-xs text-slate-500">{t("header.whoisDesc")}</div>
+                <div className="font-medium text-sm">Whois</div>
+                <div className="text-xs text-slate-500">Consulta información de dominios</div>
               </Link>
             </div>
           </div>
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
-              <span>{t("header.privateCloud")}</span>
+              <span>Nube Privada Alojada</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -246,52 +242,52 @@ export function Header() {
                 href="/nube-privada"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg font-semibold"
               >
-                <div className="font-medium text-sm">{t("header.privateCloudDesc")}</div>
-                <div className="text-xs text-slate-500">{t("header.privateCloudDesc")}</div>
+                <div className="font-medium text-sm">Descripción General</div>
+                <div className="text-xs text-slate-500">Visión completa de la nube privada</div>
               </Link>
               <div className="border-t border-slate-700 my-1"></div>
               <Link
                 href="/nube-privada/nutanix"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.nutanix")}</div>
-                <div className="text-xs text-slate-500">{t("header.nutanixDesc")}</div>
+                <div className="font-medium text-sm">Nutanix Cloud Platform</div>
+                <div className="text-xs text-slate-500">Hiperconvergencia empresarial</div>
               </Link>
               <Link
                 href="/nube-privada/sap-hana"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.sapHana")}</div>
-                <div className="text-xs text-slate-500">{t("header.sapHanaDesc")}</div>
+                <div className="font-medium text-sm">SAP HANA on Cloud</div>
+                <div className="text-xs text-slate-500">ERP en memoria de alto rendimiento</div>
               </Link>
               <Link
                 href="/nube-privada/almacenamiento"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.enterpriseStorage")}</div>
-                <div className="text-xs text-slate-500">{t("header.enterpriseStorageDesc")}</div>
+                <div className="font-medium text-sm">Almacenamiento Enterprise</div>
+                <div className="text-xs text-slate-500">Soluciones de storage crítico</div>
               </Link>
               <div className="border-t border-slate-700 my-1"></div>
               <Link
                 href="/nube-privada/iam"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.iam")}</div>
-                <div className="text-xs text-slate-500">{t("header.iamDesc")}</div>
+                <div className="font-medium text-sm">Identity & Access Management</div>
+                <div className="text-xs text-slate-500">Control de accesos centralizado</div>
               </Link>
               <Link
                 href="/nube-privada/logs-platform"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                <div className="font-medium text-sm">{t("header.logsPlatform")}</div>
-                <div className="text-xs text-slate-500">{t("header.logsPlatformDesc")}</div>
+                <div className="font-medium text-sm">Logs Data Platform</div>
+                <div className="text-xs text-slate-500">Análisis de logs en tiempo real</div>
               </Link>
             </div>
           </div>
 
           <div className="relative group">
             <button className="flex items-center gap-1 text-slate-300 hover:text-cyan-400 transition-colors text-sm font-medium">
-              <span>{t("header.connectPlus")}</span>
+              <span>Connect+</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute left-0 mt-2 w-72 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -299,43 +295,43 @@ export function Header() {
                 href="/connect/troncales"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors first:rounded-t-lg"
               >
-                <div className="font-medium text-sm">{t("header.sipTrunks")}</div>
-                <div className="text-xs text-slate-500">{t("header.sipTrunksDesc")}</div>
+                <div className="font-medium text-sm">Troncales SIP</div>
+                <div className="text-xs text-slate-500">Comunicación VoIP empresarial</div>
               </Link>
               <Link
                 href="/connect/ivr"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.ivr")}</div>
-                <div className="text-xs text-slate-500">{t("header.ivrDesc")}</div>
+                <div className="font-medium text-sm">IVR (Sistema de Respuesta)</div>
+                <div className="text-xs text-slate-500">Menús automáticos inteligentes</div>
               </Link>
               <Link
                 href="/connect/callcenter"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.callCenter")}</div>
-                <div className="text-xs text-slate-500">{t("header.callCenterDesc")}</div>
+                <div className="font-medium text-sm">Call Center</div>
+                <div className="text-xs text-slate-500">Gestión de atención al cliente</div>
               </Link>
               <Link
                 href="/connect/pbx"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.virtualPBX")}</div>
-                <div className="text-xs text-slate-500">{t("header.virtualPBXDesc")}</div>
+                <div className="font-medium text-sm">PBX Virtual</div>
+                <div className="text-xs text-slate-500">Central telefónica en la nube</div>
               </Link>
               <Link
                 href="/connect/esim"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors"
               >
-                <div className="font-medium text-sm">{t("header.eSimPlatform")}</div>
-                <div className="text-xs text-slate-500">{t("header.eSimPlatformDesc")}</div>
+                <div className="font-medium text-sm">eSIM Plataforma</div>
+                <div className="text-xs text-slate-500">Conectividad móvil global</div>
               </Link>
               <Link
                 href="/connect/sms"
                 className="block px-4 py-3 text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors last:rounded-b-lg"
               >
-                <div className="font-medium text-sm">{t("header.smsWhatsAppApi")}</div>
-                <div className="text-xs text-slate-500">{t("header.smsWhatsAppApiDesc")}</div>
+                <div className="font-medium text-sm">SMS & WhatsApp API</div>
+                <div className="text-xs text-slate-500">Mensajería masiva automatizada</div>
               </Link>
             </div>
           </div>
@@ -370,36 +366,29 @@ export function Header() {
           <div className="relative group">
             <button className="flex items-center gap-2 text-slate-300 hover:text-cyan-400 transition-colors">
               <Globe className="w-4 h-4" />
-              <span className="text-base">{languageFlag}</span>
+              <span className="text-base">{language === "ES" ? "🇪🇸" : "🇺🇸"}</span>
               <ChevronDown className="w-4 h-4" />
             </button>
             <div className="absolute right-0 mt-2 w-40 bg-[#0f1419] border border-[#1a1f2e] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <button
-                onClick={() => setLanguage("es")}
+                onClick={() => setLanguage("ES")}
                 className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 first:rounded-t-lg"
               >
                 <span className="text-base">🇪🇸</span>
                 <span>Español</span>
               </button>
               <button
-                onClick={() => setLanguage("en")}
-                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2"
+                onClick={() => setLanguage("EN")}
+                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 last:rounded-b-lg"
               >
                 <span className="text-base">🇺🇸</span>
                 <span>English</span>
-              </button>
-              <button
-                onClick={() => setLanguage("fr")}
-                className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-[#1a1f2e] hover:text-cyan-400 transition-colors flex items-center gap-2 last:rounded-b-lg"
-              >
-                <span className="text-base">🇫🇷</span>
-                <span>Français</span>
               </button>
             </div>
           </div>
 
           <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white text-sm ml-2">
-            <Link href="/login">{t("header.login")}</Link>
+            <Link href="/login">INGRESAR</Link>
           </Button>
         </div>
 
@@ -419,53 +408,53 @@ export function Header() {
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.vps")}
+              VPS
             </Link>
             <Link
               href="/bare-metal"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.bareMetal")}
+              Bare Metal
             </Link>
             <Link
               href="/clusters"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.clusters")}
+              Clusters de Servidores
             </Link>
             <Link
               href="/calculadora"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.calculator")}
+              Calculadora de Configuración
             </Link>
             <Link
               href="/dominios"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.domainsHostingEmail")}
+              Dominios, Hosting y Email
             </Link>
             <Link
               href="/nube-privada"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.privateCloud")}
+              Nube Privada Alojada
             </Link>
             <Link
               href="/connect"
               className="text-slate-300 hover:text-cyan-400 transition-colors py-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("header.connectPlus")}
+              Connect+
             </Link>
             <Button asChild variant="default" className="bg-cyan-500 hover:bg-cyan-600 text-white w-full mt-2">
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                {t("header.login")}
+                INGRESAR
               </Link>
             </Button>
           </div>
