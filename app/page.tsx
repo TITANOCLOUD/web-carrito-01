@@ -2,24 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Server,
-  Zap,
-  Shield,
-  HeadphonesIcon,
-  Check,
-  Clock,
-  Globe,
-  Award,
-  TrendingUp,
-  Users,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Send,
-  ArrowRight,
-  ChevronDown,
-} from "lucide-react"
+import { Server, Zap, Shield, HeadphonesIcon, Check, Clock, Globe, Award, TrendingUp, Users, ChevronLeft, ChevronRight, Sparkles, Send, ArrowRight, ChevronDown } from 'lucide-react'
 import Image from "next/image"
 import { useState, useEffect, useRef } from "react"
 
@@ -986,8 +969,8 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 items-center">
             <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
               <div className="relative h-24 flex items-center justify-center">
                 <Image
@@ -1018,6 +1001,23 @@ export default function Home() {
               <div className="mt-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-2">Microsoft Azure</h3>
                 <p className="text-slate-400 text-sm">Plataforma cloud empresarial de Microsoft</p>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+            </div>
+
+            <div className="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+              <div className="relative h-24 flex items-center justify-center">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ovhcloud-8JsW3aKbHaOrAucNCMUxwPfPNqvGXc.png"
+                  alt="OVHcloud Partner"
+                  fill
+                  className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                  unoptimized
+                />
+              </div>
+              <div className="mt-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">OVHcloud</h3>
+                <p className="text-slate-400 text-sm">Líder europeo en infraestructura cloud</p>
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
             </div>
