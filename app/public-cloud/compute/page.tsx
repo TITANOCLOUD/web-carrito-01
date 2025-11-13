@@ -2,52 +2,72 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Slider } from '@/components/ui/slider'
-import { Server, Zap, Shield, Globe, ArrowRight, Cpu, HardDrive, Database, Images, Leaf, Lock, RefreshCw, Settings, Network, Check, X, AlertTriangle, ShoppingCart } from 'lucide-react'
+import { Server, Zap, Shield, Globe, ArrowRight, Cpu, HardDrive, Database, Images, Leaf, Lock, RefreshCw, Settings, Network, Check, X, AlertTriangle, ShoppingCart, CheckCircle2, XCircle, Info } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const instancesData = {
   generalPurpose: [
-    { name: 'b3-8', memory: 8, vcores: 2, storage: '50 GB NVMe', bandwidth: '500 Mbit/s', priceHourly: 0.0508, priceMonthly: 28.21 },
-    { name: 'b3-16', memory: 16, vcores: 4, storage: '100 GB NVMe', bandwidth: '1 Gb/s', priceHourly: 0.1016, priceMonthly: 56.41 },
-    { name: 'b3-32', memory: 32, vcores: 8, storage: '200 GB NVMe', bandwidth: '2 Gb/s', priceHourly: 0.2033, priceMonthly: 112.82 },
-    { name: 'b3-64', memory: 64, vcores: 16, storage: '400 GB NVMe', bandwidth: '4 Gb/s', priceHourly: 0.4065, priceMonthly: 225.63 },
-    { name: 'b3-128', memory: 128, vcores: 32, storage: '400 GB NVMe', bandwidth: '8 Gb/s', priceHourly: 0.8131, priceMonthly: 451.25 },
-    { name: 'b3-256', memory: 256, vcores: 64, storage: '400 GB NVMe', bandwidth: '16 Gb/s', priceHourly: 1.6262, priceMonthly: 902.50 },
+    { id: 'gp1', name: 'b3-8', vcpu: 2, ram: '8 GB', storage: '50 GB NVMe', bandwidth: '500 Mbit/s', hourly: 0.0508, monthly: 28.21, useCases: ['Aplicaciones web', 'Servidores de desarrollo', 'APIs REST'], notFor: ['Machine Learning intensivo', 'Procesamiento de video en tiempo real'], recommendations: ['Ideal para la mayoría de aplicaciones web estándar'] },
+    { id: 'gp2', name: 'b3-16', vcpu: 4, ram: '16 GB', storage: '100 GB NVMe', bandwidth: '1 Gb/s', hourly: 0.1016, monthly: 56.41, useCases: ['Servidores de aplicaciones', 'Bases de datos pequeñas y medianas', 'Entornos de staging'], notFor: ['Cargas de trabajo de Big Data', 'Renderizado 3D'], recommendations: ['Buen punto de partida para proyectos nuevos'] },
+    { id: 'gp3', name: 'b3-32', vcpu: 8, ram: '32 GB', storage: '200 GB NVMe', bandwidth: '2 Gb/s', hourly: 0.2033, monthly: 112.82, useCases: ['Aplicaciones empresariales', 'Servidores web con alto tráfico', 'Contenedores'], notFor: ['Procesamiento intensivo de GPU', 'Big Data'], recommendations: ['Escalable según necesidades'] },
+    { id: 'gp4', name: 'b3-64', vcpu: 16, ram: '64 GB', storage: '400 GB NVMe', bandwidth: '4 Gb/s', hourly: 0.4065, monthly: 225.63, useCases: ['Migraciones de centros de datos', 'Entornos de desarrollo y pruebas a gran escala'], notFor: ['Machine Learning'], recommendations: ['Alto rendimiento para aplicaciones generales'] },
+    { id: 'gp5', name: 'b3-128', vcpu: 32, ram: '128 GB', storage: '400 GB NVMe', bandwidth: '8 Gb/s', hourly: 0.8131, monthly: 451.25, useCases: ['Aplicaciones que requieren más recursos', 'Entornos de producción exigentes'], notFor: ['Tareas de baja utilización de CPU'], recommendations: ['Máximo rendimiento para aplicaciones de propósito general'] },
+    { id: 'gp6', name: 'b3-256', vcpu: 64, ram: '256 GB', storage: '400 GB NVMe', bandwidth: '16 Gb/s', hourly: 1.6262, monthly: 902.50, useCases: ['Aplicaciones a gran escala', 'Big Data y Analítica'], notFor: ['Cargas de trabajo de baja latencia'], recommendations: ['Alta capacidad para cargas de trabajo empresariales'] },
   ],
   computeOptimized: [
-    { name: 'c3-4', memory: 4, vcores: 2, storage: '50 GB NVMe', bandwidth: '250 Mbit/s', priceHourly: 0.0453, priceMonthly: 25.17 },
-    { name: 'c3-8', memory: 8, vcores: 4, storage: '100 GB NVMe', bandwidth: '500 Mbit/s', priceHourly: 0.0907, priceMonthly: 50.33 },
-    { name: 'c3-16', memory: 16, vcores: 8, storage: '200 GB NVMe', bandwidth: '1 Gb/s', priceHourly: 0.1813, priceMonthly: 100.65 },
-    { name: 'c3-32', memory: 32, vcores: 16, storage: '400 GB NVMe', bandwidth: '2 Gb/s', priceHourly: 0.3627, priceMonthly: 201.30 },
-    { name: 'c3-64', memory: 64, vcores: 32, storage: '400 GB NVMe', bandwidth: '4 Gb/s', priceHourly: 0.7254, priceMonthly: 402.59 },
+    { id: 'co1', name: 'c3-4', vcpu: 2, ram: '4 GB', storage: '50 GB NVMe', bandwidth: '250 Mbit/s', hourly: 0.0453, monthly: 25.17, useCases: ['Procesamiento intensivo de CPU', 'Computación científica'], notFor: ['Aplicaciones con alta demanda de RAM'], recommendations: ['Excelente para cargas computacionales intensivas'] },
+    { id: 'co2', name: 'c3-8', vcpu: 4, ram: '8 GB', storage: '100 GB NVMe', bandwidth: '500 Mbit/s', hourly: 0.0907, monthly: 50.33, useCases: ['Cómputo paralelo', 'Compilación de código'], notFor: ['Bases de datos en memoria'], recommendations: ['Ideal para pipelines CI/CD'] },
+    { id: 'co3', name: 'c3-16', vcpu: 8, ram: '16 GB', storage: '200 GB NVMe', bandwidth: '1 Gb/s', hourly: 0.1813, monthly: 100.65, useCases: ['Análisis de datos', 'Servidores de juegos'], notFor: ['Almacenamiento masivo de datos'], recommendations: ['Recomendado para procesamiento batch'] },
+    { id: 'co4', name: 'c3-32', vcpu: 16, ram: '32 GB', storage: '400 GB NVMe', bandwidth: '2 Gb/s', hourly: 0.3627, monthly: 201.30, useCases: ['Entornos de renderizado', 'Computación de alto rendimiento'], notFor: ['Aplicaciones ligeras'], recommendations: ['Alto rendimiento de CPU para tareas intensivas'] },
+    { id: 'co5', name: 'c3-64', vcpu: 32, ram: '64 GB', storage: '400 GB NVMe', bandwidth: '4 Gb/s', hourly: 0.7254, monthly: 402.59, useCases: ['Simulaciones complejas', 'Computación científica avanzada'], notFor: ['Bases de datos simples'], recommendations: ['Máximo rendimiento para computación intensiva'] },
   ],
   memoryOptimized: [
-    { name: 'r3-16', memory: 16, vcores: 2, storage: '50 GB NVMe', bandwidth: '500 Mbit/s', priceHourly: 0.0658, priceMonthly: 36.50 },
-    { name: 'r3-32', memory: 32, vcores: 4, storage: '100 GB NVMe', bandwidth: '1 Gb/s', priceHourly: 0.1315, priceMonthly: 73 },
-    { name: 'r3-64', memory: 64, vcores: 8, storage: '200 GB NVMe', bandwidth: '2 Gb/s', priceHourly: 0.2631, priceMonthly: 146 },
-    { name: 'r3-128', memory: 128, vcores: 16, storage: '400 GB NVMe', bandwidth: '4 Gb/s', priceHourly: 0.5261, priceMonthly: 291.99 },
+    { id: 'mo1', name: 'r3-16', vcpu: 2, ram: '16 GB', storage: '50 GB NVMe', bandwidth: '500 Mbit/s', hourly: 0.0658, monthly: 36.50, useCases: ['Bases de datos en memoria', 'Análisis de Big Data'], notFor: ['Aplicaciones web básicas'], recommendations: ['Perfecto para Redis, Memcached'] },
+    { id: 'mo2', name: 'r3-32', vcpu: 4, ram: '32 GB', storage: '100 GB NVMe', bandwidth: '1 Gb/s', hourly: 0.1315, monthly: 73, useCases: ['Data science', 'Cache distribuido'], notFor: ['Sitios web estáticos'], recommendations: ['Ideal para análisis de grandes datasets'] },
+    { id: 'mo3', name: 'r3-64', vcpu: 8, ram: '64 GB', storage: '200 GB NVMe', bandwidth: '2 Gb/s', hourly: 0.2631, monthly: 146, useCases: ['Procesamiento de grandes volúmenes de datos', 'Machine learning'], notFor: ['Microservicios simples'], recommendations: ['Excelente para machine learning'] },
+    { id: 'mo4', name: 'r3-128', vcpu: 16, ram: '128 GB', storage: '400 GB NVMe', bandwidth: '4 Gb/s', hourly: 0.5261, monthly: 291.99, useCases: ['Bases de datos de alto rendimiento', 'Análisis en tiempo real'], notFor: ['Tareas de bajo uso de memoria'], recommendations: ['Alto rendimiento para aplicaciones con uso intensivo de memoria'] },
   ],
   storageOptimized: [
-    { name: 'i1-45', memory: 45, vcores: 8, storage: '50 GB SSD + 1.9 TB NVMe', bandwidth: '1 Gb/s', priceHourly: 0.488, priceMonthly: 245 },
-    { name: 'i1-90', memory: 90, vcores: 16, storage: '50 GB SSD + 2x1.9 TB NVMe', bandwidth: '2 Gb/s', priceHourly: 0.978, priceMonthly: 490 },
+    { id: 'so1', name: 'i1-45', vcpu: 8, ram: '45 GB', storage: '50 GB SSD + 1.9 TB NVMe', bandwidth: '1 Gb/s', hourly: 0.488, monthly: 245, useCases: ['Bases de datos NoSQL', 'Data warehousing'], notFor: ['Aplicaciones web básicas'], recommendations: ['Máximo rendimiento de I/O'] },
+    { id: 'so2', name: 'i1-90', vcpu: 16, ram: '90 GB', storage: '50 GB SSD + 2x1.9 TB NVMe', bandwidth: '2 Gb/s', hourly: 0.978, monthly: 490, useCases: ['Elasticsearch', 'Big data processing'], notFor: ['Almacenamiento de archivos estáticos'], recommendations: ['Ideal para MongoDB, Cassandra'] },
   ],
   discovery: [
-    { name: 'd2-2', memory: 2, vcores: 1, storage: '25 GB', bandwidth: '100 Mbit/s', priceHourly: 0.0119, priceMonthly: 6.57 },
-    { name: 'd2-4', memory: 4, vcores: 2, storage: '50 GB', bandwidth: '250 Mbit/s', priceHourly: 0.0237, priceMonthly: 13.20 },
-    { name: 'd2-8', memory: 8, vcores: 4, storage: '50 GB', bandwidth: '500 Mbit/s', priceHourly: 0.0427, priceMonthly: 23.70 },
+    { id: 'd1', name: 'd2-2', vcpu: 1, ram: '2 GB', storage: '25 GB', bandwidth: '100 Mbit/s', hourly: 0.0119, monthly: 6.57, useCases: ['Desarrollo y pruebas', 'Entornos sandbox'], notFor: ['Producción crítica'], recommendations: ['Perfecto para empezar'] },
+    { id: 'd2', name: 'd2-4', vcpu: 2, ram: '4 GB', storage: '50 GB', bandwidth: '250 Mbit/s', hourly: 0.0237, monthly: 13.20, useCases: ['Proyectos personales', 'Aprendizaje'], notFor: ['Cargas de trabajo intensivas'], recommendations: ['Excelente relación calidad-precio'] },
+    { id: 'd3', name: 'd2-8', vcpu: 4, ram: '8 GB', storage: '50 GB', bandwidth: '500 Mbit/s', hourly: 0.0427, monthly: 23.70, useCases: ['Prototipos', 'MVPs'], notFor: ['Aplicaciones de alto tráfico'], recommendations: ['Ideal para MVPs y prototipos'] },
   ],
+  gpu: [
+    { id: 'gpu1', name: 'NVIDIA H100', vcpu: 4, ram: '80 GB', storage: '400 GB NVMe', bandwidth: '10 Gb/s', hourly: 3.00, monthly: 1800, useCases: ['IA y Deep Learning', 'Inferencia LLM'], notFor: ['Tareas de computación general'], recommendations: ['Para IA y deep learning más exigentes'] },
+    { id: 'gpu2', name: 'NVIDIA L40S', vcpu: 8, ram: '48 GB', storage: '400 GB NVMe', bandwidth: '10 Gb/s', hourly: 2.00, monthly: 1200, useCases: ['IA Generativa', 'Gráficos 3D'], notFor: ['Cargas de trabajo muy intensivas en CPU'], recommendations: ['Combinan rendimiento IA y aceleración gráfica'] },
+    { id: 'gpu3', name: 'NVIDIA A10', vcpu: 6, ram: '24 GB', storage: '400 GB NVMe', bandwidth: '8 Gb/s', hourly: 1.50, monthly: 900, useCases: ['Inferencia de IA', 'Virtualización de escritorios gráficos'], notFor: ['Machine learning pesado'], recommendations: ['Perfectas para inferencia de IA y virtualización'] },
+  ],
+  metal: [
+    { id: 'm1', name: 'Small', vcpu: 8, ram: '64 GB', storage: '2x1 TB SSD', bandwidth: '10 Gb/s', hourly: 0.545, monthly: 320, useCases: ['Alta frecuencia de cálculo', 'Aislamiento total'], notFor: ['Necesidades de escalado rápido'], recommendations: ['Aislamiento total a precio asequible'] },
+    { id: 'm2', name: 'Medium', vcpu: 16, ram: '128 GB', storage: '2x2 TB SSD', bandwidth: '10 Gb/s', hourly: 0.927, monthly: 500, useCases: ['Aplicaciones distribuidas', 'Balance perfecto'], notFor: ['Procesamiento de Big Data'], recommendations: ['Best-seller para aplicaciones distribuidas'] },
+    { id: 'm3', name: 'Large', vcpu: 32, ram: '256 GB', storage: '4x2 TB SSD', bandwidth: '10 Gb/s', hourly: 1.58, monthly: 800, useCases: ['Usos intensivos', 'Máxima eficiencia'], notFor: ['Entornos de desarrollo pequeños'], recommendations: ['Mejor relación prestaciones-precio'] },
+  ]
 }
+
+const instanceCategories = [
+  { id: 'generalPurpose', name: 'General Purpose', description: 'Equilibradas y polivalentes', icon: <Server className="w-12 h-12 text-cyan-400 mb-4" /> },
+  { id: 'computeOptimized', name: 'Compute Optimized', description: 'Optimizadas para CPU', icon: <Cpu className="w-12 h-12 text-cyan-400 mb-4" /> },
+  { id: 'memoryOptimized', name: 'Memory Optimized', description: 'Optimización de memoria', icon: <Database className="w-12 h-12 text-cyan-400 mb-4" /> },
+  { id: 'storageOptimized', name: 'Storage Optimized', description: 'IOPS optimizadas', icon: <HardDrive className="w-12 h-12 text-cyan-400 mb-4" /> },
+  { id: 'gpu', name: 'Cloud GPU', description: 'Potencia para IA y ML', icon: <Images className="w-12 h-12 text-cyan-400 mb-4" /> },
+  { id: 'metal', name: 'Metal Instances', description: 'Servidores dedicados', icon: <Shield className="w-12 h-12 text-cyan-400 mb-4" /> },
+]
 
 export default function ComputePage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("vmi")
   const [pricingTab, setPricingTab] = useState("linux-hourly")
-  const [selectedCategory, setSelectedCategory] = useState<'generalPurpose' | 'computeOptimized' | 'memoryOptimized' | 'storageOptimized' | 'discovery'>('generalPurpose')
+  const [selectedCategory, setSelectedCategory] = useState<'generalPurpose' | 'computeOptimized' | 'memoryOptimized' | 'storageOptimized' | 'gpu' | 'metal'>('generalPurpose')
   const [selectedInstance, setSelectedInstance] = useState(instancesData.generalPurpose[0])
   const [billingMode, setBillingMode] = useState<'hourly' | 'monthly'>('monthly')
   const [showCalculator, setShowCalculator] = useState(false)
+  const [billingType, setBillingType] = useState<'hourly' | 'monthly'>('hourly');
 
   const categoryInfo = {
     generalPurpose: {
@@ -100,17 +120,39 @@ export default function ComputePage() {
       notFor: ['Producción crítica', 'Aplicaciones de alto tráfico', 'Cargas de trabajo intensivas'],
       recommendations: ['Perfecto para empezar', 'Excelente relación calidad-precio', 'Ideal para MVP y prototipos'],
     },
+    gpu: {
+      title: 'Cloud GPU',
+      icon: Images,
+      description: 'Potencia de GPU para IA y ML',
+      color: 'pink',
+      frequency: 'CUDA Cores',
+      useCases: ['Machine learning', 'Deep learning', 'Computación científica', 'Renderizado 3D'],
+      notFor: ['Aplicaciones web sencillas', 'Servidores de bases de datos básicos'],
+      recommendations: ['Acelera significativamente las cargas de trabajo de IA', 'Ideal para modelos complejos y entrenamiento', 'Opciones con diferentes configuraciones de GPU']
+    },
+    metal: {
+      title: 'Metal Instances',
+      icon: Shield,
+      description: 'Rendimiento sin virtualización',
+      color: 'gray',
+      frequency: 'Dedicado',
+      useCases: ['Cargas de trabajo de alto rendimiento', 'Necesidades de baja latencia', 'Bases de datos intensivas'],
+      notFor: ['Entornos que requieren escalabilidad rápida', 'Proyectos con presupuesto limitado'],
+      recommendations: ['Acceso directo al hardware', 'Rendimiento predecible y sin sobrecarga de virtualización', 'Ideal para aplicaciones críticas']
+    }
   }
 
   const currentCategory = categoryInfo[selectedCategory]
   const CategoryIcon = currentCategory.icon
-  const instances = instancesData[selectedCategory]
+  const instances = instancesData[selectedCategory] || []
+  const filteredInstances = instances.filter(instance => instance.id.startsWith(selectedCategory.substring(0, 2))) // Filtra por categoría
 
   const calculatePrice = () => {
+    if (!selectedInstance) return '0.00'
     if (billingMode === 'monthly') {
-      return selectedInstance.priceMonthly.toFixed(2)
+      return selectedInstance.monthly.toFixed(2)
     }
-    return selectedInstance.priceHourly.toFixed(4)
+    return selectedInstance.hourly.toFixed(4)
   }
 
   return (
@@ -776,8 +818,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-4</td>
-                      <td className="py-3 px-4 text-slate-300">4 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">4 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -785,8 +827,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">8 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -794,8 +836,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
                       <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -803,8 +845,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -812,8 +854,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -821,8 +863,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
@@ -830,8 +872,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
@@ -839,8 +881,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-320</td>
-                      <td className="py-3 px-4 text-slate-300">320 GB</td>
                       <td className="py-3 px-4 text-slate-300">160</td>
+                      <td className="py-3 px-4 text-slate-300">320 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
@@ -848,8 +890,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">7 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
@@ -857,8 +899,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
@@ -866,8 +908,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
@@ -875,8 +917,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -884,8 +926,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -900,44 +942,44 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">25 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 Mbps</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$0.1438</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbps</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$0.2875</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbps</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$0.5751</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gbps</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$1.1501</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
@@ -945,8 +987,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
                       <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">512 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
@@ -954,8 +996,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-1024</td>
-                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
                       <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
@@ -963,8 +1005,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
@@ -972,8 +1014,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
@@ -981,8 +1023,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
@@ -990,8 +1032,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -999,8 +1041,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-240</td>
-                      <td className="py-3 px-4 text-slate-300">240 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">240 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1015,8 +1057,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">i1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
@@ -1024,8 +1066,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">i1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1033,8 +1075,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">i1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1049,8 +1091,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">rtx5000-28</td>
-                      <td className="py-3 px-4 text-slate-300">28 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">28 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1058,8 +1100,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">rtx5000-56</td>
-                      <td className="py-3 px-4 text-slate-300">56 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">56 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1067,8 +1109,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">rtx5000-84</td>
-                      <td className="py-3 px-4 text-slate-300">84 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">84 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
@@ -1076,8 +1118,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">t1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1085,8 +1127,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">t1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">18</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -1094,1506 +1136,12 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">t1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">36</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$8.342</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t2-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">15</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.63</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t2-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">30</td>
-                      <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$4.772</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t2-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">60</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$9.056</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className="mt-4 p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
-                  <p className="text-slate-400 text-sm">
-                    Las instancias incluyen una dirección IPv4 por defecto, excepto en el caso de las instancias en
-                    Local Zones, en las que las direcciones IP adicionales son de pago.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {pricingTab === "linux-monthly" && (
-              <div className="overflow-x-auto">
-                <div className="mb-4 p-4 bg-blue-950/30 border border-blue-500/30 rounded-lg">
-                  <p className="text-slate-300 text-sm">
-                    * Precio para un Savings Plan de un mes. Puede consultar los precios de los Savings Plans para 6,
-                    12, 24 y 36 meses en nuestra página dedicada Savings Plans.
-                  </p>
-                </div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-700">
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Nombre</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Memoria</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">vCore</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Almacenamiento</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red pública</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red privada</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-semibold">Precio /mes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* General Purpose */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">General Purpose</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$28.21 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$56.41 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$112.82 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$225.63 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$451.25 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">16 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">16 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$902.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,805 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-640</td>
-                      <td className="py-3 px-4 text-slate-300">640 GB</td>
-                      <td className="py-3 px-4 text-slate-300">160</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,256.24 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$29</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$55.40</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$112</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$218</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$429</td>
-                    </tr>
-
-                    {/* Compute Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Compute Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-4</td>
-                      <td className="py-3 px-4 text-slate-300">4 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$82.11 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$164.21 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$328.41 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$656.82 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,313.63 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,627.25 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$5,254.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-320</td>
-                      <td className="py-3 px-4 text-slate-300">320 GB</td>
-                      <td className="py-3 px-4 text-slate-300">160</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$6,568.12 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.249</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.476</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.952</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.451</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.443</td>
-                    </tr>
-
-                    {/* Memory Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Memory Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.1438</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.2875</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.5751</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.1501</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.3002</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$4.6005</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-1024</td>
-                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$9.251</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.277</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.465</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.636</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.927</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-240</td>
-                      <td className="py-3 px-4 text-slate-300">240 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.579</td>
-                    </tr>
-
-                    {/* Storage Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Storage Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.06</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.576</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.633</td>
-                    </tr>
-
-                    {/* Cloud GPU */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Cloud GPU</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-28</td>
-                      <td className="py-3 px-4 text-slate-300">28 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.756</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-56</td>
-                      <td className="py-3 px-4 text-slate-300">56 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.512</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-84</td>
-                      <td className="py-3 px-4 text-slate-300">84 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.424</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.491</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">18</td>
-                      <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$4.415</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">36</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$8.342</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className="mt-4 p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
-                  <p className="text-slate-400 text-sm">
-                    Las instancias incluyen una dirección IPv4 por defecto, excepto en el caso de las instancias en
-                    Local Zones, en las que las direcciones IP adicionales son de pago.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {pricingTab === "linux-monthly" && (
-              <div className="overflow-x-auto">
-                <div className="mb-4 p-4 bg-blue-950/30 border border-blue-500/30 rounded-lg">
-                  <p className="text-slate-300 text-sm">
-                    * Precio para un Savings Plan de un mes. Puede consultar los precios de los Savings Plans para 6,
-                    12, 24 y 36 meses en nuestra página dedicada Savings Plans.
-                  </p>
-                </div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-700">
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Nombre</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Memoria</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">vCore</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Almacenamiento</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red pública</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red privada</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-semibold">Precio /mes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* General Purpose */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">General Purpose</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$28.21 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$56.41 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$112.82 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$225.63 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$451.25 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">16 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">16 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$902.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,805 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-640</td>
-                      <td className="py-3 px-4 text-slate-300">640 GB</td>
-                      <td className="py-3 px-4 text-slate-300">160</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,256.24 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$29</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$55.40</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$112</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$218</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$429</td>
-                    </tr>
-
-                    {/* Compute Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Compute Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-4</td>
-                      <td className="py-3 px-4 text-slate-300">4 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$82.11 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$164.21 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$328.41 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$656.82 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,313.63 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,627.25 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$5,254.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-320</td>
-                      <td className="py-3 px-4 text-slate-300">320 GB</td>
-                      <td className="py-3 px-4 text-slate-300">160</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$6,568.12 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.249</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.476</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.952</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.451</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.443</td>
-                    </tr>
-
-                    {/* Memory Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Memory Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$36.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$73 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$146 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$291.99 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$583.97 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,167.94 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-1024</td>
-                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,335.88 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$42.20</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$48.80</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$636</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$927</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-240</td>
-                      <td className="py-3 px-4 text-slate-300">240 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.501</td>
-                    </tr>
-
-                    {/* Storage Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Storage Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$245</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$490</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$979</td>
-                    </tr>
-
-                    {/* Cloud GPU */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Cloud GPU</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-28</td>
-                      <td className="py-3 px-4 text-slate-300">28 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$551.88</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-56</td>
-                      <td className="py-3 px-4 text-slate-300">56 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,103.76</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-84</td>
-                      <td className="py-3 px-4 text-slate-300">84 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,769.52</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,166</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">18</td>
-                      <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,226</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">36</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$4,332</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className="mt-4 p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
-                  <p className="text-slate-400 text-sm">
-                    Las instancias incluyen una dirección IPv4 por defecto, excepto en el caso de las instancias en
-                    Local Zones, en las que las direcciones IP adicionales son de pago.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {pricingTab === "linux-monthly" && (
-              <div className="overflow-x-auto">
-                <div className="mb-4 p-4 bg-blue-950/30 border border-blue-500/30 rounded-lg">
-                  <p className="text-slate-300 text-sm">
-                    * Precio para un Savings Plan de un mes. Puede consultar los precios de los Savings Plans para 6,
-                    12, 24 y 36 meses en nuestra página dedicada Savings Plans.
-                  </p>
-                </div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-700">
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Nombre</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Memoria</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">vCore</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Almacenamiento</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red pública</th>
-                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red privada</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-semibold">Precio /mes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* General Purpose */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">General Purpose</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$28.21 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$56.41 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$112.82 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$225.63 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$451.25 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">16 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">16 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$902.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,805 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b3-640</td>
-                      <td className="py-3 px-4 text-slate-300">640 GB</td>
-                      <td className="py-3 px-4 text-slate-300">160</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,256.24 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$29</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$55.40</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$112</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$218</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">b2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$429</td>
-                    </tr>
-
-                    {/* Compute Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Compute Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-4</td>
-                      <td className="py-3 px-4 text-slate-300">4 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$82.11 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$164.21 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$328.41 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$656.82 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,313.63 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,627.25 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$5,254.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c3-320</td>
-                      <td className="py-3 px-4 text-slate-300">320 GB</td>
-                      <td className="py-3 px-4 text-slate-300">160</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$6,568.12 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.249</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.476</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$0.952</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.451</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">c2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2.443</td>
-                    </tr>
-
-                    {/* Memory Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Memory Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$36.50 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$73 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$146 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$291.99 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$583.97 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
-                      <td className="py-3 px-4 text-slate-300">64</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,167.94 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r3-1024</td>
-                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
-                      <td className="py-3 px-4 text-slate-300">128</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,335.88 *</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$42.20</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
-                      <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$48.80</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$636</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$927</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">r2-240</td>
-                      <td className="py-3 px-4 text-slate-300">240 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1.501</td>
-                    </tr>
-
-                    {/* Storage Optimized */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Storage Optimized</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$245</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$490</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">i1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">32</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$979</td>
-                    </tr>
-
-                    {/* Cloud GPU */}
-                    <tr className="border-b border-slate-800">
-                      <td colSpan={7} className="py-4 px-4">
-                        <div className="text-cyan-400 font-bold text-lg">Cloud GPU</div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-28</td>
-                      <td className="py-3 px-4 text-slate-300">28 GB</td>
-                      <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$551.88</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-56</td>
-                      <td className="py-3 px-4 text-slate-300">56 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,103.76</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">rtx5000-84</td>
-                      <td className="py-3 px-4 text-slate-300">84 GB</td>
-                      <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,769.52</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
-                      <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,166</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
-                      <td className="py-3 px-4 text-slate-300">18</td>
-                      <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,226</td>
-                    </tr>
-                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
-                      <td className="py-3 px-4 text-white">t1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
-                      <td className="py-3 px-4 text-slate-300">36</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
-                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
-                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$4,332</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2760,8 +1308,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-4</td>
-                      <td className="py-3 px-4 text-slate-300">4 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">4 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2769,8 +1317,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-8</td>
-                      <td className="py-3 px-4 text-slate-300">8 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">8 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2778,8 +1326,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
                       <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2787,8 +1335,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2796,8 +1344,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2805,8 +1353,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
@@ -2814,8 +1362,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
@@ -2823,8 +1371,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-320</td>
-                      <td className="py-3 px-4 text-slate-300">320 GB</td>
                       <td className="py-3 px-4 text-slate-300">160</td>
+                      <td className="py-3 px-4 text-slate-300">320 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
@@ -2832,8 +1380,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-7</td>
-                      <td className="py-3 px-4 text-slate-300">7 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">7 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
@@ -2841,8 +1389,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
@@ -2850,8 +1398,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
@@ -2859,8 +1407,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2868,8 +1416,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2884,107 +1432,107 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-16</td>
-                      <td className="py-3 px-4 text-slate-300">16 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
-                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">25 GB</td>
                       <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$36.50 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.1438</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-32</td>
-                      <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
-                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$73 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.2875</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-64</td>
-                      <td className="py-3 px-4 text-slate-300">64 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
-                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$146 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.5751</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-128</td>
-                      <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
-                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$291.99 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1.1501</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-256</td>
-                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$583.97 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2.3002</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-512</td>
-                      <td className="py-3 px-4 text-slate-300">512 GB</td>
                       <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">512 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$1,167.94 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$4.6005</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r3-1024</td>
-                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
                       <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$2,335.88 *</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$9.251</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-15</td>
-                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$42.20</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.277</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-30</td>
-                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$48.80</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.465</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-60</td>
-                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$636</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.636</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-120</td>
-                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
                       <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$927</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.927</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">r2-240</td>
-                      <td className="py-3 px-4 text-slate-300">240 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">240 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -2999,8 +1547,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">i1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
@@ -3008,8 +1556,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">i1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3017,8 +1565,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">i1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3033,8 +1581,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">rtx5000-28</td>
-                      <td className="py-3 px-4 text-slate-300">28 GB</td>
                       <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">28 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3042,8 +1590,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">rtx5000-56</td>
-                      <td className="py-3 px-4 text-slate-300">56 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">56 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3051,8 +1599,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">rtx5000-84</td>
-                      <td className="py-3 px-4 text-slate-300">84 GB</td>
                       <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">84 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
@@ -3060,8 +1608,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">t1-45</td>
-                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3069,8 +1617,8 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">t1-90</td>
-                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">18</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
                       <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3078,8 +1626,986 @@ export default function ComputePage() {
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">t1-180</td>
-                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">36</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$4,332</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="mt-4 p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
+                  <p className="text-slate-400 text-sm">
+                    Las instancias incluyen una dirección IPv4 por defecto, excepto en el caso de las instancias en
+                    Local Zones, en las que las direcciones IP adicionales son de pago.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {pricingTab === "linux-monthly" && (
+              <div className="overflow-x-auto">
+                <div className="mb-4 p-4 bg-blue-950/30 border border-blue-500/30 rounded-lg">
+                  <p className="text-slate-300 text-sm">
+                    * Precio para un Savings Plan de un mes. Puede consultar los precios de los Savings Plans para 6,
+                    12, 24 y 36 meses en nuestra página dedicada Savings Plans.
+                  </p>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Nombre</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Memoria</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">vCore</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Almacenamiento</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red pública</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red privada</th>
+                      <th className="text-right py-3 px-4 text-slate-300 font-semibold">Precio /mes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* General Purpose */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">General Purpose</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-8</td>
+                      <td className="py-3 px-4 text-slate-300">8 GB</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$28.21 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-16</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$56.41 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-32</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$112.82 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-64</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$225.63 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-128</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$451.25 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-256</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
+                      <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">16 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">16 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$902.50 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-512</td>
+                      <td className="py-3 px-4 text-slate-300">512 GB</td>
+                      <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,805 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-640</td>
+                      <td className="py-3 px-4 text-slate-300">640 GB</td>
+                      <td className="py-3 px-4 text-slate-300">160</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,256.24 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-7</td>
+                      <td className="py-3 px-4 text-slate-300">7 GB</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$29</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-15</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$55.40</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-30</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$112</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-60</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$218</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-120</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$429</td>
+                    </tr>
+
+                    {/* Compute Optimized */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Compute Optimized</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-4</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">4 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$82.11 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-8</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">8 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$164.21 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-16</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$328.41 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-32</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$656.82 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-64</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,313.63 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-128</td>
+                      <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,627.25 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-256</td>
+                      <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$5,254.50 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-320</td>
+                      <td className="py-3 px-4 text-slate-300">160</td>
+                      <td className="py-3 px-4 text-slate-300">320 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$6,568.12 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-7</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">7 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.249</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-15</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.476</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-30</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.952</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-60</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1.451</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-120</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2.443</td>
+                    </tr>
+
+                    {/* Memory Optimized */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Memory Optimized</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-16</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">25 GB</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$36.50 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-32</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$73 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-64</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$146 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-128</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$291.99 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-256</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$583.97 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-512</td>
+                      <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">512 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,167.94 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-1024</td>
+                      <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,335.88 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-15</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$42.20</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-30</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$48.80</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-60</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$636</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-120</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$927</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-240</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">240 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1.501</td>
+                    </tr>
+
+                    {/* Storage Optimized */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Storage Optimized</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">i1-45</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$245</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">i1-90</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$490</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">i1-180</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$979</td>
+                    </tr>
+
+                    {/* Cloud GPU */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Cloud GPU</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">rtx5000-28</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">28 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$551.88</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">rtx5000-56</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">56 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,103.76</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">rtx5000-84</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">84 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,769.52</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">t1-45</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,166</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">t1-90</td>
+                      <td className="py-3 px-4 text-slate-300">18</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
+                      <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,226</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">t1-180</td>
+                      <td className="py-3 px-4 text-slate-300">36</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$4,332</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="mt-4 p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
+                  <p className="text-slate-400 text-sm">
+                    Las instancias incluyen una dirección IPv4 por defecto, excepto en el caso de las instancias en
+                    Local Zones, en las que las direcciones IP adicionales son de pago.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {pricingTab === "linux-monthly" && (
+              <div className="overflow-x-auto">
+                <div className="mb-4 p-4 bg-blue-950/30 border border-blue-500/30 rounded-lg">
+                  <p className="text-slate-300 text-sm">
+                    * Precio para un Savings Plan de un mes. Puede consultar los precios de los Savings Plans para 6,
+                    12, 24 y 36 meses en nuestra página dedicada Savings Plans.
+                  </p>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Nombre</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Memoria</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">vCore</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Almacenamiento</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red pública</th>
+                      <th className="text-left py-3 px-4 text-slate-300 font-semibold">Red privada</th>
+                      <th className="text-right py-3 px-4 text-slate-300 font-semibold">Precio /mes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* General Purpose */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">General Purpose</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-8</td>
+                      <td className="py-3 px-4 text-slate-300">8 GB</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$28.21 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-16</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$56.41 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-32</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$112.82 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-64</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$225.63 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-128</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$451.25 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-256</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
+                      <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">16 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">16 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$902.50 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-512</td>
+                      <td className="py-3 px-4 text-slate-300">512 GB</td>
+                      <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,805 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b3-640</td>
+                      <td className="py-3 px-4 text-slate-300">640 GB</td>
+                      <td className="py-3 px-4 text-slate-300">160</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,256.24 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-7</td>
+                      <td className="py-3 px-4 text-slate-300">7 GB</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$29</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-15</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$55.40</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-30</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$112</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-60</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$218</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">b2-120</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$429</td>
+                    </tr>
+
+                    {/* Compute Optimized */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Compute Optimized</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-4</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">4 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$82.11 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-8</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">8 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$164.21 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-16</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$328.41 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-32</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$656.82 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-64</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,313.63 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-128</td>
+                      <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,627.25 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-256</td>
+                      <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$5,254.50 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c3-320</td>
+                      <td className="py-3 px-4 text-slate-300">160</td>
+                      <td className="py-3 px-4 text-slate-300">320 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$6,568.12 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-7</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">7 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.249</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-15</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.476</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-30</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$0.952</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-60</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1.451</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">c2-120</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2.443</td>
+                    </tr>
+
+                    {/* Memory Optimized */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Memory Optimized</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-16</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">16 GB</td>
+                      <td className="py-3 px-4 text-slate-300">25 GB</td>
+                      <td className="py-3 px-4 text-slate-300">500 Mbit/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$36.50 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-32</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">32 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$73 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-64</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">64 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$146 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-128</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">128 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$291.99 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-256</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">256 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$583.97 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-512</td>
+                      <td className="py-3 px-4 text-slate-300">64</td>
+                      <td className="py-3 px-4 text-slate-300">512 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,167.94 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r3-1024</td>
+                      <td className="py-3 px-4 text-slate-300">128</td>
+                      <td className="py-3 px-4 text-slate-300">1.024 TB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">20 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,335.88 *</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-15</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">15 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$42.20</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-30</td>
+                      <td className="py-3 px-4 text-slate-300">2</td>
+                      <td className="py-3 px-4 text-slate-300">30 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$48.80</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-60</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">60 GB</td>
+                      <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$636</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-120</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">120 GB</td>
+                      <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$927</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">r2-240</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">240 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1.501</td>
+                    </tr>
+
+                    {/* Storage Optimized */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Storage Optimized</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">i1-45</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 1.9 TB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$245</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">i1-90</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 2 x 1.9 TB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$490</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">i1-180</td>
+                      <td className="py-3 px-4 text-slate-300">32</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
+                      <td className="py-3 px-4 text-slate-300">50 GB SSD + 4 x 1.9 TB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">8 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$979</td>
+                    </tr>
+
+                    {/* Cloud GPU */}
+                    <tr className="border-b border-slate-800">
+                      <td colSpan={7} className="py-4 px-4">
+                        <div className="text-cyan-400 font-bold text-lg">Cloud GPU</div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">rtx5000-28</td>
+                      <td className="py-3 px-4 text-slate-300">4</td>
+                      <td className="py-3 px-4 text-slate-300">28 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$551.88</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">rtx5000-56</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">56 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,103.76</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">rtx5000-84</td>
+                      <td className="py-3 px-4 text-slate-300">16</td>
+                      <td className="py-3 px-4 text-slate-300">84 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB SSD</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
+                      <td className="py-3 px-4 text-slate-300">10 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,769.52</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">t1-45</td>
+                      <td className="py-3 px-4 text-slate-300">8</td>
+                      <td className="py-3 px-4 text-slate-300">45 GB</td>
+                      <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">2 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$1,166</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">t1-90</td>
+                      <td className="py-3 px-4 text-slate-300">18</td>
+                      <td className="py-3 px-4 text-slate-300">90 GB</td>
+                      <td className="py-3 px-4 text-slate-300">800 GB NVMe</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2,226</td>
+                    </tr>
+                    <tr className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="py-3 px-4 text-white">t1-180</td>
+                      <td className="py-3 px-4 text-slate-300">36</td>
+                      <td className="py-3 px-4 text-slate-300">180 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB + 2 x 2 TB NVMe Passthrough</td>
                       <td className="py-3 px-4 text-slate-300">10 Gb/s</td>
                       <td className="py-3 px-4 text-slate-300">4 Gb/s máx.</td>
@@ -3114,4 +2640,206 @@ export default function ComputePage() {
               {showCalculator && (
                 <div className="grid lg:grid-cols-3 gap-8">
                   {/* Panel de selección */}
-                  <div className="lg:col-span-2 space-y
+                  <div className="lg:col-span-2 space-y-6">
+                    {/* Selector de categoría */}
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4">1. Selecciona tu categoría</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {instanceCategories.map((category) => (
+                          <button
+                            key={category.id}
+                            onClick={() => {
+                              setSelectedCategory(category.id)
+                              setSelectedInstance(null)
+                            }}
+                            className={`p-6 rounded-lg border-2 transition-all ${
+                              selectedCategory === category.id
+                                ? 'border-cyan-500 bg-cyan-500/10'
+                                : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                            }`}
+                          >
+                            <div className="text-4xl mb-2">{category.icon}</div>
+                            <div className="text-white font-semibold mb-1">{category.name}</div>
+                            <div className="text-xs text-slate-400">{category.description}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Selector de modelo */}
+                    {selectedCategory && (
+                      <div>
+                        <h3 className="text-2xl font-bold text-white mb-4">2. Elige tu modelo</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          {filteredInstances.map((instance) => (
+                            <button
+                              key={instance.id}
+                              onClick={() => setSelectedInstance(instance)}
+                              className={`p-4 rounded-lg border-2 text-left transition-all ${
+                                selectedInstance?.id === instance.id
+                                  ? 'border-cyan-500 bg-cyan-500/10'
+                                  : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                              }`}
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <span className="text-white font-bold text-lg">{instance.name}</span>
+                                <span className="text-cyan-400 font-semibold">${instance.hourly}/hr</span>
+                              </div>
+                              <div className="space-y-1 text-sm text-slate-400">
+                                <div>vCPU: {instance.vcpu}</div>
+                                <div>RAM: {instance.ram}</div>
+                                <div>Almacenamiento: {instance.storage}</div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Panel lateral de resumen */}
+                  <div className="lg:col-span-1">
+                    <div className="sticky top-24">
+                      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 border border-slate-700">
+                        <h3 className="text-xl font-bold text-white mb-6">Resumen de Configuración</h3>
+                        
+                        {selectedInstance ? (
+                          <div className="space-y-6">
+                            {/* Configuración */}
+                            <div>
+                              <div className="text-cyan-400 font-semibold mb-2">{selectedInstance.name}</div>
+                              <div className="space-y-2 text-sm text-slate-300">
+                                <div className="flex justify-between">
+                                  <span>vCPU:</span>
+                                  <span className="font-semibold">{selectedInstance.vcpu}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>RAM:</span>
+                                  <span className="font-semibold">{selectedInstance.ram}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Almacenamiento:</span>
+                                  <span className="font-semibold">{selectedInstance.storage}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="border-t border-slate-700 pt-4">
+                              <div className="flex items-center justify-between mb-4">
+                                <span className="text-slate-400">Facturación:</span>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => setBillingType('hourly')}
+                                    className={`px-3 py-1 rounded text-sm ${
+                                      billingType === 'hourly'
+                                        ? 'bg-cyan-500 text-white'
+                                        : 'bg-slate-700 text-slate-300'
+                                    }`}
+                                  >
+                                    Horaria
+                                  </button>
+                                  <button
+                                    onClick={() => setBillingType('monthly')}
+                                    className={`px-3 py-1 rounded text-sm ${
+                                      billingType === 'monthly'
+                                        ? 'bg-cyan-500 text-white'
+                                        : 'bg-slate-700 text-slate-300'
+                                    }`}
+                                  >
+                                    Mensual
+                                  </button>
+                                </div>
+                              </div>
+                              <div className="text-3xl font-bold text-white mb-1">
+                                ${billingType === 'hourly' ? selectedInstance.hourly : selectedInstance.monthly}
+                                <span className="text-lg text-slate-400">/{billingType === 'hourly' ? 'hora' : 'mes'}</span>
+                              </div>
+                              {billingType === 'monthly' && (
+                                <div className="text-sm text-slate-400">
+                                  Aproximado: ${selectedInstance.hourly}/hora
+                                </div>
+                              )}
+                            </div>
+
+                            <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white">
+                              Adquirir Instancia
+                            </Button>
+
+                            {/* Información adicional */}
+                            <div className="space-y-4 text-sm">
+                              <div>
+                                <div className="text-green-400 font-semibold mb-2 flex items-center gap-2">
+                                  <CheckCircle2 className="w-4 h-4" />
+                                  Ideal para:
+                                </div>
+                                <ul className="space-y-1 text-slate-300">
+                                  {selectedInstance.useCases.map((useCase, i) => (
+                                    <li key={i} className="flex items-start gap-2">
+                                      <span className="text-cyan-400 mt-1">•</span>
+                                      <span>{useCase}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              <div>
+                                <div className="text-red-400 font-semibold mb-2 flex items-center gap-2">
+                                  <XCircle className="w-4 h-4" />
+                                  No recomendado para:
+                                </div>
+                                <ul className="space-y-1 text-slate-300">
+                                  {selectedInstance.notFor.map((item, i) => (
+                                    <li key={i} className="flex items-start gap-2">
+                                      <span className="text-red-400 mt-1">•</span>
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              <div>
+                                <div className="text-yellow-400 font-semibold mb-2 flex items-center gap-2">
+                                  <Info className="w-4 h-4" />
+                                  Recomendaciones:
+                                </div>
+                                <ul className="space-y-1 text-slate-300">
+                                  {selectedInstance.recommendations.map((rec, i) => (
+                                    <li key={i} className="flex items-start gap-2">
+                                      <span className="text-yellow-400 mt-1">•</span>
+                                      <span>{rec}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              <div className="border-t border-slate-700 pt-4">
+                                <div className="text-slate-400 font-semibold mb-2">Términos del servicio:</div>
+                                <ul className="space-y-1 text-xs text-slate-400">
+                                  <li>• Facturación por hora/mes completo</li>
+                                  <li>• IP pública incluida</li>
+                                  <li>• SLA de 99.9% de disponibilidad</li>
+                                  <li>• Backups opcionales (costo adicional)</li>
+                                  <li>• Soporte técnico 24/7 incluido</li>
+                                  <li>• Cancelación sin penalización</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-center py-12 text-slate-400">
+                            <Server className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                            <p>Selecciona una instancia para ver el resumen</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  )
+}
