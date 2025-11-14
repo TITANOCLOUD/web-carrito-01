@@ -12,12 +12,63 @@ export async function POST(request: NextRequest) {
 
     const data = await request.json();
 
+    const isNewFormat = data.system_info && data.cpu && data.memory;
+    
+    let hostData, systemMetrics, diskData, networkData;
+    
+    if (isNewFormat) {
+      // Formato del agente Python nuevo
+      hostData = {
+        hostname: data.system_info.hostname,
+        ip_address: data.network?.interfaces?.[0]?.addresses?.[0]?.address || '0.0.0.0',
+        os_type: data.system_info.os_type,
+        os_version: data.system_info.os_version,
+        architecture: data.system_info.architecture,
+        agent_version: data.system_info.python_version || '1.0.0'
+      };
+      
+      const loadAvg = data.cpu.load_average || [0, 0, 0];
+      systemMetrics = {
+        cpu_percent: data.cpu.cpu_percent || 0,
+        cpu_count: data.cpu.cpu_count || 0,
+        load_average_1: loadAvg[0] || 0,
+        load_average_5: loadAvg[1] || 0,
+        load_average_15: loadAvg[2] || 0,
+        memory_total: data.memory.memory_total || 0,
+        memory_used: data.memory.memory_used || 0,
+        memory_available: data.memory.memory_available || 0,
+        memory_percent: data.memory.memory_percent || 0,
+        swap_total: data.memory.swap_total || 0,
+        swap_used: data.memory.swap_used || 0,
+        swap_percent: data.memory.swap_percent || 0,
+        disk_read_bytes: data.disk?.io_stats?.read_bytes || 0,
+        disk_write_bytes: data.disk?.io_stats?.write_bytes || 0,
+        disk_read_count: data.disk?.io_stats?.read_count || 0,
+        disk_write_count: data.disk?.io_stats?.write_count || 0,
+        network_bytes_sent: data.network?.bytes_sent || 0,
+        network_bytes_recv: data.network?.bytes_recv || 0,
+        network_packets_sent: data.network?.packets_sent || 0,
+        network_packets_recv: data.network?.packets_recv || 0,
+        uptime_seconds: data.uptime?.uptime_seconds || 0,
+        boot_time: null
+      };
+      
+      diskData = data.disk?.partitions || [];
+      networkData = data.network?.interfaces || [];
+    } else {
+      // Formato antiguo
+      hostData = data.host;
+      systemMetrics = data.system_metrics;
+      diskData = data.disk_partitions || [];
+      networkData = data.network_interfaces || [];
+    }
+
     // 1. Buscar o crear el host
     let hostId: number;
     
     const existingHost = await queryMonitoring(
       'SELECT id FROM hosts WHERE hostname = ?',
-      [data.host.hostname]
+      [hostData.hostname]
     ) as any[];
 
     if (existingHost.length > 0) {
@@ -34,11 +85,11 @@ export async function POST(request: NextRequest) {
           last_seen = NOW()
         WHERE id = ?`,
         [
-          data.host.ip_address,
-          data.host.os_type,
-          data.host.os_version,
-          data.host.architecture,
-          data.host.agent_version,
+          hostData.ip_address,
+          hostData.os_type,
+          hostData.os_version,
+          hostData.architecture,
+          hostData.agent_version,
           hostId
         ]
       );
@@ -49,12 +100,12 @@ export async function POST(request: NextRequest) {
           hostname, ip_address, os_type, os_version, architecture, agent_version, first_seen, last_seen
         ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
         [
-          data.host.hostname,
-          data.host.ip_address,
-          data.host.os_type,
-          data.host.os_version,
-          data.host.architecture,
-          data.host.agent_version
+          hostData.hostname,
+          hostData.ip_address,
+          hostData.os_type,
+          hostData.os_version,
+          hostData.architecture,
+          hostData.agent_version
         ]
       ) as any;
       
@@ -62,8 +113,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Insertar system_metrics
-    if (data.system_metrics) {
-      const m = data.system_metrics;
+    if (systemMetrics) {
+      const m = systemMetrics;
       await queryMonitoring(
         `INSERT INTO system_metrics (
           host_id, timestamp, cpu_percent, cpu_count, 
@@ -73,7 +124,7 @@ export async function POST(request: NextRequest) {
           disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
           network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
           uptime_seconds, boot_time
-        ) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           hostId,
           m.cpu_percent || 0,
@@ -103,8 +154,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Insertar disk_partitions
-    if (data.disk_partitions && Array.isArray(data.disk_partitions)) {
-      for (const disk of data.disk_partitions) {
+    if (diskData && Array.isArray(diskData)) {
+      for (const disk of diskData) {
         await queryMonitoring(
           `INSERT INTO disk_partitions (
             host_id, timestamp, device, mountpoint, fstype, 
@@ -115,31 +166,50 @@ export async function POST(request: NextRequest) {
             disk.device,
             disk.mountpoint,
             disk.fstype,
-            disk.total_bytes || 0,
-            disk.used_bytes || 0,
-            disk.free_bytes || 0,
-            disk.percent_used || 0
+            disk.total || disk.total_bytes || 0,
+            disk.used || disk.used_bytes || 0,
+            disk.free || disk.free_bytes || 0,
+            disk.percent || disk.percent_used || 0
           ]
         );
       }
     }
 
     // 4. Insertar network_interfaces
-    if (data.network_interfaces && Array.isArray(data.network_interfaces)) {
-      for (const iface of data.network_interfaces) {
-        await queryMonitoring(
-          `INSERT INTO network_interfaces (
-            host_id, timestamp, interface_name, ip_address, ip_type, netmask, broadcast
-          ) VALUES (?, NOW(), ?, ?, ?, ?, ?)`,
-          [
-            hostId,
-            iface.interface_name,
-            iface.ip_address,
-            iface.ip_type || 'IPv4',
-            iface.netmask || null,
-            iface.broadcast || null
-          ]
-        );
+    if (networkData && Array.isArray(networkData)) {
+      for (const iface of networkData) {
+        if (iface.addresses && Array.isArray(iface.addresses)) {
+          for (const addr of iface.addresses) {
+            await queryMonitoring(
+              `INSERT INTO network_interfaces (
+                host_id, timestamp, interface_name, ip_address, ip_type, netmask, broadcast
+              ) VALUES (?, NOW(), ?, ?, ?, ?, ?)`,
+              [
+                hostId,
+                iface.name,
+                addr.address,
+                addr.type || 'IPv4',
+                addr.netmask || null,
+                addr.broadcast || null
+              ]
+            );
+          }
+        } else {
+          // Formato antiguo
+          await queryMonitoring(
+            `INSERT INTO network_interfaces (
+              host_id, timestamp, interface_name, ip_address, ip_type, netmask, broadcast
+            ) VALUES (?, NOW(), ?, ?, ?, ?, ?)`,
+            [
+              hostId,
+              iface.interface_name || iface.name,
+              iface.ip_address,
+              iface.ip_type || 'IPv4',
+              iface.netmask || null,
+              iface.broadcast || null
+            ]
+          );
+        }
       }
     }
 

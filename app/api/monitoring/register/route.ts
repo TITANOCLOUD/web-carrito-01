@@ -13,19 +13,19 @@ export async function POST(request: NextRequest) {
       console.log('[v0] Verificando si host existe...');
       
       const existing = await queryMonitoring(
-        'SELECT host_id FROM hosts WHERE hostname = ? LIMIT 1',
+        'SELECT id FROM hosts WHERE hostname = ? LIMIT 1',
         [data.hostname]
       );
 
       let hostId;
       
       if (existing && existing.length > 0) {
-        hostId = existing[0].host_id;
+        hostId = existing[0].id;
         console.log('[v0] Host encontrado con ID:', hostId);
         
         await queryMonitoring(
-          'UPDATE hosts SET last_seen = NOW() WHERE host_id = ?',
-          [hostId]
+          'UPDATE hosts SET ip_address = ?, last_seen = NOW() WHERE id = ?',
+          [data.ip || data.ip_address || 'unknown', hostId]
         );
         
         console.log('[v0] ✓ Host actualizado correctamente');
@@ -33,16 +33,14 @@ export async function POST(request: NextRequest) {
         console.log('[v0] Host nuevo, insertando...');
         
         const result = await queryMonitoring(
-          'INSERT INTO hosts (hostname, ip_address, os_name, os_version, kernel_version, cpu_model, cpu_cores, total_memory, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())',
+          'INSERT INTO hosts (hostname, ip_address, os_type, os_version, architecture, agent_version) VALUES (?, ?, ?, ?, ?, ?)',
           [
             data.hostname,
-            data.ip || 'unknown',
-            data.os_name || 'unknown',
-            data.os_version || 'unknown', 
-            data.kernel_version || 'unknown',
-            data.cpu_model || 'unknown',
-            data.cpu_cores || 0,
-            data.total_memory || 0
+            data.ip || data.ip_address || 'unknown',
+            data.os_type || data.os || 'unknown',
+            data.os_version || 'unknown',
+            data.architecture || data.arch || 'unknown',
+            data.agent_version || '1.0.0'
           ]
         );
         
@@ -70,7 +68,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error: any) {
-    console.error('[v0] ❌ Error general en registro:', error);
+    console.error('[v0] Error en registro:', error.message);
     return NextResponse.json({
       status: 'error',
       error: error.message
