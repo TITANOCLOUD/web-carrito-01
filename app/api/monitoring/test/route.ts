@@ -20,7 +20,7 @@ export async function GET() {
     console.log('[TEST] Hosts registrados:', hosts)
     
     // Ver métricas
-    const [metrics] = await pool.query('SELECT * FROM system_metrics ORDER BY created_at DESC LIMIT 5')
+    const [metrics] = await pool.query('SELECT * FROM system_metrics ORDER BY timestamp DESC LIMIT 5')
     console.log('[TEST] Últimas métricas:', metrics)
     
     return NextResponse.json({

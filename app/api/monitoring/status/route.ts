@@ -21,11 +21,11 @@ export async function GET() {
         sm.cpu_usage,
         sm.memory_usage,
         sm.disk_usage,
-        sm.created_at as metric_time
+        sm.timestamp as metric_time
       FROM hosts h
       LEFT JOIN system_metrics sm ON h.id = sm.host_id
-      WHERE sm.created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-      ORDER BY sm.created_at DESC
+      WHERE sm.timestamp > DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+      ORDER BY sm.timestamp DESC
       LIMIT 20
     `)
     
