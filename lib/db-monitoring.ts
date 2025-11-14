@@ -21,6 +21,17 @@ export function getMonitoringPool() {
   return pool;
 }
 
+export async function getMonitoringDbConnection() {
+  return await mysql.createConnection({
+    host: process.env.MONITORING_DB_HOST || 'saturn-o-cloud.com',
+    port: parseInt(process.env.MONITORING_DB_PORT || '3306'),
+    user: process.env.MONITORING_DB_USER || 'monitor_user',
+    password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r2025',
+    database: process.env.MONITORING_DB_NAME || 'data-monitoring',
+    charset: 'utf8mb4'
+  });
+}
+
 export async function queryMonitoring(sql: string, params?: any[]) {
   try {
     const pool = getMonitoringPool();

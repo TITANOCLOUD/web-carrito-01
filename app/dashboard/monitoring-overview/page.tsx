@@ -1,13 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Activity, AlertTriangle, CheckCircle2, Database, Disc, Globe, Shield, TrendingUp, XCircle } from "lucide-react"
+import { Activity, AlertTriangle, CheckCircle2, Database, Disc, Globe, Shield, TrendingUp, XCircle } from 'lucide-react'
 
 export default function MonitoringOverviewPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [stats, setStats] = useState([])
+  const [systems, setSystems] = useState([])
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -16,53 +18,25 @@ export default function MonitoringOverviewPage() {
     } else {
       setIsAuthenticated(true)
     }
+    // Cargar datos reales de la API
+    fetchRealData()
   }, [router])
+
+  const fetchRealData = async () => {
+    try {
+      const response = await fetch('/api/hosts/list')
+      const data = await response.json()
+      // Procesar y actualizar estado con datos reales
+      setStats(data.stats)
+      setSystems(data.systems)
+    } catch (error) {
+      console.error('Error fetching monitoring data:', error)
+    }
+  }
 
   if (!isAuthenticated) {
     return null
   }
-
-  const stats = [
-    {
-      title: "Servicios Activos",
-      value: "24",
-      total: "26",
-      icon: CheckCircle2,
-      color: "text-green-400",
-      bgColor: "bg-green-500/20",
-    },
-    {
-      title: "Alertas Críticas",
-      value: "2",
-      description: "Requieren atención",
-      icon: AlertTriangle,
-      color: "text-red-400",
-      bgColor: "bg-red-500/20",
-    },
-    {
-      title: "Uptime Promedio",
-      value: "99.98%",
-      description: "Últimos 30 días",
-      icon: TrendingUp,
-      color: "text-cyan-400",
-      bgColor: "bg-cyan-500/20",
-    },
-    {
-      title: "IPs Bloqueadas",
-      value: "147",
-      description: "En las últimas 24h",
-      icon: Shield,
-      color: "text-yellow-400",
-      bgColor: "bg-yellow-500/20",
-    },
-  ]
-
-  const systems = [
-    { name: "Discos y Almacenamiento", status: "operational", usage: "68%", icon: Disc },
-    { name: "Bases de Datos", status: "operational", usage: "142 queries/s", icon: Database },
-    { name: "Sitios Web", status: "degraded", usage: "23/25 online", icon: Globe },
-    { name: "Firewall y WAF", status: "operational", usage: "Active", icon: Shield },
-  ]
 
   const getStatusColor = (status: string) => {
     switch (status) {
