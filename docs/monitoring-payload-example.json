@@ -1,0 +1,148 @@
+{
+  "api_key": "tu-api-key-aqui",
+  "host": {
+    "hostname": "TNC-KS7-BAY-NRE-01",
+    "ip_address": "192.168.1.100",
+    "os_type": "Linux",
+    "os_version": "Ubuntu 22.04.3 LTS",
+    "architecture": "x86_64",
+    "agent_version": "1.0.0"
+  },
+  "system_metrics": {
+    "cpu_percent": 45.2,
+    "cpu_count": 8,
+    "load_average_1": 1.25,
+    "load_average_5": 1.50,
+    "load_average_15": 1.75,
+    "memory_total": 16777216000,
+    "memory_used": 8388608000,
+    "memory_available": 8388608000,
+    "memory_percent": 50.0,
+    "swap_total": 4294967296,
+    "swap_used": 1073741824,
+    "swap_percent": 25.0,
+    "disk_read_bytes": 1073741824,
+    "disk_write_bytes": 536870912,
+    "disk_read_count": 1000,
+    "disk_write_count": 500,
+    "network_bytes_sent": 10737418240,
+    "network_bytes_recv": 5368709120,
+    "network_packets_sent": 100000,
+    "network_packets_recv": 50000,
+    "uptime_seconds": 86400,
+    "boot_time": "2025-01-01 00:00:00"
+  },
+  "disk_partitions": [
+    {
+      "device": "/dev/sda1",
+      "mountpoint": "/",
+      "fstype": "ext4",
+      "total_bytes": 107374182400,
+      "used_bytes": 53687091200,
+      "free_bytes": 53687091200,
+      "percent_used": 50.0
+    }
+  ],
+  "network_interfaces": [
+    {
+      "interface_name": "eth0",
+      "ip_address": "192.168.1.100",
+      "ip_type": "IPv4",
+      "netmask": "255.255.255.0",
+      "broadcast": "192.168.1.255"
+    }
+  ],
+  "security_alerts": [
+    {
+      "category": "authentication",
+      "component": "ssh",
+      "source": "192.168.1.200",
+      "event_id": "4625",
+      "severity": "high",
+      "message": "Failed SSH login attempt"
+    }
+  ],
+  "processes": [
+    {
+      "pid": 1234,
+      "process_name": "nginx",
+      "user": "www-data",
+      "cpu_percent": 5.2,
+      "memory_percent": 2.1,
+      "memory_bytes": 104857600,
+      "status": "running",
+      "cmdline": "nginx: master process"
+    }
+  ],
+  "services": [
+    {
+      "service_name": "nginx",
+      "display_name": "NGINX Web Server",
+      "status": "running",
+      "start_type": "auto",
+      "pid": 1234
+    }
+  ],
+  "ping": [
+    {
+      "target": "8.8.8.8",
+      "latency_ms": 15.2,
+      "packet_loss": 0,
+      "status": "ok"
+    }
+  ],
+  "ceph": {
+    "cluster_health": {
+      "health_status": "HEALTH_OK",
+      "health_score": 100,
+      "mon_quorum": 3,
+      "osd_up": 10,
+      "osd_down": 0,
+      "osd_in": 10,
+      "osd_out": 0,
+      "pg_total": 1024,
+      "pg_active_clean": 1024,
+      "pg_degraded": 0,
+      "pg_stuck": 0,
+      "pg_recovery": 0,
+      "raw_used_bytes": 5497558138880,
+      "raw_total_bytes": 10995116277760,
+      "raw_available_bytes": 5497558138880
+    },
+    "osd_status": [
+      {
+        "osd_id": 0,
+        "status": "up",
+        "in_cluster": true,
+        "weight": 1.0,
+        "reweight": 1.0,
+        "last_heartbeat": "2025-01-15 10:30:00",
+        "latency_ms": 2.5
+      }
+    ],
+    "pg_status": [
+      {
+        "pg_id": "1.0",
+        "state": "active+clean",
+        "objects": 1000,
+        "bytes": 4294967296,
+        "clean": true,
+        "degraded": false,
+        "undersized": false,
+        "recovery_state": null
+      }
+    ],
+    "smart": [
+      {
+        "device": "/dev/sda",
+        "temperature": 35,
+        "power_on_hours": 8760,
+        "wear_level": 95,
+        "reallocated_sectors": 0,
+        "pending_sectors": 0,
+        "smart_status": "PASSED",
+        "message": null
+      }
+    ]
+  }
+}
