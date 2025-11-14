@@ -8,12 +8,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     console.log('[v0] /api/register - Body completo recibido:', JSON.stringify(body, null, 2))
     
-    const { hostname, ip, os_type, os_version, architecture, agent_version } = body
+    const hostname = body.hostname
+    const ip = body.ip || body.ip_address
+    const os_type = body.os_type || body.os || body.osType
+    const os_version = body.os_version || body.osVersion
+    const architecture = body.architecture || body.arch
+    const agent_version = body.agent_version || body.agentVersion || '1.0.0'
 
-    console.log('[v0] /api/register - Recibida petición:', { hostname, ip })
+    console.log('[v0] /api/register - Datos procesados:', { hostname, ip, os_type, os_version, architecture, agent_version })
 
     if (!hostname) {
-      console.log('[v0] /api/register - Datos incompletos')
+      console.log('[v0] /api/register - hostname faltante')
       return NextResponse.json(
         { error: 'hostname es requerido' },
         { status: 400 }
@@ -26,7 +31,10 @@ export async function POST(req: NextRequest) {
       console.log('[v0] /api/register - Pool de conexión obtenido correctamente')
     } catch (poolError) {
       console.error('[v0] /api/register - ERROR al obtener pool:', poolError)
-      throw poolError
+      return NextResponse.json(
+        { error: 'Error de conexión a base de datos', details: String(poolError) },
+        { status: 500 }
+      )
     }
     
     console.log('[v0] /api/register - Verificando si host existe...')
