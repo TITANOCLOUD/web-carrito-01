@@ -5,7 +5,7 @@ let pool: mysql.Pool | null = null;
 export function getMonitoringPool() {
   if (!pool) {
     pool = mysql.createPool({
-      host: process.env.MONITORING_DB_HOST || 'localhost',
+      host: process.env.MONITORING_DB_HOST || '127.0.0.1',
       port: parseInt(process.env.MONITORING_DB_PORT || '3306'),
       user: process.env.MONITORING_DB_USER || 'monitor_user',
       password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r20251**',
@@ -19,14 +19,14 @@ export function getMonitoringPool() {
       connectTimeout: 10000
     });
     
-    console.log('[v0] Pool de MySQL creado para', process.env.MONITORING_DB_HOST || 'localhost');
+    console.log('[v0] Pool de MySQL creado para', process.env.MONITORING_DB_HOST || '127.0.0.1');
   }
   return pool;
 }
 
 export async function getMonitoringDbConnection() {
   return await mysql.createConnection({
-    host: process.env.MONITORING_DB_HOST || 'localhost',
+    host: process.env.MONITORING_DB_HOST || '127.0.0.1',
     port: parseInt(process.env.MONITORING_DB_PORT || '3306'),
     user: process.env.MONITORING_DB_USER || 'monitor_user',
     password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r20251**',
