@@ -41,15 +41,15 @@ export async function POST(req: NextRequest) {
             swap_total, swap_used, swap_percent,
             disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
             network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
-            uptime_seconds, boot_time, timestamp
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+            uptime_seconds, boot_time
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             host_id,
             system.cpu_percent || null,
             system.cpu_count || null,
-            system.load_average?.[0] || null,
-            system.load_average?.[1] || null,
-            system.load_average?.[2] || null,
+            system.load_avg_1 || system.load_average?.[0] || null,
+            system.load_avg_5 || system.load_average?.[1] || null,
+            system.load_avg_15 || system.load_average?.[2] || null,
             system.memory_total || null,
             system.memory_used || null,
             system.memory_available || null,
@@ -61,11 +61,11 @@ export async function POST(req: NextRequest) {
             system.disk_write_bytes || null,
             system.disk_read_count || null,
             system.disk_write_count || null,
-            system.network_bytes_sent || null,
-            system.network_bytes_recv || null,
-            system.network_packets_sent || null,
-            system.network_packets_recv || null,
-            system.uptime_seconds || null,
+            system.network_sent_bytes || system.network_bytes_sent || null,
+            system.network_recv_bytes || system.network_bytes_recv || null,
+            system.network_sent_packets || system.network_packets_sent || null,
+            system.network_recv_packets || system.network_packets_recv || null,
+            system.uptime || system.uptime_seconds || null,
             system.boot_time || null
           ]
         )
