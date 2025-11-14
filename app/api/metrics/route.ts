@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 
     // Actualizar last_seen del host
     await pool.query(
-      'UPDATE hosts SET last_seen = NOW(), status = ? WHERE host_id = ?',
+      'UPDATE hosts SET last_seen = NOW(), status = ? WHERE id = ?',
       ['online', host_id]
     )
 

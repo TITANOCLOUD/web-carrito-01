@@ -23,19 +23,19 @@ export async function POST(req: NextRequest) {
     // Verificar si el host ya existe
     console.log('[v0] /api/register - Verificando si host existe...')
     const [existingHosts] = await pool.query(
-      'SELECT host_id FROM hosts WHERE hostname = ? OR ip = ? LIMIT 1',
+      'SELECT id FROM hosts WHERE hostname = ? OR ip = ? LIMIT 1',
       [hostname, ip]
     )
 
     let hostId: number
 
     if (Array.isArray(existingHosts) && existingHosts.length > 0) {
-      hostId = (existingHosts[0] as any).host_id
+      hostId = (existingHosts[0] as any).id
       console.log('[v0] /api/register - Host existente encontrado:', hostId)
       
       // Actualizar última conexión
       await pool.query(
-        'UPDATE hosts SET last_seen = NOW() WHERE host_id = ?',
+        'UPDATE hosts SET last_seen = NOW() WHERE id = ?',
         [hostId]
       )
     } else {
