@@ -6,6 +6,8 @@ export async function POST(req: NextRequest) {
   
   try {
     const body = await req.json()
+    console.log('[v0] /api/metrics - Body completo recibido:', JSON.stringify(body, null, 2))
+    
     const { host_id, system, disks, network, processes } = body
 
     console.log('[v0] /api/metrics - Recibida petición para host_id:', host_id)
@@ -18,46 +20,66 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const pool = await getMonitoringPool()
+    let pool
+    try {
+      pool = await getMonitoringPool()
+      console.log('[v0] /api/metrics - Pool de conexión obtenido correctamente')
+    } catch (poolError) {
+      console.error('[v0] /api/metrics - ERROR al obtener pool:', poolError)
+      throw poolError
+    }
     
     if (system) {
       console.log('[v0] /api/metrics - Insertando métricas del sistema...')
-      await pool.query(
-        `INSERT INTO system_metrics (
-          host_id, cpu_percent, cpu_count, load_average_1, load_average_5, load_average_15,
-          memory_total, memory_used, memory_available, memory_percent,
-          swap_total, swap_used, swap_percent,
-          disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
-          network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
-          uptime_seconds, boot_time, timestamp
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
-        [
-          host_id,
-          system.cpu_percent || null,
-          system.cpu_count || null,
-          system.load_average?.[0] || null,
-          system.load_average?.[1] || null,
-          system.load_average?.[2] || null,
-          system.memory_total || null,
-          system.memory_used || null,
-          system.memory_available || null,
-          system.memory_percent || null,
-          system.swap_total || null,
-          system.swap_used || null,
-          system.swap_percent || null,
-          system.disk_read_bytes || null,
-          system.disk_write_bytes || null,
-          system.disk_read_count || null,
-          system.disk_write_count || null,
-          system.network_bytes_sent || null,
-          system.network_bytes_recv || null,
-          system.network_packets_sent || null,
-          system.network_packets_recv || null,
-          system.uptime_seconds || null,
-          system.boot_time || null
-        ]
-      )
-      console.log('[v0] /api/metrics - Métricas del sistema insertadas')
+      console.log('[v0] /api/metrics - Datos del sistema:', JSON.stringify(system, null, 2))
+      
+      try {
+        await pool.query(
+          `INSERT INTO system_metrics (
+            host_id, cpu_percent, cpu_count, load_average_1, load_average_5, load_average_15,
+            memory_total, memory_used, memory_available, memory_percent,
+            swap_total, swap_used, swap_percent,
+            disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
+            network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
+            uptime_seconds, boot_time, timestamp
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+          [
+            host_id,
+            system.cpu_percent || null,
+            system.cpu_count || null,
+            system.load_average?.[0] || null,
+            system.load_average?.[1] || null,
+            system.load_average?.[2] || null,
+            system.memory_total || null,
+            system.memory_used || null,
+            system.memory_available || null,
+            system.memory_percent || null,
+            system.swap_total || null,
+            system.swap_used || null,
+            system.swap_percent || null,
+            system.disk_read_bytes || null,
+            system.disk_write_bytes || null,
+            system.disk_read_count || null,
+            system.disk_write_count || null,
+            system.network_bytes_sent || null,
+            system.network_bytes_recv || null,
+            system.network_packets_sent || null,
+            system.network_packets_recv || null,
+            system.uptime_seconds || null,
+            system.boot_time || null
+          ]
+        )
+        console.log('[v0] /api/metrics - Métricas del sistema insertadas EXITOSAMENTE')
+      } catch (insertError) {
+        console.error('[v0] /api/metrics - ERROR al insertar system_metrics:', insertError)
+        console.error('[v0] /api/metrics - Detalles del error:', {
+          message: (insertError as Error).message,
+          code: (insertError as any).code,
+          errno: (insertError as any).errno,
+          sql: (insertError as any).sql
+        })
+        throw insertError
+      }
     }
 
     if (disks && Array.isArray(disks)) {

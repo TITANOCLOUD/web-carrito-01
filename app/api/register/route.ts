@@ -6,6 +6,8 @@ export async function POST(req: NextRequest) {
   
   try {
     const body = await req.json()
+    console.log('[v0] /api/register - Body completo recibido:', JSON.stringify(body, null, 2))
+    
     const { hostname, ip, os_type, os_version, architecture, agent_version } = body
 
     console.log('[v0] /api/register - Recibida petición:', { hostname, ip })
@@ -18,13 +20,28 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const pool = await getMonitoringPool()
+    let pool
+    try {
+      pool = await getMonitoringPool()
+      console.log('[v0] /api/register - Pool de conexión obtenido correctamente')
+    } catch (poolError) {
+      console.error('[v0] /api/register - ERROR al obtener pool:', poolError)
+      throw poolError
+    }
     
     console.log('[v0] /api/register - Verificando si host existe...')
-    const [existingHosts] = await pool.query(
-      'SELECT id FROM hosts WHERE hostname = ? LIMIT 1',
-      [hostname]
-    )
+    
+    let existingHosts
+    try {
+      [existingHosts] = await pool.query(
+        'SELECT id FROM hosts WHERE hostname = ? LIMIT 1',
+        [hostname]
+      )
+      console.log('[v0] /api/register - Query SELECT ejecutado, resultados:', existingHosts)
+    } catch (selectError) {
+      console.error('[v0] /api/register - ERROR en SELECT:', selectError)
+      throw selectError
+    }
 
     let hostId: number
 
@@ -32,25 +49,43 @@ export async function POST(req: NextRequest) {
       hostId = (existingHosts[0] as any).id
       console.log('[v0] /api/register - Host existente encontrado:', hostId)
       
-      await pool.query(
-        `UPDATE hosts 
-         SET ip_address = ?, os_type = ?, os_version = ?, architecture = ?, agent_version = ?, last_seen = NOW() 
-         WHERE id = ?`,
-        [ip || null, os_type || null, os_version || null, architecture || null, agent_version || null, hostId]
-      )
+      try {
+        await pool.query(
+          `UPDATE hosts 
+           SET ip_address = ?, os_type = ?, os_version = ?, architecture = ?, agent_version = ?, last_seen = NOW() 
+           WHERE id = ?`,
+          [ip || null, os_type || null, os_version || null, architecture || null, agent_version || null, hostId]
+        )
+        console.log('[v0] /api/register - Host actualizado EXITOSAMENTE')
+      } catch (updateError) {
+        console.error('[v0] /api/register - ERROR en UPDATE:', updateError)
+        throw updateError
+      }
     } else {
       console.log('[v0] /api/register - Insertando nuevo host...')
-      const [result] = await pool.query(
-        `INSERT INTO hosts (hostname, ip_address, os_type, os_version, architecture, agent_version, first_seen, last_seen) 
-         VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-        [hostname, ip || null, os_type || null, os_version || null, architecture || null, agent_version || null]
-      )
-      hostId = (result as any).insertId
-      console.log('[v0] /api/register - Nuevo host creado:', hostId)
+      
+      try {
+        const [result] = await pool.query(
+          `INSERT INTO hosts (hostname, ip_address, os_type, os_version, architecture, agent_version, first_seen, last_seen) 
+           VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+          [hostname, ip || null, os_type || null, os_version || null, architecture || null, agent_version || null]
+        )
+        hostId = (result as any).insertId
+        console.log('[v0] /api/register - Nuevo host creado EXITOSAMENTE:', hostId)
+      } catch (insertError) {
+        console.error('[v0] /api/register - ERROR en INSERT:', insertError)
+        console.error('[v0] /api/register - Detalles del error:', {
+          message: (insertError as Error).message,
+          code: (insertError as any).code,
+          errno: (insertError as any).errno,
+          sql: (insertError as any).sql
+        })
+        throw insertError
+      }
     }
 
     const duration = Date.now() - startTime
-    console.log(`[v0] /api/register - Registro completado en ${duration}ms`)
+    console.log(`[v0] /api/register - Registro completado EXITOSAMENTE en ${duration}ms`)
 
     return NextResponse.json({ 
       success: true,
@@ -60,7 +95,8 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     const duration = Date.now() - startTime
-    console.error('[v0] /api/register - ERROR:', error)
+    console.error('[v0] /api/register - ERROR CAPTURADO:', error)
+    console.error('[v0] /api/register - Stack trace:', (error as Error).stack)
     console.error(`[v0] /api/register - Falló después de ${duration}ms`)
     
     return NextResponse.json(
