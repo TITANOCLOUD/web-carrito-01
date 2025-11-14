@@ -3,6 +3,7 @@ import { getMonitoringPool } from '@/lib/db-monitoring'
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now()
+  let pool
   
   try {
     const body = await req.json()
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const pool = await getMonitoringPool()
+    pool = await getMonitoringPool()
     console.log('[v0] /api/register - Pool de conexión obtenido correctamente')
     
     const [existingHosts] = await pool.query(
@@ -73,6 +74,10 @@ export async function POST(req: NextRequest) {
       { error: 'Error al registrar host', details: String(error) },
       { status: 500 }
     )
+  } finally {
+    if (pool) {
+      await pool.end()
+    }
   }
 }
 
