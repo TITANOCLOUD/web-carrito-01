@@ -6,25 +6,24 @@ export async function POST(req: NextRequest) {
   
   try {
     const body = await req.json()
-    const { hostname, ip } = body
+    const { hostname, ip, os_type, os_version, architecture, agent_version } = body
 
     console.log('[v0] /api/register - Recibida petición:', { hostname, ip })
 
-    if (!hostname || !ip) {
+    if (!hostname) {
       console.log('[v0] /api/register - Datos incompletos')
       return NextResponse.json(
-        { error: 'hostname e ip son requeridos' },
+        { error: 'hostname es requerido' },
         { status: 400 }
       )
     }
 
     const pool = await getMonitoringPool()
     
-    // Verificar si el host ya existe
     console.log('[v0] /api/register - Verificando si host existe...')
     const [existingHosts] = await pool.query(
-      'SELECT id FROM hosts WHERE hostname = ? OR ip = ? LIMIT 1',
-      [hostname, ip]
+      'SELECT id FROM hosts WHERE hostname = ? LIMIT 1',
+      [hostname]
     )
 
     let hostId: number
@@ -33,16 +32,18 @@ export async function POST(req: NextRequest) {
       hostId = (existingHosts[0] as any).id
       console.log('[v0] /api/register - Host existente encontrado:', hostId)
       
-      // Actualizar última conexión
       await pool.query(
-        'UPDATE hosts SET last_seen = NOW() WHERE id = ?',
-        [hostId]
+        `UPDATE hosts 
+         SET ip_address = ?, os_type = ?, os_version = ?, architecture = ?, agent_version = ?, last_seen = NOW() 
+         WHERE id = ?`,
+        [ip || null, os_type || null, os_version || null, architecture || null, agent_version || null, hostId]
       )
     } else {
       console.log('[v0] /api/register - Insertando nuevo host...')
       const [result] = await pool.query(
-        'INSERT INTO hosts (hostname, ip, status, created_at, last_seen) VALUES (?, ?, ?, NOW(), NOW())',
-        [hostname, ip, 'online']
+        `INSERT INTO hosts (hostname, ip_address, os_type, os_version, architecture, agent_version, first_seen, last_seen) 
+         VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+        [hostname, ip || null, os_type || null, os_version || null, architecture || null, agent_version || null]
       )
       hostId = (result as any).insertId
       console.log('[v0] /api/register - Nuevo host creado:', hostId)
