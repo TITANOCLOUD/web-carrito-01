@@ -747,12 +747,10 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                   <div>
                     <h2 className="text-3xl font-bold text-white mb-4">Cloud GPU</h2>
                     <p className="text-slate-300 mb-6 text-lg">
-                      Descubra la velocidad de nuestras instancias Public Cloud más potentes: hasta mil veces más
-                      rápidas que una CPU para el cálculo paralelo.
+                      Descubra la velocidad de nuestras instancias Public Cloud más potentes: hasta mil veces más rápidas que una CPU para el cálculo paralelo.
                     </p>
                     <p className="text-slate-400 mb-6">
-                      Soluciones Cloud GPU a medida con nuestra amplia selección optimizada para IA, machine learning y
-                      computación de alto rendimiento.
+                      Soluciones Cloud GPU a medida con nuestra amplia selección optimizada para IA, machine learning y computación de alto rendimiento.
                     </p>
                     <Button
                       size="lg"
@@ -1291,21 +1289,21 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                       <td className="py-3 px-4 text-slate-300">64</td>
                       <td className="py-3 px-4 text-slate-300">128 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$3.9468</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$2.62725</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-256</td>
                       <td className="py-3 px-4 text-slate-300">128</td>
                       <td className="py-3 px-4 text-slate-300">256 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$7.9282</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$5.25450</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c3-320</td>
                       <td className="py-3 px-4 text-slate-300">160</td>
                       <td className="py-3 px-4 text-slate-300">320 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-right text-white font-semibold">$9.9102</td>
+                      <td className="py-3 px-4 text-right text-white font-semibold">$6.56812</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
                       <td className="py-3 px-4 text-white">c2-7</td>
@@ -1313,6 +1311,7 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                       <td className="py-3 px-4 text-slate-300">7 GB</td>
                       <td className="py-3 px-4 text-slate-300">50 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">300 Mbit/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$0.249</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
@@ -1321,6 +1320,7 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                       <td className="py-3 px-4 text-slate-300">15 GB</td>
                       <td className="py-3 px-4 text-slate-300">100 GB SSD</td>
                       <td className="py-3 px-4 text-slate-300">250 Mbit/s garantizado(s)</td>
+                      <td className="py-3 px-4 text-slate-300">1 Gb/s máx.</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$0.476</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
@@ -2091,7 +2091,6 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                       <td className="py-3 px-4 text-slate-300">30 GB</td>
                       <td className="py-3 px-4 text-slate-300">8</td>
                       <td className="py-3 px-4 text-slate-300">200 GB SSD</td>
-                      <td className="py-3 px-4 text-slate-300">500 Mbit/s garantizado(s)</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$194</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
