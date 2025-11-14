@@ -5,15 +5,13 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
 
-    // Validar API Key
     const apiKey = data.api_key;
     if (!apiKey) {
       return NextResponse.json({ error: 'API Key requerida' }, { status: 401 });
     }
 
-    // Verificar si el token existe en la base de datos
     const tokenResult = await queryMonitoring(
-      'SELECT host_id, active FROM api_tokens WHERE token = ?',
+      'SELECT host_id, active FROM api_tokens WHERE token = ? LIMIT 1',
       [apiKey]
     ) as any[];
 
@@ -27,38 +25,38 @@ export async function POST(request: NextRequest) {
 
     const hostId = tokenResult[0].host_id;
 
-    // Actualizar last_used del token
-    await queryMonitoring(
-      'UPDATE api_tokens SET last_used = NOW() WHERE token = ?',
-      [apiKey]
-    );
-
-    // Actualizar información del host
-    const info = data.info || {};
-    await queryMonitoring(
-      `UPDATE hosts SET 
-        os_type = ?,
-        os_version = ?,
-        architecture = ?,
-        kernel_version = ?,
-        last_seen = NOW()
-      WHERE host_id = ?`,
-      [
-        info.os || 'Linux',
-        info.os_version || '',
-        info.arch || '',
-        info.kernel || '',
-        hostId
-      ]
-    );
-
-    console.log(`[v0] Host registrado: ${data.hostname} (ID: ${hostId})`);
-
-    return NextResponse.json({
+    const response = NextResponse.json({
       status: 'ok',
       host_id: hostId,
       message: 'Host registrado correctamente'
     });
+
+    Promise.all([
+      queryMonitoring(
+        'UPDATE api_tokens SET last_used = NOW() WHERE token = ?',
+        [apiKey]
+      ),
+      queryMonitoring(
+        `UPDATE hosts SET 
+          os_type = ?,
+          os_version = ?,
+          architecture = ?,
+          kernel_version = ?,
+          last_seen = NOW()
+        WHERE host_id = ?`,
+        [
+          data.info?.os || 'Linux',
+          data.info?.os_version || '',
+          data.info?.arch || '',
+          data.info?.kernel || '',
+          hostId
+        ]
+      )
+    ]).catch(err => console.error('[v0] Error en actualización async:', err));
+
+    console.log(`[v0] Host registrado: ${data.hostname} (ID: ${hostId})`);
+
+    return response;
 
   } catch (error: any) {
     console.error('[v0] Error en registro:', error);

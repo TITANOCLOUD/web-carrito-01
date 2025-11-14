@@ -405,8 +405,8 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                       número de casos de uso.
                     </p>
                     <Button
-                      onClick={() => router.push("/public-cloud/compute/vmi/precios")}
-                      className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                      disabled
+                      className="bg-gray-400 text-gray-600 cursor-not-allowed"
                     >
                       Ver Precios
                       <ArrowRight className="w-4 h-4 ml-2" />
@@ -1271,7 +1271,6 @@ ${selectedInstance.gpu ? `- GPU: ${selectedInstance.gpu}` : ''}`
                       <td className="py-3 px-4 text-slate-300">16</td>
                       <td className="py-3 px-4 text-slate-300">32 GB</td>
                       <td className="py-3 px-4 text-slate-300">400 GB NVMe</td>
-                      <td className="py-3 px-4 text-slate-300">2 Gb/s</td>
                       <td className="py-3 px-4 text-right text-white font-semibold">$0.9867</td>
                     </tr>
                     <tr className="border-b border-slate-800 hover:bg-slate-800/30">
