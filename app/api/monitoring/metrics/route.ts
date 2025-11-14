@@ -5,14 +5,19 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     
-    console.log('[v0] Métricas recibidas de host_id:', data.host_id || 'unknown');
+    console.log('[v0] === MÉTRICAS RECIBIDAS ===');
+    console.log('[v0] Host ID:', data.host_id);
+    console.log('[v0] CPU:', data.cpu_usage + '%');
+    console.log('[v0] Memory:', data.memory_usage + '%');
 
     try {
       const hostId = data.host_id || 1;
 
-      // Insertar métricas del sistema
+      // Insertar métricas del sistema y verificar resultado
       if (data.cpu_usage !== undefined) {
-        await queryMonitoring(
+        console.log('[v0] Insertando métricas del sistema...');
+        
+        const result = await queryMonitoring(
           'INSERT INTO system_metrics (host_id, cpu_usage, memory_usage, disk_usage, timestamp) VALUES (?, ?, ?, ?, NOW())',
           [
             hostId,
@@ -21,11 +26,13 @@ export async function POST(request: NextRequest) {
             data.disk_usage || 0
           ]
         );
-        console.log('[v0] Métricas del sistema insertadas para host_id:', hostId);
+        
+        console.log('[v0] ✓ Métricas del sistema insertadas, insertId:', (result as any).insertId);
       }
 
-      // Insertar particiones de disco
       if (data.disk_partitions && Array.isArray(data.disk_partitions)) {
+        console.log('[v0] Insertando', data.disk_partitions.length, 'particiones...');
+        
         for (const partition of data.disk_partitions) {
           await queryMonitoring(
             'INSERT INTO disk_partitions (host_id, device, mountpoint, fstype, total_space, used_space, free_space, usage_percent, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())',
@@ -41,11 +48,13 @@ export async function POST(request: NextRequest) {
             ]
           );
         }
-        console.log('[v0] Particiones insertadas:', data.disk_partitions.length);
+        
+        console.log('[v0] ✓ Particiones insertadas');
       }
 
-      // Insertar interfaces de red
       if (data.network_interfaces && Array.isArray(data.network_interfaces)) {
+        console.log('[v0] Insertando', data.network_interfaces.length, 'interfaces...');
+        
         for (const iface of data.network_interfaces) {
           await queryMonitoring(
             'INSERT INTO network_interfaces (host_id, interface_name, ip_address, bytes_sent, bytes_recv, packets_sent, packets_recv, errors_in, errors_out, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())',
@@ -62,8 +71,11 @@ export async function POST(request: NextRequest) {
             ]
           );
         }
-        console.log('[v0] Interfaces de red insertadas:', data.network_interfaces.length);
+        
+        console.log('[v0] ✓ Interfaces insertadas');
       }
+
+      console.log('[v0] ✓✓✓ TODAS LAS MÉTRICAS INSERTADAS CORRECTAMENTE');
 
       return NextResponse.json({
         status: 'ok',
@@ -73,20 +85,22 @@ export async function POST(request: NextRequest) {
       });
 
     } catch (dbError: any) {
-      console.error('[v0] Error DB en métricas:', dbError.message);
+      console.error('[v0] ❌ ERROR EN BASE DE DATOS:');
+      console.error('[v0] Error message:', dbError.message);
+      console.error('[v0] Error code:', dbError.code);
+      
       return NextResponse.json({
-        status: 'ok',
-        message: 'Métricas recibidas (fallback - revisar conexión DB)',
-        timestamp: new Date().toISOString()
-      });
+        status: 'error',
+        error: 'Database error: ' + dbError.message,
+        message: 'No se pudieron insertar las métricas'
+      }, { status: 500 });
     }
 
   } catch (error: any) {
-    console.error('[v0] Error en métricas:', error);
+    console.error('[v0] ❌ Error general en métricas:', error);
     return NextResponse.json({
-      status: 'ok',
-      message: 'Métricas recibidas (fallback)',
-      timestamp: new Date().toISOString()
-    });
+      status: 'error',
+      error: error.message
+    }, { status: 500 });
   }
 }
