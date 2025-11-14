@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Activity, AlertCircle, Database, Disc, Globe, HardDrive, Shield, TrendingDown, TrendingUp } from "lucide-react"
+import { Activity, AlertCircle, Database, Disc, Globe, HardDrive, Shield, TrendingDown, TrendingUp } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 
 export default function MonitoringPage() {

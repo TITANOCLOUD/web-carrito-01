@@ -10,6 +10,7 @@ export default function MonitoringOverviewPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [stats, setStats] = useState([])
   const [systems, setSystems] = useState([])
+  const [alerts, setAlerts] = useState([])
 
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated")
@@ -29,6 +30,7 @@ export default function MonitoringOverviewPage() {
       // Procesar y actualizar estado con datos reales
       setStats(data.stats)
       setSystems(data.systems)
+      setAlerts(data.alerts)
     } catch (error) {
       console.error('Error fetching monitoring data:', error)
     }
@@ -61,6 +63,28 @@ export default function MonitoringOverviewPage() {
         return <XCircle className="w-4 h-4" />
       default:
         return <Activity className="w-4 h-4" />
+    }
+  }
+
+  const getAlertSeverityColor = (severity: string) => {
+    switch (severity) {
+      case "critical":
+        return "bg-red-500/10 border border-red-500/30"
+      case "warning":
+        return "bg-yellow-500/10 border border-yellow-500/30"
+      default:
+        return "bg-gray-500/10 border border-gray-500/30"
+    }
+  }
+
+  const getAlertSeverityTextColor = (severity: string) => {
+    switch (severity) {
+      case "critical":
+        return "text-red-400"
+      case "warning":
+        return "text-yellow-400"
+      default:
+        return "text-gray-400"
     }
   }
 
@@ -137,22 +161,16 @@ export default function MonitoringOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-white font-medium">Sitio web app.ejemplo.com no responde</p>
-                  <p className="text-slate-400 text-sm">Hace 5 minutos</p>
+              {alerts.map((alert) => (
+                <div key={alert.id} className={`flex items-start gap-3 p-3 ${getAlertSeverityColor(alert.severity)} rounded-lg`}>
+                  <AlertTriangle className="w-5 h-5" style={{ color: getAlertSeverityTextColor(alert.severity) }} />
+                  <div className="flex-1">
+                    <p className="text-white font-medium">{alert.message}</p>
+                    <p className="text-slate-400 text-sm">{alert.timeAgo}</p>
+                  </div>
+                  <span className="text-xs capitalize bg-slate-800/20 px-2 py-1 rounded">{alert.severity}</span>
                 </div>
-                <span className="text-xs text-red-400 bg-red-500/20 px-2 py-1 rounded">CRÍTICO</span>
-              </div>
-              <div className="flex items-start gap-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                <AlertTriangle className="w-5 h-5 text-yellow-400 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-white font-medium">Disco /dev/sda1 al 89% de capacidad</p>
-                  <p className="text-slate-400 text-sm">Hace 1 hora</p>
-                </div>
-                <span className="text-xs text-yellow-400 bg-yellow-500/20 px-2 py-1 rounded">ADVERTENCIA</span>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>
