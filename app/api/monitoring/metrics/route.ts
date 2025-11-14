@@ -78,21 +78,15 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-  } catch (dbError: any) {
-    console.error('[v0] ❌ ERROR EN BASE DE DATOS:');
-    console.error('[v0] Error message:', dbError.message);
-    console.error('[v0] Error code:', dbError.code);
+  } catch (error: any) {
+    console.error('[v0] ❌ ERROR EN ENDPOINT DE MÉTRICAS:');
+    console.error('[v0] Error message:', error.message);
+    console.error('[v0] Error code:', error.code);
     
     return NextResponse.json({
       status: 'error',
-      error: 'Database error: ' + dbError.message,
+      error: error.message || 'Error desconocido',
       message: 'No se pudieron insertar las métricas'
-    }, { status: 500 });
-  } catch (error: any) {
-    console.error('[v0] Error en métricas:', error.message);
-    return NextResponse.json({
-      status: 'error',
-      error: error.message
     }, { status: 500 });
   }
 }
