@@ -35,7 +35,14 @@ export async function getMonitoringDbConnection() {
 export async function queryMonitoring(sql: string, params?: any[]) {
   try {
     const pool = getMonitoringPool();
-    const [rows] = await pool.execute(sql, params);
+    
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Query timeout')), 5000)
+    );
+    
+    const query = pool.execute(sql, params);
+    
+    const [rows] = await Promise.race([query, timeout]) as any;
     return rows;
   } catch (error) {
     console.error('[v0] Database query error:', error);
