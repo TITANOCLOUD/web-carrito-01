@@ -8,7 +8,7 @@ export function getMonitoringPool() {
       host: process.env.MONITORING_DB_HOST || '158.69.43.200',
       port: parseInt(process.env.MONITORING_DB_PORT || '3306'),
       user: process.env.MONITORING_DB_USER || 'monitor_user',
-      password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r2025**',
+      password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r2025',
       database: process.env.MONITORING_DB_NAME || 'data-monitoring',
       charset: 'utf8mb4',
       waitForConnections: true,
@@ -61,7 +61,7 @@ export async function getMonitoringDbConnection() {
     host: process.env.MONITORING_DB_HOST || '158.69.43.200',
     port: parseInt(process.env.MONITORING_DB_PORT || '3306'),
     user: process.env.MONITORING_DB_USER || 'monitor_user',
-    password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r2025**',
+    password: process.env.MONITORING_DB_PASSWORD || 'T!t@n0-M0n!t0r2025',
     database: process.env.MONITORING_DB_NAME || 'data-monitoring',
     charset: 'utf8mb4'
   });

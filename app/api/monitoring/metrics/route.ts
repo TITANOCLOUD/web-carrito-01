@@ -49,14 +49,14 @@ export async function POST(request: NextRequest) {
       const sqlQuery = `
         INSERT INTO system_metrics (
           host_id, cpu_percent, cpu_count, 
-          load_avg_1, load_avg_5, load_avg_15,
+          load_average_1, load_average_5, load_average_15,
           memory_total, memory_used, memory_available, memory_percent,
           swap_total, swap_used, swap_percent,
           disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
-          network_sent_bytes, network_recv_bytes, 
-          network_sent_packets, network_recv_packets,
+          network_bytes_sent, network_bytes_recv, 
+          network_packets_sent, network_packets_recv,
           uptime_seconds, boot_time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       
       try {
