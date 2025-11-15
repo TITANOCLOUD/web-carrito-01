@@ -42,41 +42,61 @@ export async function POST(request: NextRequest) {
       
       console.log('[v0] Insertando métricas del sistema con', values.length, 'valores');
       
-      await queryMonitoring(
-        `INSERT INTO system_metrics (
-          host_id, cpu_percent, cpu_count, load_average_1, load_average_5, load_average_15,
-          memory_total, memory_used, memory_available, memory_percent,
-          swap_total, swap_used, swap_percent,
-          disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
-          network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
-          uptime_seconds, boot_time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        values
-      );
-      
-      console.log('[v0] ✅ System metrics insertadas correctamente');
+      try {
+        const result = await queryMonitoring(
+          `INSERT INTO system_metrics (
+            host_id, cpu_percent, cpu_count, load_average_1, load_average_5, load_average_15,
+            memory_total, memory_used, memory_available, memory_percent,
+            swap_total, swap_used, swap_percent,
+            disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
+            network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
+            uptime_seconds, boot_time
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          values
+        );
+        
+        console.log('[v0] ✅ System metrics insertadas - Affected rows:', result?.affectedRows || 'unknown');
+        
+        if (!result || result.affectedRows === 0) {
+          throw new Error('INSERT no afectó ninguna fila');
+        }
+      } catch (insertError: any) {
+        console.error('[v0] ❌ ERROR al insertar system_metrics:', insertError.message);
+        console.error('[v0] SQL Error code:', insertError.code);
+        console.error('[v0] SQL Error errno:', insertError.errno);
+        console.error('[v0] SQL State:', insertError.sqlState);
+        throw insertError;
+      }
     }
 
     if (data.disks && Array.isArray(data.disks)) {
       console.log('[v0] Procesando', data.disks.length, 'discos');
       for (const disk of data.disks) {
-        await queryMonitoring(
-          'INSERT INTO disk_partitions (host_id, device, mountpoint, fstype, total_bytes, used_bytes, free_bytes, percent_used) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          [hostId, disk.device || 'unknown', disk.mountpoint || '/', disk.fstype || 'ext4', disk.total || 0, disk.used || 0, disk.free || 0, disk.percent || 0]
-        );
+        try {
+          const result = await queryMonitoring(
+            'INSERT INTO disk_partitions (host_id, device, mountpoint, fstype, total_bytes, used_bytes, free_bytes, percent_used) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [hostId, disk.device || 'unknown', disk.mountpoint || '/', disk.fstype || 'ext4', disk.total || 0, disk.used || 0, disk.free || 0, disk.percent || 0]
+          );
+          console.log('[v0] ✅ Disco insertado:', disk.device, '- Affected rows:', result?.affectedRows);
+        } catch (diskError: any) {
+          console.error('[v0] ❌ ERROR al insertar disco:', disk.device, '- Error:', diskError.message);
+        }
       }
-      console.log('[v0] ✅ Discos insertados correctamente');
     }
 
     if (data.network && Array.isArray(data.network)) {
       console.log('[v0] Procesando', data.network.length, 'interfaces de red');
       for (const iface of data.network) {
-        await queryMonitoring(
-          'INSERT INTO network_interfaces (host_id, interface_name, bytes_sent, bytes_recv, packets_sent, packets_recv) VALUES (?, ?, ?, ?, ?, ?)',
-          [hostId, iface.name || 'eth0', iface.bytes_sent || 0, iface.bytes_recv || 0, iface.packets_sent || 0, iface.packets_recv || 0]
-        );
+        try {
+          const result = await queryMonitoring(
+            'INSERT INTO network_interfaces (host_id, interface_name, bytes_sent, bytes_recv, packets_sent, packets_recv) VALUES (?, ?, ?, ?, ?, ?)',
+            [hostId, iface.name || 'eth0', iface.bytes_sent || 0, iface.bytes_recv || 0, iface.packets_sent || 0, iface.packets_recv || 0]
+          );
+          console.log('[v0] ✅ Interface insertada:', iface.name, '- Affected rows:', result?.affectedRows);
+        } catch (netError: any) {
+          console.error('[v0] ❌ ERROR al insertar interface:', iface.name, '- Error:', netError.message);
+        }
       }
-      console.log('[v0] ✅ Interfaces de red insertadas correctamente');
     }
 
     console.log('[v0] ✅✅✅ TODAS LAS MÉTRICAS PROCESADAS EXITOSAMENTE');
