@@ -77,6 +77,8 @@ export async function POST(request: NextRequest) {
         console.error('[v0] ❌ ERROR al insertar system_metrics:', insertError.message);
         console.error('[v0] SQL State:', insertError.sqlState);
         console.error('[v0] Error code:', insertError.code);
+        console.error('[v0] SQL Query:', sqlQuery);
+        console.error('[v0] Values:', values);
         
         return NextResponse.json({
           status: 'error',
