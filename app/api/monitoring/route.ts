@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
           disk_read_bytes, disk_write_bytes, disk_read_count, disk_write_count,
           network_bytes_sent, network_bytes_recv, network_packets_sent, network_packets_recv,
           uptime_seconds, boot_time
-        ) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           hostId,
           m.cpu_percent || 0,
@@ -432,7 +432,7 @@ export async function GET() {
       status: 'ok',
       service: 'Monitoring API',
       endpoint: '/api/monitoring',
-      database: 'data-monitoring',
+      database: 'celestesoftware_data-monitoring',
       host: 'saturn-o-cloud.com',
       timestamp: new Date().toISOString()
     });
