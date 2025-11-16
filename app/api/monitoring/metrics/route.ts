@@ -8,8 +8,8 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     
     console.log('[v0] ========================================');
-    console.log('[v0] MÉTRICAS RECIBIDAS');
-    console.log('[v0] Keys:', Object.keys(data));
+    console.log('[v0] PAYLOAD COMPLETO RECIBIDO:');
+    console.log(JSON.stringify(data, null, 2));
     console.log('[v0] ========================================');
 
     pool = getMonitoringPool();
@@ -46,6 +46,12 @@ export async function POST(request: NextRequest) {
     console.log('[v0] Host ID:', hostId);
 
     let insertedCount = 0;
+
+    console.log('[v0] CPU:', JSON.stringify(data.cpu || {}));
+    console.log('[v0] Memory:', JSON.stringify(data.memory || {}));
+    console.log('[v0] Disk:', JSON.stringify(data.disk || {}, null, 2));
+    console.log('[v0] Network:', JSON.stringify(data.network || {}, null, 2));
+    console.log('[v0] Security Alerts:', JSON.stringify(data.security_alerts || []));
 
     const cpu = data.cpu || {};
     const memory = data.memory || {};
@@ -89,17 +95,21 @@ export async function POST(request: NextRequest) {
         network_bytes_sent, network_bytes_recv,
         network_packets_sent, network_packets_recv,
         uptime_seconds, boot_time
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       systemMetricsValues
     );
     
     insertedCount++;
     console.log('[v0] ✅ system_metrics insertado');
 
-    if (disk.partitions && Array.isArray(disk.partitions)) {
+    const diskPartitions = disk.partitions || data.filesystems || [];
+    console.log('[v0] Particiones encontradas:', diskPartitions.length);
+    
+    if (diskPartitions && Array.isArray(diskPartitions) && diskPartitions.length > 0) {
       await pool.execute('DELETE FROM disk_partitions WHERE host_id = ?', [hostId]);
       
-      for (const partition of disk.partitions) {
+      for (const partition of diskPartitions) {
+        console.log('[v0] Insertando partición:', JSON.stringify(partition));
         await pool.execute(
           `INSERT INTO disk_partitions 
            (host_id, device, mountpoint, fstype, total_bytes, used_bytes, free_bytes, percent_used)
@@ -116,14 +126,22 @@ export async function POST(request: NextRequest) {
           ]
         );
       }
-      console.log(`[v0] ✅ ${disk.partitions.length} particiones insertadas`);
+      console.log(`[v0] ✅ ${diskPartitions.length} particiones insertadas`);
+    } else {
+      console.log('[v0] ⚠️ No se encontraron particiones para insertar');
     }
 
-    if (network.interfaces && Array.isArray(network.interfaces)) {
+    const networkInterfaces = network.interfaces || data.interfaces || [];
+    console.log('[v0] Interfaces encontradas:', networkInterfaces.length);
+    
+    if (networkInterfaces && Array.isArray(networkInterfaces) && networkInterfaces.length > 0) {
       await pool.execute('DELETE FROM network_interfaces WHERE host_id = ?', [hostId]);
       
-      for (const iface of network.interfaces) {
-        for (const addr of iface.addresses || []) {
+      for (const iface of networkInterfaces) {
+        const addresses = iface.addresses || [];
+        console.log('[v0] Interface:', iface.name, 'Addresses:', addresses.length);
+        
+        for (const addr of addresses) {
           await pool.execute(
             `INSERT INTO network_interfaces
              (host_id, interface_name, ip_address, ip_type, netmask, broadcast)
@@ -139,11 +157,17 @@ export async function POST(request: NextRequest) {
           );
         }
       }
-      console.log(`[v0] ✅ ${network.interfaces.length} interfaces insertadas`);
+      console.log(`[v0] ✅ ${networkInterfaces.length} interfaces insertadas`);
+    } else {
+      console.log('[v0] ⚠️ No se encontraron interfaces para insertar');
     }
 
-    if (data.security_alerts && Array.isArray(data.security_alerts) && data.security_alerts.length > 0) {
-      for (const alert of data.security_alerts) {
+    const securityAlerts = data.security_alerts || [];
+    console.log('[v0] Alertas de seguridad encontradas:', securityAlerts.length);
+    
+    if (securityAlerts && Array.isArray(securityAlerts) && securityAlerts.length > 0) {
+      for (const alert of securityAlerts) {
+        console.log('[v0] Insertando alerta:', alert.severity, alert.source);
         await pool.execute(
           `INSERT INTO security_alerts
            (host_id, category, component, source, severity, message)
@@ -158,11 +182,14 @@ export async function POST(request: NextRequest) {
           ]
         );
       }
-      console.log(`[v0] ✅ ${data.security_alerts.length} alertas insertadas`);
+      console.log(`[v0] ✅ ${securityAlerts.length} alertas insertadas`);
+    } else {
+      console.log('[v0] ⚠️ No se encontraron alertas de seguridad');
     }
 
     console.log('[v0] ====================================');
     console.log('[v0] ✅ DATOS PROCESADOS CORRECTAMENTE');
+    console.log('[v0] Total insertado:', insertedCount);
     console.log('[v0] ====================================');
 
     return NextResponse.json({
@@ -190,6 +217,6 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     endpoint: '/api/monitoring/metrics',
-    message: 'Endpoint de métricas activo - Versión completa'
+    message: 'Endpoint de métricas activo - Versión completa con logging'
   });
 }
