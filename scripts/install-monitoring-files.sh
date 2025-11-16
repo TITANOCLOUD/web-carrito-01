@@ -26,9 +26,9 @@ import mysql from 'mysql2/promise';
 const pool = mysql.createPool({
   host: process.env.MONITORING_DB_HOST || '158.69.43.200',
   port: parseInt(process.env.MONITORING_DB_PORT || '3306'),
-  user: process.env.MONITORING_DB_USER || 'monitor_user',
+  user: process.env.MONITORING_DB_USER || 'celestesoftware_monitor_user',
   password: process.env.MONITORING_DB_PASSWORD,
-  database: process.env.MONITORING_DB_NAME || 'data-monitoring',
+  database: process.env.MONITORING_DB_NAME || 'celestesoftware_data-monitoring',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -177,11 +177,11 @@ if [ ! -f "$BASE_PATH/.env.local" ]; then
 # Base de datos de monitoreo
 MONITORING_DB_HOST=158.69.43.200
 MONITORING_DB_PORT=3306
-MONITORING_DB_USER=monitor_user
-MONITORING_DB_PASSWORD=CAMBIAR_ESTE_PASSWORD
-MONITORING_DB_NAME=data-monitoring
+MONITORING_DB_USER=celestesoftware_monitor_user
+MONITORING_DB_PASSWORD=T!t@n0-M0n!t0r2025
+MONITORING_DB_NAME=celestesoftware_data-monitoring
 EOF
-  echo "IMPORTANTE: Edita $BASE_PATH/.env.local y cambia el password"
+  echo "Variables de entorno configuradas en .env.local"
 else
   echo ".env.local ya existe, saltando..."
 fi
@@ -268,7 +268,7 @@ echo "  - $BASE_PATH/app/api/hosts/list/route.ts"
 echo "  - $BASE_PATH/scripts/monitor-agent.py"
 echo ""
 echo "SIGUIENTES PASOS:"
-echo "1. Editar $BASE_PATH/.env.local con el password correcto"
+echo "1. Verifica que las variables de entorno en $BASE_PATH/.env.local sean correctas"
 echo "2. Instalar dependencia: cd $BASE_PATH && npm install mysql2 --legacy-peer-deps"
 echo "3. Reiniciar la aplicación Next.js"
 echo ""
